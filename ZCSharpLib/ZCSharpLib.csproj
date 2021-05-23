@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8F1A7955-DD03-40E3-97C5-0B6EC3E0D264}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ZCSharpLib</RootNamespace>
+    <AssemblyName>ZCSharpLib</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;UNITY_IOS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Cores\Bootstrap.cs" />
+    <Compile Include="Coroutines\Coroutine.cs" />
+    <Compile Include="Guids\Guid.cs" />
+    <Compile Include="Nets\AsyncUserToken.cs" />
+    <Compile Include="Nets\TCPClients\Heart.cs" />
+    <Compile Include="Nets\TCPClients\TCPClient.cs" />
+    <Compile Include="Nets\AsyncSocket.cs" />
+    <Compile Include="Nets\ByteBuffer.cs" />
+    <Compile Include="Nets\UDPSockets\UDPServer.cs" />
+    <Compile Include="Utils\ReflUtils.cs" />
+    <Compile Include="Nets\TCPSockets\TCPSocketServerDaemonThread.cs" />
+    <Compile Include="Nets\PacketMgr.cs" />
+    <Compile Include="Threads\SynchronizationThread.cs" />
+    <Compile Include="Times\LS.cs" />
+    <Compile Include="Crypts\AES.cs" />
+    <Compile Include="Crypts\DES.cs" />
+    <Compile Include="Crypts\MD5.cs" />
+    <Compile Include="Crypts\RSA.cs" />
+    <Compile Include="Crypts\RSASign.cs" />
+    <Compile Include="Nets\PacketFactory.cs" />
+    <Compile Include="Versions\Installs\InstallContext.cs" />
+    <Compile Include="Versions\Installs\Install.cs" />
+    <Compile Include="Versions\Installs\InstallPackage.cs" />
+    <Compile Include="Versions\Installs\InstallData.cs" />
+    <Compile Include="Versions\Version.cs" />
+    <Compile Include="Exts\AccessorExts.cs" />
+    <Compile Include="Cores\ObjectBase.cs" />
+    <Compile Include="App.cs" />
+    <Compile Include="Zips\BZip2\BZip2.cs" />
+    <Compile Include="Zips\BZip2\BZip2Constants.cs" />
+    <Compile Include="Zips\BZip2\BZip2Exception.cs" />
+    <Compile Include="Zips\BZip2\BZip2InputStream.cs" />
+    <Compile Include="Zips\BZip2\BZip2OutputStream.cs" />
+    <Compile Include="Zips\Checksum\Adler32.cs" />
+    <Compile Include="Zips\Checksum\BZip2Crc.cs" />
+    <Compile Include="Zips\Checksum\Crc32.cs" />
+    <Compile Include="Zips\Checksum\IChecksum.cs" />
+    <Compile Include="Zips\Core\Exceptions\SharpZipBaseException.cs" />
+    <Compile Include="Zips\Core\Exceptions\StreamDecodingException.cs" />
+    <Compile Include="Zips\Core\Exceptions\StreamUnsupportedException.cs" />
+    <Compile Include="Zips\Core\Exceptions\UnexpectedEndOfStreamException.cs" />
+    <Compile Include="Zips\Core\Exceptions\ValueOutOfRangeException.cs" />
+    <Compile Include="Zips\Core\FileSystemScanner.cs" />
+    <Compile Include="Zips\Core\INameTransform.cs" />
+    <Compile Include="Zips\Core\InvalidNameException.cs" />
+    <Compile Include="Zips\Core\IScanFilter.cs" />
+    <Compile Include="Zips\Core\NameFilter.cs" />
+    <Compile Include="Zips\Core\PathFilter.cs" />
+    <Compile Include="Zips\Core\StreamUtils.cs" />
+    <Compile Include="Zips\Core\WindowsPathUtils.cs" />
+    <Compile Include="Zips\Encryption\PkzipClassic.cs" />
+    <Compile Include="Zips\Encryption\ZipAESStream.cs" />
+    <Compile Include="Zips\Encryption\ZipAESTransform.cs" />
+    <Compile Include="Zips\GZip\GZip.cs" />
+    <Compile Include="Zips\GZip\GZipConstants.cs" />
+    <Compile Include="Zips\GZip\GZipException.cs" />
+    <Compile Include="Zips\GZip\GzipInputStream.cs" />
+    <Compile Include="Zips\GZip\GzipOutputStream.cs" />
+    <Compile Include="Zips\Lzw\LzwConstants.cs" />
+    <Compile Include="Zips\Lzw\LzwException.cs" />
+    <Compile Include="Zips\Lzw\LzwInputStream.cs" />
+    <Compile Include="Zips\Tar\InvalidHeaderException.cs" />
+    <Compile Include="Zips\Tar\TarArchive.cs" />
+    <Compile Include="Zips\Tar\TarBuffer.cs" />
+    <Compile Include="Zips\Tar\TarEntry.cs" />
+    <Compile Include="Zips\Tar\TarException.cs" />
+    <Compile Include="Zips\Tar\TarExtendedHeaderReader.cs" />
+    <Compile Include="Zips\Tar\TarHeader.cs" />
+    <Compile Include="Zips\Tar\TarInputStream.cs" />
+    <Compile Include="Zips\Tar\TarOutputStream.cs" />
+    <Compile Include="Zips\Zip\Compression\Deflater.cs" />
+    <Compile Include="Zips\Zip\Compression\DeflaterConstants.cs" />
+    <Compile Include="Zips\Zip\Compression\DeflaterEngine.cs" />
+    <Compile Include="Zips\Zip\Compression\DeflaterHuffman.cs" />
+    <Compile Include="Zips\Zip\Compression\DeflaterPending.cs" />
+    <Compile Include="Zips\Zip\Compression\Inflater.cs" />
+    <Compile Include="Zips\Zip\Compression\InflaterDynHeader.cs" />
+    <Compile Include="Zips\Zip\Compression\InflaterHuffmanTree.cs" />
+    <Compile Include="Zips\Zip\Compression\PendingBuffer.cs" />
+    <Compile Include="Zips\Zip\Compression\Streams\DeflaterOutputStream.cs" />
+    <Compile Include="Zips\Zip\Compression\Streams\InflaterInputStream.cs" />
+    <Compile Include="Zips\Zip\Compression\Streams\OutputWindow.cs" />
+    <Compile Include="Zips\Zip\Compression\Streams\StreamManipulator.cs" />
+    <Compile Include="Zips\Zip\FastZip.cs" />
+    <Compile Include="Zips\Zip\IEntryFactory.cs" />
+    <Compile Include="Zips\Zip\WindowsNameTransform.cs" />
+    <Compile Include="Zips\Zip\ZipConstants.cs" />
+    <Compile Include="Zips\Zip\ZipEntry.cs" />
+    <Compile Include="Zips\Zip\ZipEntryFactory.cs" />
+    <Compile Include="Zips\Zip\ZipException.cs" />
+    <Compile Include="Zips\Zip\ZipExtraData.cs" />
+    <Compile Include="Zips\Zip\ZipFile.cs" />
+    <Compile Include="Zips\Zip\ZipHelperStream.cs" />
+    <Compile Include="Zips\Zip\ZipInputStream.cs" />
+    <Compile Include="Zips\Zip\ZipNameTransform.cs" />
+    <Compile Include="Zips\Zip\ZipOutputStream.cs" />
+    <Compile Include="Zips\Zip\ZipStrings.cs" />
+    <Compile Include="Zips\Additional\ZArraySegment.cs" />
+    <Compile Include="Cores\ObjectEvent.cs" />
+    <Compile Include="Coroutines\WaitForSeconds.cs" />
+    <Compile Include="Coroutines\IInterruptInstruction.cs" />
+    <Compile Include="Events\EventAction.cs" />
+    <Compile Include="Exceptions\CustomException.cs" />
+    <Compile Include="Cores\ObjectList.cs" />
+    <Compile Include="Cores\ObjectPool.cs" />
+    <Compile Include="Databases\BaseDb.cs" />
+    <Compile Include="Databases\DbOperate.cs" />
+    <Compile Include="Crypts\CRC.cs" />
+    <Compile Include="Threads\Mainthread.cs" />
+    <Compile Include="Models\BaseData.cs" />
+    <Compile Include="Models\BaseModel.cs" />
+    <Compile Include="Databases\DbStructure.cs" />
+    <Compile Include="Databases\DbMgr.cs" />
+    <Compile Include="Nets\DynamicBuffer.cs" />
+    <Compile Include="Nets\TCPSockets\TCPSocketClient.cs" />
+    <Compile Include="Nets\TCPSockets\TCPSocketServer.cs" />
+    <Compile Include="Https\HttpLoadAll.cs" />
+    <Compile Include="Https\HttpUtils.cs" />
+    <Compile Include="Https\HttpLoad.cs" />
+    <Compile Include="Cores\Singleton.cs" />
+    <Compile Include="Coroutines\Coroutiner.cs" />
+    <Compile Include="Events\Event.cs" />
+    <Compile Include="Events\EventArgs.cs" />
+    <Compile Include="Events\EventDispatch.cs" />
+    <Compile Include="Events\IEventArgs.cs" />
+    <Compile Include="Events\IEventListener.cs" />
+    <Compile Include="Times\Updater.cs" />
+    <Compile Include="Times\Time.cs" />
+    <Compile Include="Utils\CommUtils.cs" />
+    <Compile Include="Utils\FileUtils.cs" />
+    <Compile Include="Utils\MathUtils.cs" />
+    <Compile Include="Jsons\JsonUtility.cs" />
+    <Compile Include="Jsons\SimpleJson.cs" />
+    <Compile Include="Logs\Logger.cs" />
+    <Compile Include="Zips\Zip.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,10 @@
+D:\Work\Repos\shuijin\Test\PipelineUDP-CLIENT\PipelineUDP-CLIENT\obj\Debug\PipelineUDP-CLIENT.csprojAssemblyReference.cache
+D:\Work\Repos\shuijin\Test\PipelineUDP-CLIENT\PipelineUDP-CLIENT\obj\Debug\PipelineUDP-CLIENT.csproj.CoreCompileInputs.cache
+D:\Work\Repos\shuijin\Test\PipelineUDP-CLIENT\PipelineUDP-CLIENT\bin\Debug\PipelineUDP-CLIENT.exe.config
+D:\Work\Repos\shuijin\Test\PipelineUDP-CLIENT\PipelineUDP-CLIENT\bin\Debug\PipelineUDP-CLIENT.exe
+D:\Work\Repos\shuijin\Test\PipelineUDP-CLIENT\PipelineUDP-CLIENT\bin\Debug\PipelineUDP-CLIENT.pdb
+D:\Work\Repos\shuijin\Test\PipelineUDP-CLIENT\PipelineUDP-CLIENT\bin\Debug\PipelineUDP.dll
+D:\Work\Repos\shuijin\Test\PipelineUDP-CLIENT\PipelineUDP-CLIENT\bin\Debug\PipelineUDP.pdb
+D:\Work\Repos\shuijin\Test\PipelineUDP-CLIENT\PipelineUDP-CLIENT\obj\Debug\PipelineUDP-CLIENT.csproj.CopyComplete
+D:\Work\Repos\shuijin\Test\PipelineUDP-CLIENT\PipelineUDP-CLIENT\obj\Debug\PipelineUDP-CLIENT.exe
+D:\Work\Repos\shuijin\Test\PipelineUDP-CLIENT\PipelineUDP-CLIENT\obj\Debug\PipelineUDP-CLIENT.pdb

@@ -1,0 +1,7 @@
+C:\Users\yunchen1008\source\repos\CSLight\CSLight\bin\Release\CSLight.dll
+C:\Users\yunchen1008\source\repos\CSLight\CSLight\bin\Release\CSLight.pdb
+C:\Users\yunchen1008\source\repos\CSLight\CSLight\bin\Release\ICSharpCode.SharpZipLib.dll
+C:\Users\yunchen1008\source\repos\CSLight\CSLight\obj\Release\CSLight.csproj.CoreCompileInputs.cache
+C:\Users\yunchen1008\source\repos\CSLight\CSLight\obj\Release\CSLight.dll
+C:\Users\yunchen1008\source\repos\CSLight\CSLight\obj\Release\CSLight.pdb
+C:\Users\yunchen1008\source\repos\CSLight\CSLight\obj\Release\CSLight.csprojResolveAssemblyReference.cache

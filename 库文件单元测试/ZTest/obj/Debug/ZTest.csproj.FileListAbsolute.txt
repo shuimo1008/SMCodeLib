@@ -1,0 +1,9 @@
+c:\Users\yunchen1008\source\repos\CSLight\ZTest\bin\Debug\ZTest.exe.config
+c:\Users\yunchen1008\source\repos\CSLight\ZTest\bin\Debug\ZTest.exe
+c:\Users\yunchen1008\source\repos\CSLight\ZTest\bin\Debug\ZTest.pdb
+c:\Users\yunchen1008\source\repos\CSLight\ZTest\bin\Debug\CSLight.dll
+c:\Users\yunchen1008\source\repos\CSLight\ZTest\bin\Debug\CSLight.pdb
+c:\Users\yunchen1008\source\repos\CSLight\ZTest\obj\Debug\ZTest.csprojResolveAssemblyReference.cache
+c:\Users\yunchen1008\source\repos\CSLight\ZTest\obj\Debug\ZTest.csproj.CoreCompileInputs.cache
+c:\Users\yunchen1008\source\repos\CSLight\ZTest\obj\Debug\ZTest.exe
+c:\Users\yunchen1008\source\repos\CSLight\ZTest\obj\Debug\ZTest.pdb

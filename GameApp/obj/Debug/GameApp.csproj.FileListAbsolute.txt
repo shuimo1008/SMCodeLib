@@ -1,0 +1,6 @@
+D:\Work\Repos\shuijin\GameApp\bin\Debug\GameApp.dll
+D:\Work\Repos\shuijin\GameApp\bin\Debug\GameApp.pdb
+D:\Work\Repos\shuijin\GameApp\obj\Debug\GameApp.csprojAssemblyReference.cache
+D:\Work\Repos\shuijin\GameApp\obj\Debug\GameApp.csproj.CoreCompileInputs.cache
+D:\Work\Repos\shuijin\GameApp\obj\Debug\GameApp.dll
+D:\Work\Repos\shuijin\GameApp\obj\Debug\GameApp.pdb

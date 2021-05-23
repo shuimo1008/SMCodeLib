@@ -1,0 +1,17 @@
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\配置数据生成工具.dll
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\配置数据生成工具.deps.json
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\配置数据生成工具.runtimeconfig.json
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\配置数据生成工具.pdb
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\NPOI.OOXML.dll
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\NPOI.dll
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\NPOI.OpenXml4Net.dll
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\NPOI.OpenXmlFormats.dll
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\Microsoft.Win32.SystemEvents.dll
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\ICSharpCode.SharpZipLib.dll
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\System.Drawing.Common.dll
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\System.Runtime.CompilerServices.Unsafe.dll
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\System.Text.Encoding.CodePages.dll
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\runtimes\win\lib\netcoreapp2.0\Microsoft.Win32.SystemEvents.dll
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\runtimes\unix\lib\netcoreapp2.0\System.Drawing.Common.dll
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\runtimes\win\lib\netcoreapp2.0\System.Drawing.Common.dll
+E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\publish\runtimes\win\lib\netcoreapp2.0\System.Text.Encoding.CodePages.dll

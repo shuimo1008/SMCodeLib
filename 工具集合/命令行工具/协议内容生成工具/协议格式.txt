@@ -1,0 +1,8 @@
+struct ReqUserInfoPacket			--请求用户信息
+	int UserID 			--用户ID
+	int UserName 			--用户名称
+	Userbody UserBody		--
+	
+	struct Userbody
+		string LeftLeg
+		string rightLeg			--

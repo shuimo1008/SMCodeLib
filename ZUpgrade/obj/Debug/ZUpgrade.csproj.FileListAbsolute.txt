@@ -1,0 +1,10 @@
+D:\work\ZUpgrade\bin\Debug\ZUpgrade.dll
+D:\work\ZUpgrade\bin\Debug\ZUpgrade.pdb
+D:\work\ZUpgrade\bin\Debug\ZCSharpLib.dll
+D:\work\ZUpgrade\bin\Debug\ICSharpCode.SharpZipLib.dll
+D:\work\ZUpgrade\bin\Debug\ZCSharpLib.pdb
+D:\work\ZUpgrade\obj\Debug\ZUpgrade.csprojResolveAssemblyReference.cache
+D:\work\ZUpgrade\obj\Debug\ZUpgrade.csproj.CoreCompileInputs.cache
+D:\work\ZUpgrade\obj\Debug\ZUpgrade.csproj.CopyComplete
+D:\work\ZUpgrade\obj\Debug\ZUpgrade.dll
+D:\work\ZUpgrade\obj\Debug\ZUpgrade.pdb

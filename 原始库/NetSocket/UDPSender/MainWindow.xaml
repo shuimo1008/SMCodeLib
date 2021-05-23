@@ -1,0 +1,18 @@
+﻿<Window x:Class="UDPSender.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UDPSender"
+        mc:Ignorable="d"
+        Title="UDPSender" Height="450" Width="800">
+    <Grid>
+        <Label Content="ProtocolID" HorizontalAlignment="Left" Margin="33.802,153.921,0,0" VerticalAlignment="Top" FontSize="18" Width="165.558"/>
+        <TextBox x:Name="TxtProtocolID" HorizontalAlignment="Left" Height="33.928" Margin="273.77,153.921,0,0" Text="10008&#xA;" VerticalAlignment="Top" Width="470.477" TextChanged="TxtProtocolID_TextChanged" PreviewTextInput="NumberValidationTextBox" FontSize="18" VerticalContentAlignment="Center"/>
+        <Label Content="ProtocolContent" HorizontalAlignment="Left" Margin="33.802,205.438,0,0" VerticalAlignment="Top" Width="165.558" FontSize="18"/>
+        <TextBox x:Name="TxtProtoclContet" HorizontalAlignment="Left" Height="189.263" Margin="273.77,205.438,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="470.477"/>
+        <Button x:Name="BtnSend" Content="Send" HorizontalAlignment="Left" Margin="33.802,348.284,0,0" VerticalAlignment="Top" Width="165.558" Height="46.417" FontSize="18" Click="BtnSend_Click"/>
+        <Button x:Name="BtnDestory" Content="DestoyServer" HorizontalAlignment="Left" Margin="33.802,50.105,0,0" VerticalAlignment="Top" Width="710.445" Height="33.928" FontSize="18" Click="BtnDestory_Click" RenderTransformOrigin="-1.288,-0.354"/>
+
+    </Grid>
+</Window>

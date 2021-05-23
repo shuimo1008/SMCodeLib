@@ -1,0 +1,13 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/projectSettingsUpdater.xml
+/contentModel.xml
+/.idea.配置数据生成工具.iml
+/modules.xml
+# Datasource local storage ignored files
+/../../../../../../../../../:\work\shuijin\工具集合\命令行工具\配置数据生成工具\.idea\.idea.配置数据生成工具\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/

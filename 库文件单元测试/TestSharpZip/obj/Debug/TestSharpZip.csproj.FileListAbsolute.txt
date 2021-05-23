@@ -1,0 +1,10 @@
+E:\work\Test\TestSharpZip\bin\Debug\TestSharpZip.exe.config
+E:\work\Test\TestSharpZip\bin\Debug\TestSharpZip.exe
+E:\work\Test\TestSharpZip\bin\Debug\TestSharpZip.pdb
+E:\work\Test\TestSharpZip\bin\Debug\ZCSharpLib.dll
+E:\work\Test\TestSharpZip\bin\Debug\ZCSharpLib.pdb
+E:\work\Test\TestSharpZip\obj\Debug\TestSharpZip.csprojAssemblyReference.cache
+E:\work\Test\TestSharpZip\obj\Debug\TestSharpZip.csproj.CoreCompileInputs.cache
+E:\work\Test\TestSharpZip\obj\Debug\TestSharpZip.csproj.CopyComplete
+E:\work\Test\TestSharpZip\obj\Debug\TestSharpZip.exe
+E:\work\Test\TestSharpZip\obj\Debug\TestSharpZip.pdb

@@ -1,0 +1,3 @@
+.ide-wal,.suo,.cache,.lock,.ide,.ide-shm,.meta
+/ZDataAccess/ZDataAccess/obj/Debug/*.force
+/ZDataAccess/.vs

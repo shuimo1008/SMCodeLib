@@ -1,0 +1,17 @@
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\bin\Debug\UDPSender.exe
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\bin\Debug\UDPSender.pdb
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\bin\Debug\NetSocket.dll
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\bin\Debug\NetSocket.pdb
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\obj\Debug\UDPSender.csprojResolveAssemblyReference.cache
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\obj\Debug\MainWindow.g.cs
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\obj\Debug\App.g.cs
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\obj\Debug\UDPSender_MarkupCompile.cache
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\obj\Debug\UDPSender_MarkupCompile.lref
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\obj\Debug\MainWindow.baml
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\obj\Debug\UDPSender.g.resources
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\obj\Debug\UDPSender.Properties.Resources.resources
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\obj\Debug\UDPSender.csproj.GenerateResource.cache
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\obj\Debug\UDPSender.csproj.CoreCompileInputs.cache
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\obj\Debug\UDPSender.csproj.CopyComplete
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\obj\Debug\UDPSender.exe
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\UDPSender\obj\Debug\UDPSender.pdb

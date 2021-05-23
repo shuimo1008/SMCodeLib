@@ -1,0 +1,6 @@
+D:\Work\Repos\shuijin\PipelineUDP\PipelineUDP\bin\Debug\PipelineUDP.dll
+D:\Work\Repos\shuijin\PipelineUDP\PipelineUDP\bin\Debug\PipelineUDP.pdb
+D:\Work\Repos\shuijin\PipelineUDP\PipelineUDP\obj\Debug\PipelineUDP.csprojAssemblyReference.cache
+D:\Work\Repos\shuijin\PipelineUDP\PipelineUDP\obj\Debug\PipelineUDP.csproj.CoreCompileInputs.cache
+D:\Work\Repos\shuijin\PipelineUDP\PipelineUDP\obj\Debug\PipelineUDP.dll
+D:\Work\Repos\shuijin\PipelineUDP\PipelineUDP\obj\Debug\PipelineUDP.pdb

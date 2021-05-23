@@ -1,0 +1,13 @@
+struct Nc2sMessagePacket	# 客户端发送至服务端
+	int ClientID			# 客户端ID
+	int MessageID			# 消息ID
+	long SendTime			# 发送时间
+	string Message			# 消息
+
+struct Ns2cMessagePacket	# 服务端发送至客户端
+	int ClientID			# 客户端ID
+	int MessageID			# 消息ID
+	long SendTime			# 发送数据
+	string message			# 转发的消息
+	
+		

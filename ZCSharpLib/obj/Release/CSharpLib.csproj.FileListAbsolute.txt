@@ -1,0 +1,2 @@
+C:\Users\yunchen1008\source\repos\CSLight\CSLight\obj\Release\CSharpLib.csprojResolveAssemblyReference.cache
+C:\Users\yunchen1008\source\repos\CSLight\CSLight\obj\Release\CSharpLib.csproj.CoreCompileInputs.cache

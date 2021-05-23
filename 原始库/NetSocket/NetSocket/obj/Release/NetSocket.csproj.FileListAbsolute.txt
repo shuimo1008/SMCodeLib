@@ -1,0 +1,5 @@
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\NetSocket\bin\Release\NetSocket.dll
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\NetSocket\bin\Release\NetSocket.pdb
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\NetSocket\obj\Release\NetSocket.csproj.CoreCompileInputs.cache
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\NetSocket\obj\Release\NetSocket.dll
+C:\Users\yunchen1008\source\repos\MyLibrary\NetSocket\NetSocket\obj\Release\NetSocket.pdb

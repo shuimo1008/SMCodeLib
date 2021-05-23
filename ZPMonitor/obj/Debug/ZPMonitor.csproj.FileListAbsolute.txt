@@ -1,0 +1,10 @@
+C:\Users\yunchen1008\source\repos\MyLibrary\ZPMonitor\bin\Debug\ZPMonitor.exe.config
+C:\Users\yunchen1008\source\repos\MyLibrary\ZPMonitor\bin\Debug\ZPMonitor.exe
+C:\Users\yunchen1008\source\repos\MyLibrary\ZPMonitor\bin\Debug\ZPMonitor.pdb
+C:\Users\yunchen1008\source\repos\MyLibrary\ZPMonitor\bin\Debug\ZCSharpLib.dll
+C:\Users\yunchen1008\source\repos\MyLibrary\ZPMonitor\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\Users\yunchen1008\source\repos\MyLibrary\ZPMonitor\bin\Debug\ZCSharpLib.pdb
+C:\Users\yunchen1008\source\repos\MyLibrary\ZPMonitor\obj\Debug\ZPMonitor.csprojResolveAssemblyReference.cache
+C:\Users\yunchen1008\source\repos\MyLibrary\ZPMonitor\obj\Debug\ZPMonitor.csproj.CoreCompileInputs.cache
+C:\Users\yunchen1008\source\repos\MyLibrary\ZPMonitor\obj\Debug\ZPMonitor.exe
+C:\Users\yunchen1008\source\repos\MyLibrary\ZPMonitor\obj\Debug\ZPMonitor.pdb

@@ -1,0 +1,6 @@
+C:\Users\yunchen1008\source\repos\MyLibrary\TestCrash\bin\Release\TestCrash.exe.config
+C:\Users\yunchen1008\source\repos\MyLibrary\TestCrash\bin\Release\TestCrash.exe
+C:\Users\yunchen1008\source\repos\MyLibrary\TestCrash\bin\Release\TestCrash.pdb
+C:\Users\yunchen1008\source\repos\MyLibrary\TestCrash\obj\Release\TestCrash.csproj.CoreCompileInputs.cache
+C:\Users\yunchen1008\source\repos\MyLibrary\TestCrash\obj\Release\TestCrash.exe
+C:\Users\yunchen1008\source\repos\MyLibrary\TestCrash\obj\Release\TestCrash.pdb

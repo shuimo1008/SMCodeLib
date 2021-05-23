@@ -1,0 +1,13 @@
+C:\Users\yunchen1008\source\repos\MyLibrary\ZTest\bin\Debug\ZTest.exe.config
+C:\Users\yunchen1008\source\repos\MyLibrary\ZTest\bin\Debug\ZTest.exe
+C:\Users\yunchen1008\source\repos\MyLibrary\ZTest\bin\Debug\ZTest.pdb
+C:\Users\yunchen1008\source\repos\MyLibrary\ZTest\bin\Debug\ZCSharpLib.dll
+C:\Users\yunchen1008\source\repos\MyLibrary\ZTest\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\Users\yunchen1008\source\repos\MyLibrary\ZTest\bin\Debug\ZCSharpLib.pdb
+C:\Users\yunchen1008\source\repos\MyLibrary\ZTest\obj\Debug\ZZTest.csprojResolveAssemblyReference.cache
+C:\Users\yunchen1008\source\repos\MyLibrary\ZTest\obj\Debug\ZZTest.csproj.CoreCompileInputs.cache
+C:\Users\yunchen1008\source\repos\MyLibrary\ZTest\obj\Debug\ZTest.exe
+C:\Users\yunchen1008\source\repos\MyLibrary\ZTest\obj\Debug\ZTest.pdb
+C:\Users\yunchen1008\source\repos\MyLibrary\ZTest\obj\Debug\ZZTest.csproj.CopyComplete
+C:\Users\yunchen1008\source\repos\MyLibrary\ZTest\bin\Debug\ClassLibrary1.dll
+C:\Users\yunchen1008\source\repos\MyLibrary\ZTest\bin\Debug\ClassLibrary1.pdb

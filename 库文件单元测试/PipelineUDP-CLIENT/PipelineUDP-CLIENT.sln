@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.438
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipelineUDP-CLIENT", "PipelineUDP-CLIENT\PipelineUDP-CLIENT.csproj", "{F93556E6-5172-47BA-ADC2-D109A082DA1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipelineUDP", "..\..\PipelineUDP\PipelineUDP\PipelineUDP.csproj", "{724FDBB2-3A99-4BDB-A24A-DBA810779055}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F93556E6-5172-47BA-ADC2-D109A082DA1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F93556E6-5172-47BA-ADC2-D109A082DA1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F93556E6-5172-47BA-ADC2-D109A082DA1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F93556E6-5172-47BA-ADC2-D109A082DA1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{724FDBB2-3A99-4BDB-A24A-DBA810779055}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{724FDBB2-3A99-4BDB-A24A-DBA810779055}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{724FDBB2-3A99-4BDB-A24A-DBA810779055}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{724FDBB2-3A99-4BDB-A24A-DBA810779055}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6E183E01-7281-449E-86D5-B5C516DF56B8}
+	EndGlobalSection
+EndGlobal

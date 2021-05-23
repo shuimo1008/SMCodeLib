@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "配置数据生成工具", "配置数据生成工具\配置数据生成工具.csproj", "{3FE3AB96-FB5A-4249-B782-475B226DAA44}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3FE3AB96-FB5A-4249-B782-475B226DAA44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FE3AB96-FB5A-4249-B782-475B226DAA44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FE3AB96-FB5A-4249-B782-475B226DAA44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FE3AB96-FB5A-4249-B782-475B226DAA44}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {14AB28C3-B6A7-4794-9EA8-E659BCFEC0C5}
+	EndGlobalSection
+EndGlobal

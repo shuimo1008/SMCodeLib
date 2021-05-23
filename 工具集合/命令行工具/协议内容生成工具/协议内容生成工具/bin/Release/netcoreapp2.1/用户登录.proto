@@ -1,0 +1,22 @@
+struct ReqUserLogin1Packet 	
+	string UserName			# 用户名
+	string UserPass			# 用户密码
+	byte[] Test1
+	bool[] Test2
+	short[] Test3
+	ushort[] test4
+	int[] test5
+	uint[] test6
+	long[] test7
+	ulong[] test8
+	float[] test9
+	string[] Test10
+	UserBodyInfo UserBody	# 用户身体信息
+	struct UserBodyInfo		
+		int Figer			# 指纹ID
+		int Eye				# 眼睛ID
+	struct UserTest
+		UserBodyInfo info
+	
+struct ResUserLogin1Packet	# 用户登录响应
+	int Status				

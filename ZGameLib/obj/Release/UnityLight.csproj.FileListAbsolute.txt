@@ -1,0 +1,11 @@
+C:\Users\yunchen1008\source\repos\CSLight\UnityLight\bin\Release\UnityLight.dll
+C:\Users\yunchen1008\source\repos\CSLight\UnityLight\bin\Release\UnityLight.pdb
+C:\Users\yunchen1008\source\repos\CSLight\UnityLight\bin\Release\CSLight.dll
+C:\Users\yunchen1008\source\repos\CSLight\UnityLight\bin\Release\ICSharpCode.SharpZipLib.dll
+C:\Users\yunchen1008\source\repos\CSLight\UnityLight\bin\Release\UnityEngine.dll
+C:\Users\yunchen1008\source\repos\CSLight\UnityLight\bin\Release\CSLight.pdb
+C:\Users\yunchen1008\source\repos\CSLight\UnityLight\bin\Release\UnityEngine.xml
+C:\Users\yunchen1008\source\repos\CSLight\UnityLight\obj\Release\UnityLight.csprojResolveAssemblyReference.cache
+C:\Users\yunchen1008\source\repos\CSLight\UnityLight\obj\Release\UnityLight.csproj.CoreCompileInputs.cache
+C:\Users\yunchen1008\source\repos\CSLight\UnityLight\obj\Release\UnityLight.dll
+C:\Users\yunchen1008\source\repos\CSLight\UnityLight\obj\Release\UnityLight.pdb

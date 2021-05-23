@@ -1,0 +1,7 @@
+C:\Users\yunchen1008\source\repos\MyLibrary\TestCrash\bin\Debug\TestCrash.exe.config
+C:\Users\yunchen1008\source\repos\MyLibrary\TestCrash\bin\Debug\TestCrash.exe
+C:\Users\yunchen1008\source\repos\MyLibrary\TestCrash\bin\Debug\TestCrash.pdb
+C:\Users\yunchen1008\source\repos\MyLibrary\TestCrash\obj\Debug\TestCrash.csprojResolveAssemblyReference.cache
+C:\Users\yunchen1008\source\repos\MyLibrary\TestCrash\obj\Debug\TestCrash.csproj.CoreCompileInputs.cache
+C:\Users\yunchen1008\source\repos\MyLibrary\TestCrash\obj\Debug\TestCrash.exe
+C:\Users\yunchen1008\source\repos\MyLibrary\TestCrash\obj\Debug\TestCrash.pdb

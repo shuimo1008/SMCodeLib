@@ -1,0 +1,82 @@
+struct	ResSessionPacket			# 服务端发送会话ID
+	string SessionID
+
+struct	ReqServerTimePacket			# 客户端请求服务器时间
+	long Time						# 客户端时间
+
+struct	ResServerTimePacket			# 服务端响应客户端时间请求
+	long Time						# 客户端时间
+	long ServerTime					# 服务器时间
+
+struct	ReqClientInfoPacket			# 客户端向服务端发送应用信息	
+	int MachineID					# 机器ID
+	int ClientType					# 应用类型 服务程序=0;客户录制程序=1;客户控制程序=2
+	int ClientScene					# 应用场景
+	string Version					# 版本信息
+	string LocalIP					# 本地地址
+	
+--------------------------------------客户端N和M之间消息转发-------------------------
+struct ReqN2MPacket						# 客户端N发送控制客户端M
+	string message						# 发送的消息
+
+struct ReqM2NPacket						# 客户端M发送控制客户端N
+	string message						# 发送的消息
+
+---------------------------------------用户信息--------------------------------------
+struct ResUsersPacket			# 服务器发送用户信息
+	UserData[] Datas			# 用户列表
+	struct UserData
+		string Guid				# 用户Guid
+		string UserName			# 用户名称
+
+
+----------------------------------------工作任务-------------------------------------
+struct ResWorksPacket					# 服务器发送用户工作信息
+	WorkData[] Datas					# 工作数据数组
+	struct WorkData						# 工作数据
+		string Guid						# 工作数据GUID
+		string UserGuid					# 工作数据所属用户
+		WorkingpointData[] PointDatas	# 工作点数据组
+	struct WorkingpointData				# 工作点数据
+		int SceneGuid					# 工作点场景ID
+		int OperateStatus				# 工作点状态:空置=0;开始=1;结束=2;
+		
+struct ReqStartWorkPacket		# 客户端发送请求工作状态
+	string UserGuid				# 请求操作的用户ID
+
+struct ResStartWorkPacket		# 服务端发送响应工作状态请求
+	int Status					# 返回状态: 成功=0;已经工作无法重复创建=1
+	string WorkGuid				# 工作ID
+	string UserGuid				# 工作所属用户
+	WorkingpointData[] PointDatas	# 工作点数据组		
+	struct WorkingpointData		# 工作点数据
+		int SceneGuid			# 工作点场景ID
+		int OperateStatus		# 工作点状态:空置=0;开始=1;结束=2;
+
+struct ReqEndWorkPacket			# 客户端发送结束工作请求
+	string WorkGuid				# 工作ID
+
+struct ResEndWorkPacket			# 服务端响应工作结束请求
+	string WorkGuid				# 结束的工作ID
+	int Status					# 状态: 成功结束=0; 工作占用中(失败)=1;
+
+struct ReqModifyWorkStatusPacket		# 客户端发送请求"修改工作状态"
+	string WorkGuid						# 工作ID
+	int SceneGuid						# 场景ID
+	int OperateStatusStatus				# 请求的操作状态: 开始=1;结束=2	
+
+struct ResModifyWorkStatusPacket		# 服务端发送响应"修改工作状态"
+	string WorkGuid						# 需要操作的工作ID
+	int SceneGuid						# 场景ID
+	int ReqOperateStatus				# 请求的操作状态: 开始=1; 结束=2	
+	int ResOperateStatus				# 响应的状态: 请求成功=0; 请求失败=1;
+	
+struct ReqUploadFilePacket				# 客户端上传文件
+	string UserGuid						# 用户ID
+	string WorkGuid						# 工作ID
+	int	SceneGuid						# 场景ID
+	string[] FileNames					# 文件名称
+
+----------------------------------------发送完整视频至出口等待区电脑-------------------------------------
+struct ResFullVideoToExitPacket
+	string fileUrl
