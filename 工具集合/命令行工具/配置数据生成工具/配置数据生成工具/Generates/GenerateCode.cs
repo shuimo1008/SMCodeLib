@@ -27,7 +27,7 @@ namespace Tools
         public string TMP_TEMPLATEMGR =
             "public class TemplateMgr<T> where T : BaseTpl, new()\r\n"+
             "__LK__ \r\n" +
-            "   public readonly Dictionary<int, T> Datas = new Dictionary<int, T>();\r\n" +
+            "   private readonly Dictionary<int, T> DataTable = new Dictionary<int, T>();\r\n" +
             "\r\n" +
             "   public void SetupData(ByteBuffer buffer) \r\n" +
             "   __LK__ \r\n" +
@@ -36,14 +36,14 @@ namespace Tools
             "       __LK__ \r\n" +
             "           T t = new T();\r\n" +
             "           t.SetupData(buffer);\r\n" +
-            "           if (!Datas.ContainsKey(t.Tid)) Datas.Add(t.Tid, t);\r\n" +
+            "           if (!DataTable.ContainsKey(t.Tid)) DataTable.Add(t.Tid, t);\r\n" +
             "           else App.Error($\"模板__LK__typeof(T).Name__RK__Mgr已经包含Tid=__LK__t.Tid__RK__的对象!\");\r\n" +
             "       __RK__ \r\n" +
             "   __RK__ \r\n" +
             "\r\n" +
             "   public T Find(int id)\r\n" +
             "   __LK__ \r\n" +
-            "       if (!Datas.TryGetValue(id, out var tpl))\r\n" +
+            "       if (!DataTable.TryGetValue(id, out var tpl))\r\n" +
             "       __LK__\r\n" +
             "           App.Error($\"模板__LK__typeof(T).Name__RK__Mgr没有包含Tid=__LK__id__RK__的对象!\");\r\n" +
             "       __RK__\r\n" +
@@ -51,20 +51,20 @@ namespace Tools
             "   __RK__ \r\n" +
             "   public T Find(Predicate<T> match)\r\n"+
             "   __LK__\r\n" +
-            "       return Datas.Values.FirstOrDefault(t => match(t));\r\n" +
+            "       return DataTable.Values.FirstOrDefault(t => match(t));\r\n" +
             "   __RK__\r\n" +
             "   public IList<T> FindAll(Predicate<T> match)\r\n" +
             "   __LK__ \r\n" +
-            "       return Datas.Values.Where(t => match(t)).ToList();\r\n" +
+            "       return DataTable.Values.Where(t => match(t)).ToList();\r\n" +
             "   __RK__ \r\n" +
             "\r\n" +
-            "   private static IList<T> dataList;\r\n" +
-            "   public IList<T> DataList => dataList ?? (dataList = Datas.Values.ToList());\r\n" +
+            "   private IList<T> datas;\r\n" +
+            "   public IList<T> Datas => datas ?? (datas = DataTable.Values.ToList());\r\n" +
             "\r\n" +
             "__RK__ \r\n";
 
         public string CLASSCONTENT1 =
-            "public class Template\r\n" +
+            "public class Tpl\r\n" +
             "__LK__ \r\n" +
                 "{0}"+
             "   public static void Load(byte[] bytes)\r\n" +
@@ -101,7 +101,7 @@ namespace Tools
                 "{0}" +
             "   public {1} {2} __LK__get; private set; __RK__ \r\n";
 
-        public string Gen(List<DataTable> dataTables)
+        public string Gen(List<FileData> fileDatas)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(REFERENCE);
@@ -109,18 +109,18 @@ namespace Tools
 
             // 数据设置
             StringBuilder sbTemplateFieldData = new StringBuilder();
-            for (int tableIndex = 0; tableIndex < dataTables.Count; tableIndex++)
+            for (int fileIndex = 0; fileIndex < fileDatas.Count; fileIndex++)
             {
-                DataTable oDataTable = dataTables[tableIndex];
-                string oTableName = oDataTable.TableName;
+                FileData oFileData = fileDatas[fileIndex];
+                string oTableName = oFileData.dataTable.TableName;
                 sbTemplateFieldData.Append($"   public readonly static {oTableName}Mgr {oTableName}Mgr = new {oTableName}Mgr();\r\n");
             }
 
             StringBuilder sbTemplateSetupData = new StringBuilder();
-            for (int tableIndex = 0; tableIndex < dataTables.Count; tableIndex++)
+            for (int fileIndex = 0; fileIndex < fileDatas.Count; fileIndex++)
             {
-                DataTable oDataTable = dataTables[tableIndex];
-                string oTableName = oDataTable.TableName;
+                FileData oFileData = fileDatas[fileIndex];
+                string oTableName = oFileData.dataTable.TableName;
                 sbTemplateSetupData.Append($"       {oTableName}Mgr.SetupData(buffer);\r\n");
             }
             sb.Append(string.Format(CLASSCONTENT1, sbTemplateFieldData, sbTemplateSetupData));
@@ -132,17 +132,17 @@ namespace Tools
             sb.Append(TMP_TEMPLATEMGR);
             sb.Append("\r\n");
 
-            for (int tableIndex = 0; tableIndex < dataTables.Count; tableIndex++)
+            for (int fileIndex = 0; fileIndex < fileDatas.Count; fileIndex++)
             {
-                DataTable oDataTable = dataTables[tableIndex];
-                string oTableName = oDataTable.TableName;
-                int rowCount = oDataTable.Rows.Count;
-                int columnsCount = oDataTable.Columns.Count;
+                FileData oFileData = fileDatas[fileIndex];
+                string oTableName = oFileData.dataTable.TableName;
+                int rowCount = oFileData.dataTable.Rows.Count;
+                int columnsCount = oFileData.dataTable.Columns.Count;
 
                 // 获取数据类型
                 string[] sTypes = new string[columnsCount];
                 {
-                    DataRow oDataRow = oDataTable.Rows[0]; // 数据类型在配置表第1行
+                    DataRow oDataRow = oFileData.dataTable.Rows[0]; // 数据类型在配置表第1行
                     for (int columnsIndex = 0; columnsIndex < sTypes.Length; columnsIndex++)
                     {
                         string strType = oDataRow[columnsIndex].ToString();
@@ -152,7 +152,7 @@ namespace Tools
                 // 获取字段名称
                 string[] sFiledNames = new string[columnsCount];
                 {
-                    DataRow oDataRow = oDataTable.Rows[1];
+                    DataRow oDataRow = oFileData.dataTable.Rows[1];
                     for (int columnsIndex = 0; columnsIndex < sFiledNames.Length; columnsIndex++)
                     {
                         string fileName = oDataRow[columnsIndex].ToString();
@@ -162,7 +162,7 @@ namespace Tools
                 // 获取字段注释
                 string[] sComments = new string[columnsCount];
                 {
-                    DataRow oDataRow = oDataTable.Rows[2];
+                    DataRow oDataRow = oFileData.dataTable.Rows[2];
                     for (int columnsIndex = 0; columnsIndex < sComments.Length; columnsIndex++)
                     {
                         string comment = oDataRow[columnsIndex].ToString();
@@ -193,8 +193,8 @@ namespace Tools
                     if (i < sTypes.Length - 1) methodSB.Append("\r\n");     // 添加换行
                 }
                 string sClass2 = CLASSCONTENT2.Replace("__CLASSNAME__", oTableName);
-                sb.Append(string.Format(sClass2, oDataTable.Prefix, filedSB, methodSB));
-                if (tableIndex < dataTables.Count) sb.Append("\r\n");       // 添加换行
+                sb.Append(string.Format(sClass2, oFileData.dataTable.Prefix, filedSB, methodSB));
+                if (fileIndex < fileDatas.Count) sb.Append("\r\n");       // 添加换行
             }
             string final = sb.ToString();
             final = final.Replace("__LK__", "{");

@@ -41,3 +41,14 @@ F:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数�
 F:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Release\netcoreapp2.1\配置数据生成工具.pdb
 F:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Release\netcoreapp2.1\配置数据生成工具.genruntimeconfig.cache
 E:\work\shuijin\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Release\netcoreapp2.1\配置数据生成工具.csprojAssemblyReference.cache
+D:\Dev\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\配置数据生成工具.deps.json
+D:\Dev\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\配置数据生成工具.runtimeconfig.json
+D:\Dev\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\配置数据生成工具.runtimeconfig.dev.json
+D:\Dev\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\配置数据生成工具.dll
+D:\Dev\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.1\配置数据生成工具.pdb
+D:\Dev\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Release\netcoreapp2.1\配置数据生成工具.AssemblyInfoInputs.cache
+D:\Dev\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Release\netcoreapp2.1\配置数据生成工具.AssemblyInfo.cs
+D:\Dev\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Release\netcoreapp2.1\配置数据生成工具.csproj.CoreCompileInputs.cache
+D:\Dev\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Release\netcoreapp2.1\配置数据生成工具.dll
+D:\Dev\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Release\netcoreapp2.1\配置数据生成工具.pdb
+D:\Dev\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Release\netcoreapp2.1\配置数据生成工具.genruntimeconfig.cache

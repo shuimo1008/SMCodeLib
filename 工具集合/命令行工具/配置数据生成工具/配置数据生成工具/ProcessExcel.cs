@@ -5,13 +5,20 @@ using System.IO;
 
 namespace Tools
 {
+    public class FileData
+    {
+        public string file;
+        public string fileName;
+        public DataTable dataTable;
+    }
+
     public class ProcessExcel
     {
-        public List<DataTable> DataTables { get; private set; }
+        public List<FileData> FileDatas { get; private set; }
 
         public ProcessExcel()
         {
-            DataTables = new List<DataTable>();
+            FileDatas = new List<FileData>();
         }
 
         public bool Parse(string[] files)
@@ -21,15 +28,15 @@ namespace Tools
                 string file = files[i];
                 file = file.Replace("\\", "/");
                 string fileName = Path.GetFileNameWithoutExtension(file);
-                Logger.Info($"解析:<{fileName}>");
+                Logger.Info($"解析文件:{file}");
                 DataTable oDataTable = ExcelUtils.ExcelToDataTable(file, null, true);
                 oDataTable.TableName = fileName;
-                if (oDataTable != null) DataTables.Add(oDataTable);
+                if (oDataTable != null) FileDatas.Add(new FileData() { file = file, fileName = fileName, dataTable = oDataTable });
                 else return false;
             }
 
-            DataTables.Sort((a, b) => 
-                string.Compare(a.TableName, b.TableName, StringComparison.Ordinal));
+            FileDatas.Sort((a, b) => 
+                string.Compare(a.fileName, b.fileName, StringComparison.Ordinal));
 
             return true;
         }
@@ -37,27 +44,27 @@ namespace Tools
         public bool Check()
         {
             bool isPass = true;
-            for (int tableIndex = 0; tableIndex < DataTables.Count; tableIndex++)
+            for (int fileIndex = 0; fileIndex < FileDatas.Count; fileIndex++)
             {
-                DataTable oDataTable = DataTables[tableIndex];
-                Logger.Info($"检查:<{oDataTable.TableName}>");
-                int rowCount = oDataTable.Rows.Count;
+                FileData oFileData = FileDatas[fileIndex];
+                Logger.Info($"检查文件:{oFileData.file}");
+                int rowCount = oFileData.dataTable.Rows.Count;
                 if (rowCount < 3) 
                 {
-                    Logger.Error("<{0}>表配置定义不全!", oDataTable.TableName);
+                    Logger.Error("<{0}>表配置定义不全!", oFileData.dataTable.TableName);
                     isPass = false;
                     continue; // 如果没有元数据则不再对当前表进行检查
                 }
-                int columnsCount = oDataTable.Columns.Count;
+                int columnsCount = oFileData.dataTable.Columns.Count;
 
                 {
                     // 第1行数据检查
-                    DataRow oDataRow = oDataTable.Rows[0];
+                    DataRow oDataRow = oFileData.dataTable.Rows[0];
                     for (int columnsIndex = 0; columnsIndex < columnsCount; columnsIndex++)
                     {
                         if (oDataRow.IsNull(columnsIndex))
                         {
-                            Logger.Error("<{0}>表第{1}行, 第{2}列数据为空", oDataTable.Prefix, 1, columnsIndex + 1);
+                            Logger.Error("<{0}>表第{1}行, 第{2}列数据为空", oFileData.dataTable.Prefix, 1, columnsIndex + 1);
                             isPass = false;
                         }
                         else
@@ -68,7 +75,7 @@ namespace Tools
                             {
                                 if (!strType.Equals("int"))
                                 {
-                                    Logger.Error("<{0}>表第一列必须是int类型的唯一ID", oDataTable.Prefix);
+                                    Logger.Error("<{0}>表第一列必须是int类型的唯一ID", oFileData.dataTable.Prefix);
                                     isPass = false;
                                 }
                             }
@@ -83,7 +90,7 @@ namespace Tools
                                 else if (strType.Equals("string[]")) isType = true;
                                 if (!isType)
                                 {
-                                    Logger.Error("<{0}>表第{1}行，第{2}列数据数据异常，数据类型只能为int;float;string;int[];float[];string[]这几种类型!", oDataTable.Prefix, 1, columnsIndex + 1);
+                                    Logger.Error("<{0}>表第{1}行，第{2}列数据数据异常，数据类型只能为int;float;string;int[];float[];string[]这几种类型!", oFileData.dataTable.Prefix, 1, columnsIndex + 1);
                                     isPass = false;
                                 }
                             }
@@ -95,12 +102,12 @@ namespace Tools
                 {
                     // 第2行数据检查
                     List<string> oFiledNames = new List<string>();
-                    DataRow oDataRow = oDataTable.Rows[1];
+                    DataRow oDataRow = oFileData.dataTable.Rows[1];
                     for (int columnsIndex = 0; columnsIndex < columnsCount; columnsIndex++)
                     {
                         if (oDataRow.IsNull(columnsIndex))
                         {
-                            Logger.Error("<{0}>表第{1}行,第{2}列数据为空,", oDataTable.Prefix, 2, columnsIndex + 1);
+                            Logger.Error("<{0}>表第{1}行,第{2}列数据为空,", oFileData.dataTable.Prefix, 2, columnsIndex + 1);
                             isPass = false;
                         }
                         else
@@ -108,7 +115,7 @@ namespace Tools
                             string strType = oDataRow[columnsIndex].ToString();
                             if (oFiledNames.IndexOf(strType) != -1)
                             {
-                                Logger.Error("<{0}>表第{1}行,第{2}列与已有的字段名重复.", oDataTable.Prefix, 2, columnsIndex + 1);
+                                Logger.Error("<{0}>表第{1}行,第{2}列与已有的字段名重复.", oFileData.dataTable.Prefix, 2, columnsIndex + 1);
                                 isPass = false;
                             }
                             oFiledNames.Add(strType);
@@ -127,7 +134,7 @@ namespace Tools
                     // 记录列数据类型 --数据类型在数据生成时进行检查(2020.07.22 author:yunchen1008)
                     string[] strTypes = new string[columnsCount];
                     {
-                        DataRow oDataRow = oDataTable.Rows[0]; // 配置表第1行为数据类型
+                        DataRow oDataRow = oFileData.dataTable.Rows[0]; // 配置表第1行为数据类型
                         for (int columnsIndex = 0; columnsIndex < columnsCount; columnsIndex++)
                         {
                             string strType = oDataRow[columnsIndex].ToString();
@@ -136,17 +143,17 @@ namespace Tools
                     }
                     for (int rowIndex = 3; rowIndex < rowCount; rowIndex++)
                     {
-                        DataRow oDataRow = oDataTable.Rows[rowIndex];
+                        DataRow oDataRow = oFileData.dataTable.Rows[rowIndex];
                         object obj = oDataRow[0];
                         if (obj == null)
                         {
-                            Logger.Error("<{0}>表第{1}行,首列ID数据不能为null.", oDataTable.TableName, rowIndex + 1);
+                            Logger.Error("<{0}>表第{1}行,首列ID数据不能为null.", oFileData.dataTable.TableName, rowIndex + 1);
                             isPass = false;
                             continue;
                         }
                         if (string.IsNullOrEmpty(obj.ToString()))
                         {
-                            Logger.Error("<{0}>表第{1}行,首列ID数据不能为空字符.", oDataTable.TableName, rowIndex + 1);
+                            Logger.Error("<{0}>表第{1}行,首列ID数据不能为空字符.", oFileData.dataTable.TableName, rowIndex + 1);
                             isPass = false;
                         }
 

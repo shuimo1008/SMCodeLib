@@ -81,7 +81,7 @@ namespace Tools
         {
             try
             {
-                using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+                using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
                     IWorkbook workbook = null;
                     if (fileName.IndexOf(".xlsx", StringComparison.Ordinal) > 0) // 2007版本

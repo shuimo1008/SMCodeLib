@@ -11,16 +11,16 @@ namespace Tools
 {
     public class GenerateData
     {
-        public byte[] Gen(List<DataTable> dataTables)
+        public byte[] Gen(List<FileData> fileDatas)
         {
             ByteBuffer buffer = new ByteBuffer();
-            for (int tableIndex = 0; tableIndex < dataTables.Count; tableIndex++)
+            for (int fileIndex = 0; fileIndex < fileDatas.Count; fileIndex++)
             {
-                DataTable oDataTable = dataTables[tableIndex];
+                FileData oFileData = fileDatas[fileIndex];
 
-                Logger.Info($"打包数据:<{oDataTable.TableName}>");
+                Logger.Info($"打包数据:{oFileData.file}");
 
-                int rowCount = oDataTable.Rows.Count;
+                int rowCount = oFileData.dataTable.Rows.Count;
                 int realyRowCount = Math.Max((rowCount - 3), 0);
 
                 // 写入行数
@@ -29,11 +29,11 @@ namespace Tools
                 // 如果真实数据是零行则略过
                 if (realyRowCount == 0) continue;
 
-                int columnsCount = oDataTable.Columns.Count;
+                int columnsCount = oFileData.dataTable.Columns.Count;
                 // 记录类型数据
                 string[] strTypes = new string[columnsCount];
                 {
-                    DataRow oDataRow = oDataTable.Rows[0]; // 类型数据在第1行
+                    DataRow oDataRow = oFileData.dataTable.Rows[0]; // 类型数据在第1行
                     for (int columnsIndex = 0; columnsIndex < strTypes.Length; columnsIndex++)
                     {
                         string strType = oDataRow[columnsIndex].ToString();
@@ -43,7 +43,7 @@ namespace Tools
                 // 写入实际数据
                 for (int rowIndex = 3; rowIndex < rowCount; rowIndex++)
                 {
-                    DataRow oDataRow = oDataTable.Rows[rowIndex];
+                    DataRow oDataRow = oFileData.dataTable.Rows[rowIndex];
                     for (int columnIndex = 0; columnIndex < columnsCount; columnIndex++)
                     {
                         try
@@ -85,7 +85,7 @@ namespace Tools
                         }
                         catch (FormatException e)
                         {
-                            Logger.Error("数据生成时<{0}>表 第{1}行,第{2}列出现数据格式解析错误!\n{3}", Path.GetFileNameWithoutExtension(oDataTable.Prefix), rowIndex + 1, columnIndex + 1, e.ToString());
+                            Logger.Error("数据生成时<{0}>表 第{1}行,第{2}列出现数据格式解析错误!\n{3}", Path.GetFileNameWithoutExtension(oFileData.dataTable.Prefix), rowIndex + 1, columnIndex + 1, e.ToString());
                         }
                     }
                 }

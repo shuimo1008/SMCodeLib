@@ -27,17 +27,19 @@ namespace Tools
 
         public static void Gen(string srcDirectory, string destDirectory)
         {
-            Logger.Info("配置表示例:");
-            Logger.Info("---------------------------");
-            Logger.Info("| int | string |  string  |");
-            Logger.Info("---------------------------");
-            Logger.Info("| TID |  name  | describe |");
-            Logger.Info("---------------------------");
-            Logger.Info("| TID |  名称  |   描述   |");
-            Logger.Info("---------------------------");
-            Logger.Explain("注意:一行一列TID;第一行字段类型;第二行字段名称;第三行字段注释; 描述文件命名为(前缀):\"_Define_\"", ConsoleColor.Green);
-            Logger.Info("输入目录:"+ srcDirectory);
-            Logger.Info("输出目录:" + destDirectory);
+            Logger.Explain("配置表示例:");
+            Logger.Explain("---------------------------");
+            Logger.Explain("| int | string |  string  |");
+            Logger.Explain("---------------------------");
+            Logger.Explain("| TID |  name  | describe |");
+            Logger.Explain("---------------------------");
+            Logger.Explain("| TID |  名称  |   描述   |");
+            Logger.Explain("---------------------------");
+            Logger.Explain("注意:一行一列TID;第一行字段类型;第二行字段名称;第三行字段注释; 描述文件命名为(前缀):\"_Define_\"");
+            Logger.Explain("===================================================================");
+            Logger.Explain("配置文件输入目录:"+ srcDirectory);
+            Logger.Explain("生成文件输出目录:" + destDirectory);
+            Logger.Explain("===================================================================");
             Logger.Info("****************************数据表处理开始****************************");
             try
             {
@@ -69,7 +71,7 @@ namespace Tools
                         GenerateData oGenData = new GenerateData();
                         using (FileStream fs = new FileStream(destDirectory + "/Template.dat", FileMode.Create, FileAccess.Write))
                         {
-                            byte[] bytes = oGenData.Gen(processExcel.DataTables);
+                            byte[] bytes = oGenData.Gen(processExcel.FileDatas);
                             fs.Write(bytes, 0, bytes.Length);
                         }
 
@@ -77,10 +79,11 @@ namespace Tools
                         GenerateCode oGenCode = new GenerateCode();
                         using (FileStream fs = new FileStream(destDirectory + "/Template.cs", FileMode.Create, FileAccess.Write))
                         {
-                            string strScript = oGenCode.Gen(processExcel.DataTables);
+                            string strScript = oGenCode.Gen(processExcel.FileDatas);
                             byte[] bytes = Encoding.UTF8.GetBytes(strScript);
                             fs.Write(bytes, 0, bytes.Length);
                         }
+                        Logger.Info("**********************************************************************");
                         Logger.Info("代码生成地址:" + destDirectory + "/Template.cs");
                         Logger.Info("数据生成地址:" + destDirectory + "/Template.dat");
                     }
