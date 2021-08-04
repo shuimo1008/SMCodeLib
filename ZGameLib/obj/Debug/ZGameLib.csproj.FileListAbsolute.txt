@@ -101,3 +101,13 @@ F:\work\shuijin\ZGameLib\obj\Debug\ZGameLib.csproj.CoreCompileInputs.cache
 F:\work\shuijin\ZGameLib\obj\Debug\ZGameLib.csproj.CopyComplete
 F:\work\shuijin\ZGameLib\obj\Debug\ZGameLib.dll
 F:\work\shuijin\ZGameLib\obj\Debug\ZGameLib.pdb
+D:\Dev\Works\SMCodeLib\ZGameLib\bin\Debug\ZGameLib.dll
+D:\Dev\Works\SMCodeLib\ZGameLib\bin\Debug\ZGameLib.pdb
+D:\Dev\Works\SMCodeLib\ZGameLib\bin\Debug\UnityEngine.dll
+D:\Dev\Works\SMCodeLib\ZGameLib\bin\Debug\ZCSharpLib.dll
+D:\Dev\Works\SMCodeLib\ZGameLib\bin\Debug\ZCSharpLib.pdb
+D:\Dev\Works\SMCodeLib\ZGameLib\obj\Debug\ZGameLib.csproj.AssemblyReference.cache
+D:\Dev\Works\SMCodeLib\ZGameLib\obj\Debug\ZGameLib.csproj.CoreCompileInputs.cache
+D:\Dev\Works\SMCodeLib\ZGameLib\obj\Debug\ZGameLib.csproj.CopyComplete
+D:\Dev\Works\SMCodeLib\ZGameLib\obj\Debug\ZGameLib.dll
+D:\Dev\Works\SMCodeLib\ZGameLib\obj\Debug\ZGameLib.pdb

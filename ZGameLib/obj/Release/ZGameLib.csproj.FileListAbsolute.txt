@@ -29,3 +29,13 @@ E:\work\shuijin\ZGameLib\obj\Release\ZGameLib.csproj.CoreCompileInputs.cache
 E:\work\shuijin\ZGameLib\obj\Release\ZGameLib.csproj.CopyComplete
 E:\work\shuijin\ZGameLib\obj\Release\ZGameLib.dll
 E:\work\shuijin\ZGameLib\obj\Release\ZGameLib.pdb
+D:\Dev\Works\SMCodeLib\ZGameLib\bin\Release\ZGameLib.dll
+D:\Dev\Works\SMCodeLib\ZGameLib\bin\Release\ZGameLib.pdb
+D:\Dev\Works\SMCodeLib\ZGameLib\bin\Release\UnityEngine.dll
+D:\Dev\Works\SMCodeLib\ZGameLib\bin\Release\ZCSharpLib.dll
+D:\Dev\Works\SMCodeLib\ZGameLib\bin\Release\ZCSharpLib.pdb
+D:\Dev\Works\SMCodeLib\ZGameLib\obj\Release\ZGameLib.csproj.AssemblyReference.cache
+D:\Dev\Works\SMCodeLib\ZGameLib\obj\Release\ZGameLib.csproj.CoreCompileInputs.cache
+D:\Dev\Works\SMCodeLib\ZGameLib\obj\Release\ZGameLib.csproj.CopyComplete
+D:\Dev\Works\SMCodeLib\ZGameLib\obj\Release\ZGameLib.dll
+D:\Dev\Works\SMCodeLib\ZGameLib\obj\Release\ZGameLib.pdb

@@ -15,83 +15,95 @@ namespace ZCSharpLib
 {
     public class App
     {
+        private static App Ins
+        {
+            get
+            {
+                if (_ins == null) 
+                { 
+                    _ins = new App();
+                    _ins.Initialize();
+                }
+                return _ins;
+            }
+        }
+        private static App _ins;
+
         /// <summary>
         /// 时间记录
         /// </summary>
-        private static Time mTime = new Time();
+        private Time Time { get; set; }
         /// <summary>
         /// 日志输出
         /// </summary>
-        private static Logger mLogger = new Logger();
+        private Logger Logger { get; set; }
         /// <summary>
         /// 帧循环
         /// </summary>
-        private static Updater mUpdater = new Updater();
+        private Updater Updater { get; set; }
         /// <summary>
         /// 主线程
         /// </summary>
-        private static Mainthread mThread = new Mainthread();
+        private Mainthread Threader { get; set; }
         /// <summary>
         /// 程序引导
         /// </summary>
-        private static Bootstrap mBootstrap = new Bootstrap();
+        private Bootstrap Bootstraper { get; set; }
         /// <summary>
         /// 单例对象
         /// </summary>
-        private static Dictionary<Type, object> Instances = new Dictionary<Type, object>();
+        private Dictionary<Type, object> Instances { get; set; }
 
-        static App()
+        private void Initialize()
         {
-            // 监测帧更新有没有执行
+            Time = new Time();
+            Logger = new Logger();
+            Updater = new Updater();
+            Threader = new Mainthread();
+            Bootstraper = new Bootstrap();
+            Instances = new Dictionary<Type, object>();
+
             ThreadPool.QueueUserWorkItem((_st) =>
             {
                 Thread.Sleep(1000);
-                if (!mUpdater.IsUpdate)
-                    Error("帧更新没有调用,请在引动启动(Sartup)前注册App.Update方法(每帧调用App.Update方法)!");
+                if (!Updater.IsUpdate)
+                    Error("帧更新没有调用,请每帧调用App.Update(float deltaTime)方法!");
             });
         }
 
-
         #region 帧循环
-        public static void Update(float deltaTime) => mUpdater.Update(deltaTime);
-        public static void SubscribeUpdate(Action<float> listener) => mUpdater.Add(listener);
-        public static void UnsubscribeUpdate(Action<float> listener) => mUpdater.Remove(listener);
+        public static void Update(float deltaTime) => Ins.Updater.Update(deltaTime);
+        public static void SubscribeUpdate(Action<float> listener) => Ins.Updater.Add(listener);
+        public static void UnsubscribeUpdate(Action<float> listener) => Ins.Updater.Remove(listener);
         #endregion
 
         #region 启动引导
-        public static void RegistBoot(object obj) => mBootstrap.Add(obj);
-
-        public static StartupCallback Startup()
+        public static Bootstrap Bootstrap(object[] objs)
         {
-            if (mLogger.RegisterCount == 0)
-                throw new CustomException("必须订阅日志:App.RegistLog,否则一些提示无法显示!");
-            StartupCallback callback = new StartupCallback();
-            mBootstrap.OnStartupFinished = callback.OnFinished;
-            mBootstrap.Startup();
-            return callback;
+            if (objs == null) objs = new object[] { };
+            for (int i = 0; i < objs.Length; i++)
+                if (objs[i] != null) Ins.Bootstraper.Add(objs[i]);
+            return Ins.Bootstraper.Startup();
         }
 
-        public static ShutdownCallback Shutdown()
+        public static Bootstrap Shutdown()
         {
-            ShutdownCallback callback = new ShutdownCallback();
-            mBootstrap.OnShutdownFinished = callback.OnFinished;
-            mBootstrap.Shutdown();
-            return callback;
+            return Ins.Bootstraper.Shutdown();
         }
         #endregion
 
         #region 日志输出
-        public static void RegistLog(ILogListener listener) => mLogger.Register(listener);
-        public static void UnregistLog(ILogListener listener) => mLogger.Unregistter(listener);
-        public static void Debug(object msg, params object[] args) => mLogger.Debug(msg, args);
-        public static void Warning(object msg, params object[] args) => mLogger.Warning(msg, args);
-        public static void Info(object msg, params object[] args) => mLogger.Info(msg, args);
-        public static void Error(object msg, params object[] args) => mLogger.Error(msg, args);
+        public static void RegistLog(ILogListener listener) => Ins.Logger.Register(listener);
+        public static void UnregistLog(ILogListener listener) => Ins.Logger.Unregistter(listener);
+        public static void Debug(object msg, params object[] args) => Ins.Logger.Debug(msg, args);
+        public static void Warning(object msg, params object[] args) => Ins.Logger.Warning(msg, args);
+        public static void Info(object msg, params object[] args) => Ins.Logger.Info(msg, args);
+        public static void Error(object msg, params object[] args) => Ins.Logger.Error(msg, args);
         #endregion
 
         #region 线程同步
-        public static void SendMainthread(SendOrPostCallback callback, object state) => mThread.Send(callback, state);
-        public static void PostMainthread(SendOrPostCallback callback, object state) => mThread.Post(callback, state);
+        public static void SendMainthread(SendOrPostCallback callback, object state) => Ins.Threader.Send(callback, state);
+        public static void PostMainthread(SendOrPostCallback callback, object state) => Ins.Threader.Post(callback, state);
         #endregion
 
         #region 单例对象构造
@@ -102,13 +114,13 @@ namespace ZCSharpLib
 
         public static object MakeSingleton(Type type, params object[] args)
         {
-            lock (Instances)
+            lock (Ins.Instances)
             {
                 object value = null;
-                if (!Instances.TryGetValue(type, out value))
+                if (!Ins.Instances.TryGetValue(type, out value))
                 {
                     value = ConstructStatic(type, args);
-                    Instances.Add(type, value);
+                    Ins.Instances.Add(type, value);
                 }
                 return value;
             }

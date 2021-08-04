@@ -38,14 +38,9 @@ namespace ZCSharpLib.Utils
             foreach (var item in oTypes)
             {
                 bool isSucess = true;
-                if (match != null)
-                {
+                if (match != null) 
                     isSucess = match(item);
-                }
-                if (isSucess)
-                {
-                    types.Add(item);
-                }
+                if (isSucess) types.Add(item);
             }
             return types.ToArray();
         }

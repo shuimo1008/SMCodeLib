@@ -73,15 +73,16 @@ namespace ZCSharpLib.Cores
             return isSucess;
         }
 
-        public void Startup()
+        public Bootstrap Startup()
         {
             CoroutineRuntime.Start(IEStartup());
+            return this;
         }
 
         private IEnumerator IEStartup()
         {
             yield return null;
-            App.Info("初始化...");
+            App.Info("程序开始初始化...");
             foreach (var item in BootObjects)
             {
                 App.Info("初始化:" + item.obj.GetType());
@@ -92,13 +93,14 @@ namespace ZCSharpLib.Cores
                     if (obj is IEnumerator) yield return obj;
                 }
             }
-            App.Info("程序初始化完成...");
+            App.Info("程序完成初始化...");
             OnStartupFinished?.Invoke();
         }
 
-        public void Shutdown()
+        public Bootstrap Shutdown()
         {
             CoroutineRuntime.Start(IEShutdown());
+            return this;
         }
 
         private IEnumerator IEShutdown()

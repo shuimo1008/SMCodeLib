@@ -77,3 +77,8 @@ F:\work\shuijin\ZCSharpLib\obj\Debug\ZCSharpLib.csproj.CoreCompileInputs.cache
 F:\work\shuijin\ZCSharpLib\obj\Debug\ZCSharpLib.dll
 F:\work\shuijin\ZCSharpLib\obj\Debug\ZCSharpLib.pdb
 F:\work\shuijin\ZCSharpLib\obj\Debug\ZCSharpLib.csprojAssemblyReference.cache
+D:\Dev\Works\SMCodeLib\ZCSharpLib\bin\Debug\ZCSharpLib.dll
+D:\Dev\Works\SMCodeLib\ZCSharpLib\bin\Debug\ZCSharpLib.pdb
+D:\Dev\Works\SMCodeLib\ZCSharpLib\obj\Debug\ZCSharpLib.csproj.CoreCompileInputs.cache
+D:\Dev\Works\SMCodeLib\ZCSharpLib\obj\Debug\ZCSharpLib.dll
+D:\Dev\Works\SMCodeLib\ZCSharpLib\obj\Debug\ZCSharpLib.pdb

@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Asstes\Asset.cs" />
     <Compile Include="Asstes\AssetMgr.cs" />
+    <Compile Include="Loggers\Logger.cs" />
     <Compile Include="Preloads\PreloadMgr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -59,10 +60,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)ZCSharpLib.dll" "$(SolutionDir)..\client\Assets\Scripts\ZCSharpLib.dll"
-copy "$(TargetDir)ZCSharpLib.pdb" "$(SolutionDir)..\client\Assets\Scripts\ZCSharpLib.pdb"
-      
-copy "$(TargetDir)ZGameLib.dll" "$(SolutionDir)..\client\Assets\Scripts\ZGameLib.dll"
-copy "$(TargetDir)ZGameLib.pdb" "$(SolutionDir)..\client\Assets\Scripts\ZGameLib.pdb"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
