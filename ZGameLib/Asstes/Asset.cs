@@ -30,13 +30,22 @@ namespace ZGameLib.Assets
         private const string ASSETBYTE = "Byte";
         private const string ASSETBUNDLE = "AssetBundle";
 
-        private Dictionary<string, System.Object> CacheTable { get; set; }
-
-        public Asset(string url)
+        private Dictionary<string, object> CacheTable { get; set; }
+        public static Asset MakeGet<T>(string url)
         {
-            Url = url;
-            www = UnityWebRequest.Get(Url);
-            CacheTable = new Dictionary<string, System.Object>();
+            Asset asset = new Asset();
+            asset.Url = url;
+            if (typeof(T) == typeof(Texture) ||
+                typeof(T) == typeof(Texture2D))
+                asset.www = UnityWebRequestTexture.GetTexture(asset.Url);
+            else
+                asset.www = UnityWebRequest.Get(asset.Url);
+            asset.CacheTable = new Dictionary<string, object>();
+            return asset;
+        }
+
+        private Asset()
+        {
         }
 
         public void Start()
@@ -61,16 +70,11 @@ namespace ZGameLib.Assets
         {
             try
             {
-                Notify(this);
+                if (!IsDispose)
+                    Notify(this);
             }
-            catch (Exception e)
-            {
-                App.Info(e);
-            }
-            if (IsDone)
-            {
-                RemoveAllListener();
-            }
+            catch (Exception e) { App.Info(e); }
+            if (IsDone) RemoveAllListener();
         }
 
         public string[] GetAllScenePaths()

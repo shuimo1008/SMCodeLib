@@ -25,44 +25,43 @@ namespace ZGameLib.Assets
     /// </summary>
     public class AssetMgr : ObjectEvent
     {
-        private Asset[] assetLoading;
-        private Queue<Asset> highAssets;
-        private Queue<Asset> middleAssets;
-        private Queue<Asset> generalAssets;
+        private Asset[] loadingGroup;
+        private Queue<Asset> waitLoading1Queue; // 最高优先级
+        private Queue<Asset> waitLoading2Queue; // 中等优先级
+        private Queue<Asset> waitLoading3Queue; // 最低优先级
         /// <summary>
         /// 资源缓存池
         /// </summary>
-        private Dictionary<string, Asset> assetPool;
+        private Dictionary<string, Asset> AssetPool { get; set; }
 
         public AssetMgr() : this(3) { }
 
         public AssetMgr(int num)
         {
-            assetLoading = new Asset[num];
-            highAssets = new Queue<Asset>(); 
-            middleAssets = new Queue<Asset>();
-            generalAssets = new Queue<Asset>();
-            assetPool = new Dictionary<string, Asset>();
-
+            loadingGroup = new Asset[num];
+            waitLoading1Queue = new Queue<Asset>(); 
+            waitLoading2Queue = new Queue<Asset>();
+            waitLoading3Queue = new Queue<Asset>();
+            AssetPool = new Dictionary<string, Asset>();
             App.SubscribeUpdate(Update);
         }
 
 
         void Update(float deltaTime)
         {
-            for (int i = 0; i < assetLoading.Length; i++)
+            for (int i = 0; i < loadingGroup.Length; i++)
             {
-                Asset oAsset = assetLoading[i];
+                Asset oAsset = loadingGroup[i];
                 if (oAsset != null)
                 {
                     if (oAsset.IsDone)
                     {
                         if (!oAsset.IsSucess)
                         {
-                            if (assetPool.ContainsKey(oAsset.Url))
-                                assetPool.Remove(oAsset.Url);
+                            if (AssetPool.ContainsKey(oAsset.Url))
+                                AssetPool.Remove(oAsset.Url);
                         }
-                        assetLoading[i] = null;
+                        loadingGroup[i] = null;
                     }
 
                     // 资源下载状态更新
@@ -71,64 +70,69 @@ namespace ZGameLib.Assets
             }
 
             // 更新工作区
-            for (int i = 0; i < assetLoading.Length; i++)
+            for (int i = 0; i < loadingGroup.Length; i++)
             {
-                Asset oAsset = assetLoading[i];
-                if (oAsset == null)
+                var loading = loadingGroup[i];
+                if (loading == null)
                 {
-                    if (highAssets.Count > 0)
-                    {
-                        oAsset = highAssets.Dequeue();
-                    }
-                    else if (middleAssets.Count > 0)
-                    {
-                        oAsset = middleAssets.Dequeue();
-                    }
-                    else if (generalAssets.Count > 0)
-                    {
-                        oAsset = generalAssets.Dequeue();
-                    }
-                    assetLoading[i] = oAsset;
+                    if (waitLoading1Queue.Count > 0)
+                        loading = waitLoading1Queue.Dequeue();
+                    else if (waitLoading2Queue.Count > 0)
+                        loading = waitLoading2Queue.Dequeue();
+                    else if (waitLoading3Queue.Count > 0)
+                        loading = waitLoading3Queue.Dequeue();
+                    loadingGroup[i] = loading;
                     // 资源构建WWW方法
-                    if (oAsset != null) oAsset.Start();
+                    if (loadingGroup[i] != null) loadingGroup[i].Start();
                 }
             }
         }
 
-        public void Load(string url, Action<IEventArgs> onDone, LoadPriority priority = LoadPriority.General)
+        public void Load<T>(string url, Action<IEventArgs> onDone, LoadPriority priority = LoadPriority.General) where T : class
         {
-            Asset oAsset = null;
-            if (!assetPool.TryGetValue(url, out oAsset))
+            bool needLoad = true;
+            if (AssetPool.TryGetValue(url, out Asset oAsset))
             {
-                oAsset = new Asset(url);
-                assetPool.Add(url, oAsset);
+                // 资源池已经有该资源，但是资源没有加载成功,则对资源进行重新加载
+                if (oAsset.IsDone && !oAsset.IsSucess)
+                {
+                    AssetPool[url].Dispose();
+                    AssetPool[url] = Asset.MakeGet<T>(url);
+                }
+                else needLoad = false;
             }
-            oAsset.AddListener(onDone);
-            if (oAsset.IsDone && oAsset.IsSucess)
+            else AssetPool.Add(url, Asset.MakeGet<T>(url)); // 加入资源池
+
+            if (needLoad)
             {
-                oAsset.Callback();
+                // 进入等待加载队列
+                switch (priority)
+                {
+                    case LoadPriority.High:
+                        waitLoading1Queue.Enqueue(AssetPool[url]);
+                        break;
+                    case LoadPriority.Middle:
+                        waitLoading2Queue.Enqueue(AssetPool[url]);
+                        break;
+                    case LoadPriority.General:
+                        waitLoading3Queue.Enqueue(AssetPool[url]);
+                        break;
+                }
             }
-            switch (priority)
-            {
-                case LoadPriority.General:
-                    generalAssets.Enqueue(oAsset);
-                    break;
-                case LoadPriority.Middle:
-                    middleAssets.Enqueue(oAsset);
-                    break;
-                case LoadPriority.High:
-                    highAssets.Enqueue(oAsset);
-                    break;
-            }
+            // 事件监听写在这里是因为存在同一时间多个地方需要加载该资源。
+            // 所以每个地方都需要在资源完成加载后进行回调，于是当资源完成回调后删除所有监听事件。
+            AssetPool[url].AddListener(onDone);
+            // 如果资源已经完成下载,则直接返回
+            if (AssetPool[url].IsDone) AssetPool[url].Callback();
         }
 
         public void Clear(string url)
         {
-            Asset oAsset = null;
-            if (assetPool.TryGetValue(url, out oAsset))
+            Asset oAsset;
+            if (AssetPool.TryGetValue(url, out oAsset))
             {
                 oAsset.Dispose();
-                assetPool.Remove(url);
+                AssetPool.Remove(url);
             }
         }
 
