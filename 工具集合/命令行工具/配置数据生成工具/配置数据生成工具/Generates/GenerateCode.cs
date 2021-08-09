@@ -79,10 +79,10 @@ namespace Tools
             "/// {0} \r\n" +
             "/// </summary> \r\n"+
             "public class __CLASSNAME__Mgr\r\n" +
-            "   : TemplateMgr<__CLASSNAME__>\r\n" +
+            "   : TemplateMgr<__CLASSNAME__Tpl>\r\n" +
             "__LK__ \r\n" +
             "__RK__ \r\n" +
-            "public class __CLASSNAME__ : BaseTpl\r\n" +
+            "public class __CLASSNAME__Tpl : BaseTpl\r\n" +
             "__LK__ \r\n" +
                 "{1}\r\n" +
             "   public override void SetupData(ByteBuffer buffer)\r\n" +

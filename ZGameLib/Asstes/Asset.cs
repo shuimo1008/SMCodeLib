@@ -56,14 +56,14 @@ namespace ZGameLib.Assets
         public void Update(float deltaTime)
         {
             bool isDone = www.isDone; // www 是异步操作, 所以这里用变量来记录是否下载完成，防止在同一个方法里面多次使用www.isDone获取的值不同
-            IsDone = isDone;
-            if (IsDone)
+            if (isDone)
             {
                 if (string.IsNullOrEmpty(www.error)) IsSucess = true;
                 else { IsSucess = false; Error = www.error; }
             }
             Progress = www.downloadProgress;
-            Callback();
+            IsDone = isDone;
+            Callback(); // 回调,发送是否加载完成，是否加载成功，加载进度等等信息
         }
 
         public void Callback()
