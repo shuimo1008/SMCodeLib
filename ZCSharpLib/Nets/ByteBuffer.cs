@@ -59,9 +59,7 @@ namespace ZCSharpLib.Nets
             {
                 //否则后面的数据往前移
                 for (int i = 0; i < Position - count; i++)
-                {
                     Bytes[i] = Bytes[count + i];
-                }
                 Position = Position - count;
             }
         }
