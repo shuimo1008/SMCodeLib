@@ -6,44 +6,35 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-namespace ZCSharpLib.Nets.TCPSockets
+namespace ZCSharpLib.Nets.TSockets
 {
-    public class TCPSocketClient : IAsyncScoket
+    public class TSocketClient : IAsyncScoket
     {
-        /// <summary>
-        /// 是否链接
-        /// </summary>
-        public bool IsConnected
-        {
-            get
-            {
-                return ConnectSocket.Connected;
-            }
-        }
         protected Socket ConnectSocket { get; set; }
+        public bool IsConnected => ConnectSocket.Connected;
         /// <summary>
         /// 每个连接接收缓存大小
         /// </summary>
         protected int BufferSize { get; set; }
-        /// <summary>
-        /// 包处理
-        /// </summary>
-        public PacketMgr PacketMgr { get; set; }
-        public AsyncUserToken SocketToken { get; protected set; }
+        public AsyncUserToken UserToken { get; protected set; }
 
-        public Action<AsyncUserToken> Closed { get; set; }
-        public Action<AsyncUserToken> Connected { get; set; }
+        public Action<NetworkStatus, AsyncUserToken> OnConnectEvent { get; set; }
 
-        public TCPSocketClient()
+        public TSocketClient()
         {
             BufferSize = 1024 * 1024 * 10;
-            PacketMgr = new PacketMgr();
-            SocketToken = new AsyncUserToken(this, BufferSize);
-            SocketToken.IsClient = true;
-            SocketToken.PacketMgr = PacketMgr;
-            SocketToken.RecvEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(IO_Completed);
-            SocketToken.SendEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(IO_Completed);
+            UserToken = new AsyncUserToken(this, BufferSize);
+            UserToken.RecvEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(IO_Completed);
+            UserToken.SendEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(IO_Completed);
         }
+
+        public TSocketClient BindStream<T>()
+            where T : class, IDataStream
+        {
+            UserToken.Bind<T>();
+            return GetSelf();
+        }
+        public TSocketClient GetSelf() => this;
 
         public void Connect(string ip, int port)
         {
@@ -61,6 +52,7 @@ namespace ZCSharpLib.Nets.TCPSockets
 
         private void StartConnect(SocketAsyncEventArgs eventArgs)
         {
+            OnConnectEvent?.Invoke(NetworkStatus.Connecting, UserToken);
             bool willRaiseEvent = ConnectSocket.ConnectAsync(eventArgs);
             if (!willRaiseEvent) ProcessConnect(eventArgs);
         }
@@ -79,8 +71,8 @@ namespace ZCSharpLib.Nets.TCPSockets
 
         private void ProcessConnect(SocketAsyncEventArgs eventArgs)
         {
-            SocketToken.ConnectDateTime = DateTime.Now;
-            SocketToken.Socket = eventArgs.AcceptSocket;
+            UserToken.ConnectDateTime = DateTime.Now;
+            UserToken.Socket = eventArgs.AcceptSocket;
 
             if (eventArgs.SocketError == SocketError.Success)
             {
@@ -88,28 +80,21 @@ namespace ZCSharpLib.Nets.TCPSockets
                 App.Info("服务器已连接. 本地地址: {0}, 远程地址: {1}",
                    eventArgs.AcceptSocket.LocalEndPoint, eventArgs.RemoteEndPoint);
 
-                Connected?.Invoke(SocketToken);
+                OnConnectEvent?.Invoke(NetworkStatus.Connected, UserToken);
 
                 try
                 {
-                    bool willRaiseEvent = SocketToken.Socket.ReceiveAsync(SocketToken.RecvEventArgs); //投递接收请求
-                    if (!willRaiseEvent)
-                    {
-                        lock (SocketToken)
-                        {
-                            // TODO 处理接收到的消息
-                            OnRecvAsync(SocketToken.RecvEventArgs);
-                        }
-                    }
+                    bool willRaiseEvent = UserToken.Socket.ReceiveAsync(UserToken.RecvEventArgs); //投递接收请求
+                    if (!willRaiseEvent) OnRecvAsync(UserToken.RecvEventArgs);// 处理接收到的消息
                 }
                 catch (Exception e)
                 {
-                    App.Error("接收客户端连接 {0} 错误, 消息: {1}", SocketToken.Socket, e.Message);
+                    App.Error("接收客户端连接 {0} 错误, 消息: {1}", UserToken.Socket, e.Message);
                 }
             }
             else
             {
-                CloseSocket(SocketToken);
+                CloseSocket(UserToken);
             }
         }
 
@@ -126,7 +111,7 @@ namespace ZCSharpLib.Nets.TCPSockets
                     else if (eventArgs.LastOperation == SocketAsyncOperation.Send)
                         OnSendAsync(eventArgs);
                     else
-                        throw new ArgumentException(string.Format("操作错误, 当前Socket={0}最后执行的不是\"发送\"或\"接收\"操作", socketToken.TokenID));
+                        throw new ArgumentException(string.Format("操作错误, 当前Socket={0}最后执行的不是\"发送\"或\"接收\"操作", socketToken.SessionID));
                 }
             }
             catch (Exception e)
@@ -165,17 +150,17 @@ namespace ZCSharpLib.Nets.TCPSockets
 
         protected bool OnSendAsync(SocketAsyncEventArgs socketAsyncEventArgs)
         {
-            AsyncUserToken socketToken = socketAsyncEventArgs.UserToken as AsyncUserToken;
+            AsyncUserToken userToken = socketAsyncEventArgs.UserToken as AsyncUserToken;
 
-            socketToken.ActiveDateTime = DateTime.Now;
+            userToken.ActiveDateTime = DateTime.Now;
 
             if (socketAsyncEventArgs.SocketError == SocketError.Success)
             {
-                return socketToken.SendAsync(true); //调用子类回调函数
+                return userToken.SendAsync(true); //调用子类回调函数
             }
             else
             {
-                CloseSocket(socketToken);
+                CloseSocket(userToken);
                 return false;
             }
         }
@@ -186,13 +171,10 @@ namespace ZCSharpLib.Nets.TCPSockets
             try
             {
                 bool willRaiseEvent = userToken.Socket.SendAsync(userToken.SendEventArgs);
-
                 if (willRaiseEvent)
                     return true;
                 else
-                {
                     return OnSendAsync(userToken.SendEventArgs);
-                }
             }
             catch (Exception e)
             {
@@ -206,25 +188,25 @@ namespace ZCSharpLib.Nets.TCPSockets
             return userToken.Socket.Send(buffer, offset, count, SocketFlags.None);
         }
 
-        public virtual void CloseSocket(AsyncUserToken socketToken)
+        public virtual void CloseSocket(AsyncUserToken userToken)
         {
-            if (socketToken.Socket == null)
+            if (userToken.Socket == null)
                 return;
-            string socketInfo = string.Format("本地地址:{0}", socketToken.Socket.LocalEndPoint);
+            string socketInfo = string.Format("本地地址:{0}", userToken.Socket.LocalEndPoint);
             try
             {
-                socketToken.Socket.Shutdown(SocketShutdown.Both);
+                userToken.Socket.Shutdown(SocketShutdown.Both);
                 App.Info("关闭连接. {0}", socketInfo);
             }
             catch (Exception e)
             {
                 App.Info("关闭连接 {0} 错误, 消息: {1}", socketInfo, e.Message);
             }
-            socketToken.Socket.Close();
-            socketToken.Socket = null; //释放引用，并清理缓存，包括释放协议对象等资源
-            socketToken.Clear();
+            userToken.Socket.Close();
+            userToken.Socket = null; //释放引用，并清理缓存，包括释放协议对象等资源
+            userToken.Clear();
 
-            Closed?.Invoke(socketToken);
+            OnConnectEvent?.Invoke(NetworkStatus.Disconnect, UserToken);
         }
     }
 }

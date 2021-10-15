@@ -32,23 +32,30 @@ namespace ZCSharpLib
         /// <summary>
         /// 时间记录
         /// </summary>
-        private Time Time { get; set; }
+        private Time time;
+        public static Time Time => Ins.time;
+
         /// <summary>
         /// 日志输出
         /// </summary>
-        private Logger Logger { get; set; }
-        /// <summary>
-        /// 帧循环
-        /// </summary>
-        private Updater Updater { get; set; }
+        private Logger logger;
+        public static Logger Logger => Ins.logger;
+
         /// <summary>
         /// 主线程
         /// </summary>
-        private Mainthread Threader { get; set; }
+        private Mainthread mainthread;
+        public static Mainthread Mainthread => Ins.mainthread;
+
+
+        /// <summary>
+        /// 帧循环
+        /// </summary>
+        private Updater updater;
         /// <summary>
         /// 程序引导
         /// </summary>
-        private Bootstrap Bootstraper { get; set; }
+        private Bootstrap bootstrap;
         /// <summary>
         /// 单例对象
         /// </summary>
@@ -58,25 +65,25 @@ namespace ZCSharpLib
 
         private void Initialize()
         {
-            Time = new Time();
-            Logger = new Logger();
-            Updater = new Updater();
-            Threader = new Mainthread();
-            Bootstraper = new Bootstrap();
+            time = new Time();
+            logger = new Logger();
+            updater = new Updater();
+            mainthread = new Mainthread();
+            bootstrap = new Bootstrap();
             Instances = new Dictionary<Type, object>();
 
             ThreadPool.QueueUserWorkItem((_st) =>
             {
                 Thread.Sleep(1000);
-                if (!Updater.IsUpdate)
+                if (!updater.IsUpdate)
                     Error("帧更新没有调用,请每帧调用App.Update(float deltaTime)方法!");
             });
         }
 
         #region 帧循环
-        public static void Update(float deltaTime) => Ins.Updater.Update(deltaTime);
-        public static void SubscribeUpdate(Action<float> listener) => Ins.Updater.Add(listener);
-        public static void UnsubscribeUpdate(Action<float> listener) => Ins.Updater.Remove(listener);
+        public static void Update(float deltaTime) => Ins.updater.Update(deltaTime);
+        public static void SubscribeUpdate(Action<float> listener) => Ins.updater.Add(listener);
+        public static void UnsubscribeUpdate(Action<float> listener) => Ins.updater.Remove(listener);
         #endregion
 
         #region 启动引导
@@ -84,28 +91,29 @@ namespace ZCSharpLib
         {
             if (objs == null) objs = new object[] { };
             for (int i = 0; i < objs.Length; i++)
-                if (objs[i] != null) Ins.Bootstraper.Add(objs[i]);
-            return Ins.Bootstraper.Startup();
+                if (objs[i] != null) Ins.bootstrap.Add(objs[i]);
+            return Ins.bootstrap.Startup();
         }
 
         public static Bootstrap Shutdown()
         {
-            return Ins.Bootstraper.Shutdown();
+            return Ins.bootstrap.Shutdown();
         }
         #endregion
 
         #region 日志输出
-        public static void RegistLog(ILogListener listener) => Ins.Logger.Register(listener);
-        public static void UnregistLog(ILogListener listener) => Ins.Logger.Unregistter(listener);
-        public static void Debug(object msg, params object[] args) => Ins.Logger.Debug(msg, args);
-        public static void Warning(object msg, params object[] args) => Ins.Logger.Warning(msg, args);
-        public static void Info(object msg, params object[] args) => Ins.Logger.Info(msg, args);
-        public static void Error(object msg, params object[] args) => Ins.Logger.Error(msg, args);
+        public static void RegistLog(ILogListener listener) => Logger.Register(listener);
+        public static void UnregistLog(ILogListener listener) => Logger.Unregistter(listener);
+        public static void Debug(object msg, params object[] args) => Logger.Debug(msg, args);
+        public static void Warning(object msg, params object[] args) => Logger.Warning(msg, args);
+        public static void Info(object msg, params object[] args) => Logger.Info(msg, args);
+        public static void Error(object msg, params object[] args) => Logger.Error(msg, args);
+        public static void SetFilter(string[] filters) => Logger.SetFilter(filters);
         #endregion
 
         #region 线程同步
-        public static void SendMainthread(SendOrPostCallback callback, object state) => Ins.Threader.Send(callback, state);
-        public static void PostMainthread(SendOrPostCallback callback, object state) => Ins.Threader.Post(callback, state);
+        public static void SendMainthread(SendOrPostCallback callback, object state) => Mainthread.Send(callback, state);
+        public static void PostMainthread(SendOrPostCallback callback, object state) => Mainthread.Post(callback, state);
         #endregion
 
         #region 单例对象构造
@@ -121,21 +129,11 @@ namespace ZCSharpLib
                 object value = null;
                 if (!Ins.Instances.TryGetValue(type, out value))
                 {
-                    value = ConstructStatic(type, args);
-                    Ins.Instances.Add(type, value);
+                    value = ReflectionUtils.Construct(type, args);
+                    if (value != null) Ins.Instances.Add(type, value);
                 }
                 return value;
             }
-        }
-
-        private static object Construct(Type type, params object[] args)
-        {
-            return ReflUtils.GetConstructor(type, args).Invoke(args);
-        }
-
-        private static object ConstructStatic(Type type, params object[] args)
-        {
-            return Construct(type, args);
         }
         #endregion
     }

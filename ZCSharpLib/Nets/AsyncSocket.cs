@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace ZCSharpLib.Nets
 {
-    public enum Net
-    {
-        TCP,
-        UDP,
+    public enum NetworkType { TCP, UDP, }
+
+    public enum NetworkStatus 
+    { 
+        Disconnect, Connecting, Connected,
     }
 
     public interface IAsyncScoket

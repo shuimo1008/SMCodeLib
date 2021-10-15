@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Threading;
 using ZCSharpLib;
 using ZCSharpLib.Nets;
-using ZCSharpLib.Nets.TCPSockets;
+using ZCSharpLib.Nets.TSockets;
 
-namespace ZCSharpLib.Nets.TCPSockets
+namespace ZCSharpLib.Nets.TSockets
 {
-    public class TCPSocketServerDaemonThread
+    public class TSocketServerDaemonThread
     {
-        public TCPSocketServer TCPServer { get; set; }
+        public TSocketServer TCPServer { get; set; }
         public List<AsyncUserToken> UserTokens { get; set; }
 
         public void Start()
@@ -29,7 +29,7 @@ namespace ZCSharpLib.Nets.TCPSockets
                         {
                             lock (UserTokens[i])
                             {
-                                App.Error("连接超时,即将关闭连接TokenID={0}", UserTokens[i].TokenID);
+                                App.Error("连接超时,即将关闭连接TokenID={0}", UserTokens[i].SessionID);
                                 TCPServer.CloseSocket(UserTokens[i]);
                             }
                         }

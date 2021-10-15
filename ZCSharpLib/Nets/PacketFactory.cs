@@ -19,7 +19,7 @@ namespace ZCSharpLib.Nets
         {
             CreatorTable = new Dictionary<int, IPacketCreator>();
 
-            Type[] oTypes = ReflUtils.GetAllTypes();
+            Type[] oTypes = ReflectionUtils.GetAllTypes();
 
             foreach (var nType in oTypes)
             {

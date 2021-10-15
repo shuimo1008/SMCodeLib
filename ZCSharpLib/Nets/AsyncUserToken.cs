@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
+using ZCSharpLib.Utils;
 
 namespace ZCSharpLib.Nets
 {
@@ -32,50 +33,22 @@ namespace ZCSharpLib.Nets
             set { activeDateTime = value; }
         }
 
+
+        public int SessionID { get; set; }
+        protected int BufferSize { get; private set; }
+        protected IDataStream DataStream { get; private set; }
+        protected IAsyncScoket AsyncSocket { get; private set; }
+        protected DynamicBuffer DynamicBuffer { get; private set; }
+
         public SocketAsyncEventArgs SendEventArgs { get; set; }
         public SocketAsyncEventArgs RecvEventArgs { get; set; }
 
-        /// <summary>
-        /// 包头验证
-        /// </summary>
-        public const short HEAD = 0x6E05;
-        /// <summary>
-        /// 令牌ID
-        /// </summary>
-        public int TokenID { get; set; }
-        /// <summary>
-        /// 是否客户端
-        /// </summary>
-        public bool IsClient { get; set; }
-        /// <summary>
-        /// 令牌拥有者
-        /// </summary>
-        public object Owner { get; set; }
-        /// <summary>
-        /// 包管理
-        /// </summary>
-        public PacketMgr PacketMgr { get; internal set; }
-        /// <summary>
-        /// 包工厂
-        /// </summary>
-        public IAsyncScoket AsyncSocket { get; private set; }
-        protected int BufferSize { get; private set; }
-        protected ByteBuffer RecvBuffer { get; private set; }
-        protected DynamicBuffer SendBuffer { get; private set; }
-
-        /// <summary>
-        /// 字节偏移
-        /// </summary>
-        protected int BytesTransferred { get; set; }
-
-        protected bool isSending; //标识是否有发送异步事件
-
         private object sync = new object(); // 同步锁
 
-        public AsyncUserToken(IAsyncScoket asyncNet, int bufferSize)
+        public AsyncUserToken(IAsyncScoket asyncSocket, int bufferSize)
         {
-            AsyncSocket = asyncNet;
             BufferSize = bufferSize;
+            AsyncSocket = asyncSocket;
 
             SendEventArgs = new SocketAsyncEventArgs();
             SendEventArgs.UserToken = this;
@@ -85,75 +58,27 @@ namespace ZCSharpLib.Nets
             RecvEventArgs.SetBuffer(oAsyncReceiveBuffer, 0, oAsyncReceiveBuffer.Length);
             RecvEventArgs.UserToken = this;
 
-            RecvBuffer = new ByteBuffer(BufferSize);
-            SendBuffer = new DynamicBuffer(BufferSize);
+            DynamicBuffer = new DynamicBuffer(BufferSize);
+        }
+
+        public void Bind<T>()
+            where T : class, IDataStream
+        {
+            DataStream = ReflectionUtils.Construct(typeof(T), BufferSize) as T;
+            DataStream.UserToken = this;
         }
 
         public bool RecvAsync()
         {
             lock (sync)
             {
-                // 写入数据内容
-                int lastPos = RecvBuffer.Position;
-                RecvBuffer.WriteBytes(RecvEventArgs.Buffer, RecvEventArgs.Offset, RecvEventArgs.BytesTransferred);
-                RecvBuffer.Clear(RecvBuffer.Position - lastPos); // Position位置回退
-
-                BytesTransferred = BytesTransferred + RecvEventArgs.BytesTransferred;
-
-                bool result = true;
-
-                int byteLenght = 0;
-                // 当字节长度大于一个包头时进行处理
-                while (BytesTransferred >= sizeof(short))
-                {
-                    // 包头检查
-                    short head = RecvBuffer.ReadInt16();
-                    if (head != HEAD)
-                    {
-                        App.Error("包头错误, 关闭远程连接!");
-                        return false;
-                    }
-                    BytesTransferred = BytesTransferred - sizeof(short);
-                    byteLenght = byteLenght + sizeof(short);
-
-                    // 包长
-                    int length = RecvBuffer.ReadInt32();
-                    if ((length > 1024 * 1024) | (RecvBuffer.Position > BufferSize))
-                    {
-                        // 最大缓存保护
-                        App.Error("字节流溢出,即将关闭远程连接!");
-                        return false;
-                    }
-                    BytesTransferred = BytesTransferred - sizeof(int);
-                    byteLenght = byteLenght + sizeof(int);
-
-                    lastPos = RecvBuffer.Position;
-
-                    int packetID = RecvBuffer.ReadInt32();
-                    RecvBuffer.Clear(RecvBuffer.Position - lastPos);
-
-                    IPacket oPacket = PacketMgr.CreatePacket(packetID);
-                    try
-                    {
-                        lastPos = RecvBuffer.Position;
-                        oPacket.Serialization(RecvBuffer, false);
-                        int oDataLength = RecvBuffer.Position - lastPos;
-                        BytesTransferred = BytesTransferred - oDataLength;
-                        byteLenght = byteLenght + oDataLength;
-                        // 接收包
-                        oPacket.SetOwner(Owner);
-                        oPacket.SetSession(this);
-                        PacketMgr.Push(oPacket);
-                    }
-                    catch (Exception e)
-                    {
-                        App.Error("协议解析出错, 即将关闭远程连接\n{0}", e);
-                        return false;
-                    }
+                bool result = false;
+                try{
+                    result = DataStream.RecvStream(RecvEventArgs.Buffer, RecvEventArgs.Offset, RecvEventArgs.BytesTransferred);
                 }
-
-                RecvBuffer.Clear(byteLenght);
-
+                catch (Exception e){
+                    App.Error("协议解析出错, 即将关闭远程连接\n{0}", e);
+                }
                 return result;
             }
         }
@@ -169,33 +94,31 @@ namespace ZCSharpLib.Nets
         {
             lock (sync)
             {
-                SendBuffer.StartPacket();
-                // 写入包头
-                SendBuffer.Buffer.WriteInt16(HEAD);
-                // 写入包长
-                SendBuffer.Buffer.WriteInt32(bytes.Length);
-                // 写入数据
-                SendBuffer.Buffer.WriteBytes(bytes, 0, bytes.Length);
-                SendBuffer.EndPacket();
+                DynamicBuffer.StartPacket();
+                byte[] stream = DataStream.SendStream(bytes);
+                DynamicBuffer.Buffer.WriteBytes(stream);
+                DynamicBuffer.EndPacket();
                 return SendAsync(false);
             }
         }
 
-        public bool SendAsync(bool isFinished)
+        protected bool isSending; //标识是否有发送异步事件
+        public bool SendAsync(bool isRaiseEvent)
         {
             lock (sync)
             {
-                if (!isFinished)
+                if (!isRaiseEvent)
                 {
-                    if (!isSending)
-                        return SendData();
-                    return true;
+                    bool isSucess = true;
+                    if (!isSending) 
+                        isSucess = SendData();
+                    return isSucess;
                 }
                 else
                 {
-                    ActiveDateTime = DateTime.UtcNow;
                     isSending = false;
-                    SendBuffer.ClearFirstPacket(); //清除已发送的包
+                    ActiveDateTime = DateTime.UtcNow;
+                    DynamicBuffer.ClearFirstPacket(); //清除已发送的包
                     return SendData();
                 }
             }
@@ -205,10 +128,10 @@ namespace ZCSharpLib.Nets
         {
             int count = 0;
             int offset = 0;
-            if (SendBuffer.GetFirstPacket(ref offset, ref count))
+            if (DynamicBuffer.GetFirstPacket(ref offset, ref count))
             {
-                isSending = true;
-                SendEventArgs.SetBuffer(SendBuffer.Buffer.Bytes, offset, count);
+                isSending = true; // 数据正在发送中
+                SendEventArgs.SetBuffer(DynamicBuffer.Buffer.Bytes, offset, count);
                 return AsyncSocket.SendAsync(this);
             }
             return true;
@@ -217,8 +140,9 @@ namespace ZCSharpLib.Nets
         public void Clear()
         {
             isSending = false;
-            RecvBuffer.Clear(RecvBuffer.Position);
-            SendBuffer.ClearPacket();
+            DataStream.Clear();
+            //RecvBuffer.Clear(RecvBuffer.Position);
+            DynamicBuffer.ClearPacket();
         }
     }
 }

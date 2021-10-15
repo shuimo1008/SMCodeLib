@@ -11,45 +11,32 @@ namespace ZCSharpLib.Cores
 
     public class ObjectPool<T> : IEnumerable where T : class
     {
-        private Stack<T> mPool;
+        private Stack<T> objectPool;
+
+        private object sync = new object();
 
         public ObjectPool(int capacity)
         {
-            mPool = new Stack<T>(capacity);
+            objectPool = new Stack<T>(capacity);
         }
 
         public void Push(T item)
         {
             if (item == null)
-            {
                 throw new ArgumentException(string.Format( "Items added to a {0} cannot be null", typeof(T).Name));
-            }
-            lock (mPool)
-            {
-                mPool.Push(item);
-            }
+            lock (sync) { objectPool.Push(item); }
         }
 
         public T Pop()
         {
-            lock (mPool)
-            {
-                T t = mPool.Pop();
-                return t;
-            }
+            lock (sync) { return objectPool.Pop(); }
         }
 
-        public int Count
-        {
-            get { return mPool.Count; }
-        }
-
+        public int Count => objectPool.Count;
         public IEnumerator GetEnumerator()
         {
-            foreach (var item in mPool)
-            {
+            foreach (var item in objectPool)
                 yield return item;
-            }
         }
     }
 }

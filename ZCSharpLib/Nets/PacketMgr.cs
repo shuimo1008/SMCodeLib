@@ -18,7 +18,6 @@ namespace ZCSharpLib.Nets
     public interface IPacket
     {
         int PacketID { get; }
-        void SetOwner(object owner);
         void SetSession(object session);
         void Serialization(ByteBuffer buffer, bool isSerialize);
     }
@@ -26,12 +25,10 @@ namespace ZCSharpLib.Nets
     public abstract class Packet : IPacket
     {
         public int PacketID { get; protected set; }
-        public object Owner { get; protected set; }
         public object Session { get; protected set; }
 
         public abstract void Serialization(ByteBuffer buffer, bool isSerialize);
 
-        public void SetOwner(object owner) => Owner = owner;
         public void SetSession(object session) => Session = session;
     }
 
@@ -69,7 +66,7 @@ namespace ZCSharpLib.Nets
 
         private void AssemblyProcesser()
         {
-            Type[] oTypes = ReflUtils.GetAllTypes();
+            Type[] oTypes = ReflectionUtils.GetAllTypes();
             foreach (var type in oTypes)
             {
                 if (!type.IsClass) continue;

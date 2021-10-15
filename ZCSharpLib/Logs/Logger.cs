@@ -10,7 +10,7 @@ namespace ZCSharpLib.Logs
 		void Log(LogChannel channel, string msg);
 	};
 
-    public enum LogChannel { DEBUG, INFO, WARNING, ERROR, }
+    public enum LogChannel { Debug, Info, Warn, Error, }
 
     public class Logger
     {
@@ -20,7 +20,7 @@ namespace ZCSharpLib.Logs
         public Logger()
         {
             Listeners = new List<ILogListener>();
-            Type[] types = ReflUtils.GetAllTypes();
+            Type[] types = ReflectionUtils.GetAllTypes();
             for (int i = 0; i < types.Length; i++)
             {
                 if (types[i].GetInterface(typeof(ILogListener).Name)!=null)
@@ -49,29 +49,34 @@ namespace ZCSharpLib.Logs
         public void Debug(object msg, params object[] args)
         {
             string str = msg != null ? msg.ToString() : "args is null";
-            Log(args.Length == 0 ? msg.ToString() : string.Format(str, args), LogChannel.DEBUG, false);
+            Log(args.Length == 0 ? msg.ToString() : string.Format(str, args), LogChannel.Debug, false);
         }
 
         public void Warning(object msg, params object[] args)
         {
             string str = msg != null ? msg.ToString() : "args is null";
-            Log(args.Length == 0 ? msg.ToString() : string.Format(str, args), LogChannel.WARNING, false);
+            Log(args.Length == 0 ? msg.ToString() : string.Format(str, args), LogChannel.Warn, false);
         }
 
         public void Info(object msg, params object[] args)
         {
             string str = msg != null ? msg.ToString() : "args is null";
-            Log(args.Length == 0 ? msg.ToString() : string.Format(str, args), LogChannel.INFO, false);
+            Log(args.Length == 0 ? msg.ToString() : string.Format(str, args), LogChannel.Info, false);
         }
 
         public void Error(object msg, params object[] args)
         {
             string str = msg != null ? msg.ToString() : "args is null";
-            Log(args.Length == 0 ? msg.ToString() : string.Format(str, args), LogChannel.ERROR, false);
+            Log(args.Length == 0 ? msg.ToString() : string.Format(str, args), LogChannel.Error, false);
         }
 
         private void Log(string msg, LogChannel channel, bool simpleMode)
         {
+            bool filter = false;
+            for (int i = 0; i < filters.Length; i++)
+                filter = msg.IndexOf(filters[i]) != -1;
+            if (filter) return; // ×Ö¶Î¹ýÂË
+
             string outputMsg;
             if (simpleMode)
                 outputMsg = "[" + channel.ToString() + "]  " + msg;
@@ -80,8 +85,10 @@ namespace ZCSharpLib.Logs
 
             foreach (ILogListener listener in Listeners)
                 listener.Log(channel, outputMsg);
-            Console.WriteLine(outputMsg);
         }
-    };
+
+        private string[] filters;
+        public void SetFilter(string[] filters) => this.filters = filters;
+    }
 }
 

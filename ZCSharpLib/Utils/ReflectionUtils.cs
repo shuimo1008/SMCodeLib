@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace ZCSharpLib.Utils
 {
-    public class ReflUtils
+    public class ReflectionUtils
     {
         /// <summary>
         /// 获取所有程序集的符合条件的类型
@@ -83,6 +83,12 @@ namespace ZCSharpLib.Utils
             return (Func<object>)dm.CreateDelegate(typeof(Func<object>));
         }
 
+
+        public static object Construct(Type type, params object[] args)
+        {
+            return GetConstructor(type, args).Invoke(args);
+        }
+
         /// <summary>
         /// 获取对应参数的构造函数
         /// </summary>
@@ -103,18 +109,11 @@ namespace ZCSharpLib.Utils
                     for (int j = 0; j < parameters.Length; j++)
                     {
                         ParameterInfo parameterInfo = parameters[i];
-                        object obj = args[i];
-                        if (parameterInfo.ParameterType != obj.GetType())
-                        {
-                            flag = false;
-                            break;
-                        }
+                        flag = parameterInfo.ParameterType == args[i].GetType();
+                        if (!flag) break;
                     }
-                    if (flag)
-                    {
-                        oConstructorInfo = nConstructorInfo;
-                        break;
-                    }
+                    if (flag) oConstructorInfo = nConstructorInfo;
+                    if (flag) break;
                 }
             }
             if (oConstructorInfo == null)
@@ -132,9 +131,7 @@ namespace ZCSharpLib.Utils
             FieldInfo[] oFieldInfos = iType.GetFields(iBindFlags);
             string[] oFields = new string[oFieldInfos.Length];
             for (int i = 0; i < oFields.Length; i++)
-            {
                 oFields[i] = oFieldInfos[i].Name;
-            }
             return oFields;
         }
     }

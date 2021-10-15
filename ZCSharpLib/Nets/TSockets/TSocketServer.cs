@@ -6,9 +6,9 @@ using System.Threading;
 using System.Collections.Generic;
 using ZCSharpLib.Cores;
 
-namespace ZCSharpLib.Nets.TCPSockets
+namespace ZCSharpLib.Nets.TSockets
 {
-    public class TCPSocketServer : IAsyncScoket
+    public class TSocketServer : IAsyncScoket
     {
         /// <summary>
         /// 超时连接(默认1000毫秒=1分钟)
@@ -21,7 +21,7 @@ namespace ZCSharpLib.Nets.TCPSockets
         /// <summary>
         /// 超时守护线程
         /// </summary>
-        protected TCPSocketServerDaemonThread DaemonThread { get; set; }
+        protected TSocketServerDaemonThread DaemonThread { get; set; }
         /// <summary>
         /// 每个连接接收缓存大小
         /// </summary>
@@ -42,10 +42,9 @@ namespace ZCSharpLib.Nets.TCPSockets
         /// </summary>
         public PacketMgr PacketMgr{ get; set; }
 
-        public Action<AsyncUserToken> Closed { get; set; }
-        public Action<AsyncUserToken> Connected { get; set; }
+        public Action<NetworkStatus, AsyncUserToken> ConnectStatus { get; set; }
 
-        public TCPSocketServer(int numConnections)
+        public TSocketServer(int numConnections)
         {
             int max = ushort.MaxValue;
             if (numConnections < max)
@@ -63,16 +62,14 @@ namespace ZCSharpLib.Nets.TCPSockets
                 for (int i = 0; i < NumConnections; i++) //按照连接数建立读写对象
                 {
                     socketToken = new AsyncUserToken(this, BufferSize);
-                    socketToken.TokenID = i + 1;
-                    socketToken.IsClient = false;
-                    socketToken.PacketMgr = PacketMgr;
+                    socketToken.SessionID = i + 1;
                     socketToken.RecvEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(IO_Completed);
                     socketToken.SendEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(IO_Completed);
                     AsyncSocketUserTokenPool.Push(socketToken);
                 }
 
                 SocketTimeOutMS = 30 * 1000; // 30秒
-                DaemonThread = new TCPSocketServerDaemonThread(); // 线程守护
+                DaemonThread = new TSocketServerDaemonThread(); // 线程守护
                 DaemonThread.TCPServer = this;
                 DaemonThread.UserTokens = AsyncSocketUserTokenUsed;
                 DaemonThread.Start();
@@ -82,6 +79,16 @@ namespace ZCSharpLib.Nets.TCPSockets
                 throw new Exception(string.Format("链接数{0}超出最大连接数{1}", numConnections, max));
             }
         }
+
+        public TSocketServer BindStream<T>() 
+            where T :class, IDataStream
+        {
+            foreach (var userToken in AsyncSocketUserTokenPool)
+                ( userToken as AsyncUserToken).Bind<T>();
+            return GetSelf();
+        }
+
+        public TSocketServer GetSelf() => this;
 
         public void Listen(string ip, int port)
         {
@@ -135,19 +142,19 @@ namespace ZCSharpLib.Nets.TCPSockets
                 App.Info("客户端已连接. 本地地址: {0}, 远程地址: {1}",
                     eventArgs.AcceptSocket.LocalEndPoint, eventArgs.AcceptSocket.RemoteEndPoint);
 
-                AsyncUserToken socketToken = AsyncSocketUserTokenPool.Pop();
-                AsyncSocketUserTokenUsed.Add(socketToken); //添加到正在连接列表
-                socketToken.Socket = eventArgs.AcceptSocket;
-                socketToken.ConnectDateTime = DateTime.Now;
-                Connected?.Invoke(socketToken); // 连接回调
+                AsyncUserToken userToken = AsyncSocketUserTokenPool.Pop();
+                AsyncSocketUserTokenUsed.Add(userToken); //添加到正在连接列表
+                userToken.Socket = eventArgs.AcceptSocket;
+                userToken.ConnectDateTime = DateTime.Now;
+                ConnectStatus?.Invoke(NetworkStatus.Connected, userToken); // 连接回调
                 try
                 {
-                    bool willRaiseEvent = socketToken.Socket.ReceiveAsync(socketToken.RecvEventArgs); //投递接收请求
-                    if (!willRaiseEvent) OnRecvAsync(socketToken.RecvEventArgs);
+                    bool willRaiseEvent = userToken.Socket.ReceiveAsync(userToken.RecvEventArgs); //投递接收请求
+                    if (!willRaiseEvent) OnRecvAsync(userToken.RecvEventArgs);
                 }
                 catch (Exception e)
                 {
-                    App.Error("接收客户端连接 {0} 错误, 消息: {1}", socketToken.Socket, e.Message);
+                    App.Error("接收客户端连接 {0} 错误, 消息: {1}", userToken.Socket, e.Message);
                 }
             }
             StartAccept(eventArgs); //把当前异步事件释放，等待下次连接
@@ -155,11 +162,11 @@ namespace ZCSharpLib.Nets.TCPSockets
 
         protected void IO_Completed(object sender, SocketAsyncEventArgs eventArgs)
         {
-            AsyncUserToken socketToken = eventArgs.UserToken as AsyncUserToken;
-            socketToken.ActiveDateTime = DateTime.Now;
+            AsyncUserToken userToken = eventArgs.UserToken as AsyncUserToken;
+            userToken.ActiveDateTime = DateTime.Now;
             try
             {
-                if (socketToken.Socket != null && socketToken.Socket.Connected)
+                if (userToken.Socket != null && userToken.Socket.Connected)
                 {
                     if (eventArgs.LastOperation == SocketAsyncOperation.Send)
                         OnSendAsync(eventArgs);
@@ -167,13 +174,13 @@ namespace ZCSharpLib.Nets.TCPSockets
                         OnRecvAsync(eventArgs);
                     else
                     {
-                        throw new ArgumentException(string.Format("操作错误, 当前Socket={0}最后执行的不是\"发送\"或\"接收\"操作", socketToken.TokenID));
+                        throw new ArgumentException(string.Format("操作错误, 当前Socket={0}最后执行的不是\"发送\"或\"接收\"操作", userToken.SessionID));
                     }
                 }
             }
             catch (Exception e)
             {
-                App.Error("IO_Completed {0} {1} 错误, 消息: {2}", socketToken.Socket, eventArgs.LastOperation, e);
+                App.Error("IO_Completed {0} {1} 错误, 消息: {2}", userToken.Socket, eventArgs.LastOperation, e);
             }
         }
 
@@ -207,19 +214,15 @@ namespace ZCSharpLib.Nets.TCPSockets
 
         protected bool OnSendAsync(SocketAsyncEventArgs eventArgs)
         {
-            AsyncUserToken socketToken = eventArgs.UserToken as AsyncUserToken;
+            AsyncUserToken userToken = eventArgs.UserToken as AsyncUserToken;
 
-            socketToken.ActiveDateTime = DateTime.Now;
+            userToken.ActiveDateTime = DateTime.Now;
 
             if (eventArgs.SocketError == SocketError.Success)
-            {
-                return socketToken.SendAsync(true); //调用子类回调函数
-            }
+                return userToken.SendAsync(true); //调用子类回调函数
             else
-            {
-                CloseSocket(socketToken);
-                return false;
-            }
+                CloseSocket(userToken);
+            return false;
         }
 
         public virtual bool SendAsync(AsyncUserToken userToken)
@@ -227,46 +230,41 @@ namespace ZCSharpLib.Nets.TCPSockets
             try
             {
                 bool willRaiseEvent = userToken.Socket.SendAsync(userToken.SendEventArgs);
-
-                if (willRaiseEvent)
-                    return true;
-                else
-                {
+                if (!willRaiseEvent)
                     return OnSendAsync(userToken.SendEventArgs);
-                }
+                return willRaiseEvent;
             }
-            catch (Exception e)
-            {
+            catch (Exception e){
                 App.Error("发送数据 {0} 错误, 消息: {1}", userToken.Socket, e.Message);
-                return false;
             }
+            return false;
         }
 
-        public virtual void CloseSocket(AsyncUserToken socketToken)
+        public virtual void CloseSocket(AsyncUserToken userToken)
         {
-            if (socketToken.Socket == null)
+            if (userToken.Socket == null)
                 return;
-            string socketInfo = string.Format("本地地址: {0} 远程地址: {1}", socketToken.Socket.LocalEndPoint,
-                socketToken.Socket.RemoteEndPoint);
+            string socketInfo = string.Format("本地地址: {0} 远程地址: {1}", userToken.Socket.LocalEndPoint,
+                userToken.Socket.RemoteEndPoint);
             try
             {
-                socketToken.Socket.Shutdown(SocketShutdown.Both);
+                userToken.Socket.Shutdown(SocketShutdown.Both);
                 App.Info("关闭连接. {0}", socketInfo);
             }
             catch (Exception e)
             {
                 App.Info("关闭连接 {0} 错误, 消息: {1}", socketInfo, e.Message);
             }
-            socketToken.Socket.Close();
-            socketToken.Socket = null; //释放引用，并清理缓存，包括释放协议对象等资源
-            socketToken.Clear();
+            userToken.Socket.Close();
+            userToken.Socket = null; //释放引用，并清理缓存，包括释放协议对象等资源
+            userToken.Clear();
 
-            AsyncSocketUserTokenUsed.Remove(socketToken);
-            AsyncSocketUserTokenPool.Push(socketToken);
+            AsyncSocketUserTokenUsed.Remove(userToken);
+            AsyncSocketUserTokenPool.Push(userToken);
 
             MaxNumberAccepted.Release();
-
-            Closed?.Invoke(socketToken); // 连接关闭回调
+            // 连接关闭回调
+            ConnectStatus?.Invoke(NetworkStatus.Disconnect, userToken);
         }
 
         public void CloseAllSocket()

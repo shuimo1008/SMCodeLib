@@ -17,7 +17,7 @@ namespace ZCSharpLib.Nets
         public ByteBuffer Buffer { get; private set; }
         private List<BufferSize> BufferSizes { get; set; }
 
-        private BufferSize mSendBufferPacket;
+        private BufferSize sendBufferPacket;
 
         public int Count
         {
@@ -31,20 +31,20 @@ namespace ZCSharpLib.Nets
         {
             Buffer = new ByteBuffer(bufferSize);
             BufferSizes = new List<BufferSize>();
-            mSendBufferPacket.Count = 0;
-            mSendBufferPacket.Offset = 0;
+            sendBufferPacket.Count = 0;
+            sendBufferPacket.Offset = 0;
         }
 
         public void StartPacket()
         {
-            mSendBufferPacket.Count = 0;
-            mSendBufferPacket.Offset = Buffer.Position;
+            sendBufferPacket.Count = 0;
+            sendBufferPacket.Offset = Buffer.Position;
         }
 
         public void EndPacket()
         {
-            mSendBufferPacket.Count = Buffer.Position - mSendBufferPacket.Offset;
-            BufferSizes.Add(mSendBufferPacket);
+            sendBufferPacket.Count = Buffer.Position - sendBufferPacket.Offset;
+            BufferSizes.Add(sendBufferPacket);
         }
 
         public bool GetFirstPacket(ref int offset, ref int count)
