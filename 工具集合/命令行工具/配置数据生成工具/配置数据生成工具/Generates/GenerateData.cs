@@ -59,6 +59,10 @@ namespace Tools
                             {
                                 buffer.WriteFloat(GuardFloat(obj));
                             }
+                            else if (strType.Equals("double"))
+                            {
+                                buffer.WriteDouble(GuardDouble(obj));
+                            }
                             else if (strType.Equals("string"))
                             {
                                 buffer.WriteUTF8(GuardString(obj));
@@ -76,6 +80,10 @@ namespace Tools
                                 else if (strType.Equals("float[]"))
                                 {
                                     foreach (var t in values) buffer.WriteFloat(GuardFloat(t));
+                                }
+                                else if (strType.Equals("double[]"))
+                                {
+                                    foreach (var t in values) buffer.WriteDouble(GuardDouble(t));
                                 }
                                 else if (strType.Equals("string[]"))
                                 {
@@ -107,6 +115,14 @@ namespace Tools
             string value = obj.ToString().Trim();
             if (string.IsNullOrEmpty(value)) return 0.0f;
             return float.Parse(value);
+        }
+
+        public double GuardDouble(object obj)
+        {
+            if (obj == null) return 0.0f;
+            string value = obj.ToString().Trim();
+            if (string.IsNullOrEmpty(value)) return 0.0f;
+            return double.Parse(value);
         }
 
         public string GuardString(object obj)

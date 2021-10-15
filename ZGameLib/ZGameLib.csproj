@@ -60,10 +60,10 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)ZCSharpLib.dll" "$(SolutionDir)..\client\Assets\Scripts\ZCSharpLib.dll"
-copy "$(TargetDir)ZCSharpLib.pdb" "$(SolutionDir)..\client\Assets\Scripts\ZCSharpLib.pdb"
+    <PostBuildEvent>copy "$(TargetDir)ZCSharpLib.dll" "$(SolutionDir)\Assets\Scripts\ZCSharpLib.dll"
+copy "$(TargetDir)ZCSharpLib.pdb" "$(SolutionDir)\Assets\Scripts\ZCSharpLib.pdb"
       
-copy "$(TargetDir)ZGameLib.dll" "$(SolutionDir)..\client\Assets\Scripts\ZGameLib.dll"
-copy "$(TargetDir)ZGameLib.pdb" "$(SolutionDir)..\client\Assets\Scripts\ZGameLib.pdb"</PostBuildEvent>
+copy "$(TargetDir)ZGameLib.dll" "$(SolutionDir)\Assets\Scripts\ZGameLib.dll"
+copy "$(TargetDir)ZGameLib.pdb" "$(SolutionDir)\Assets\Scripts\ZGameLib.pdb"</PostBuildEvent>
   </PropertyGroup>
 </Project>

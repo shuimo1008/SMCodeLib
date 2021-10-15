@@ -88,20 +88,20 @@ namespace ZGameLib.Assets
             }
         }
 
-        public void Load<T>(string url, Action<IEventArgs> onDone, LoadPriority priority = LoadPriority.General) where T : class
+        public void Load<T>(AssetContext context, Action<IEventArgs> onDone, LoadPriority priority = LoadPriority.General) where T : class
         {
             bool needLoad = true;
-            if (AssetPool.TryGetValue(url, out Asset oAsset))
+            if (AssetPool.TryGetValue(context.url, out Asset oAsset))
             {
                 // 资源池已经有该资源，但是资源没有加载成功,则对资源进行重新加载
                 if (oAsset.IsDone && !oAsset.IsSucess)
                 {
-                    AssetPool[url].Dispose();
-                    AssetPool[url] = Asset.MakeGet<T>(url);
+                    AssetPool[context.url].Dispose();
+                    AssetPool[context.url] = Asset.New<T>(context);
                 }
                 else needLoad = false;
             }
-            else AssetPool.Add(url, Asset.MakeGet<T>(url)); // 加入资源池
+            else AssetPool.Add(context.url, Asset.New<T>(context)); // 加入资源池
 
             if (needLoad)
             {
@@ -109,21 +109,21 @@ namespace ZGameLib.Assets
                 switch (priority)
                 {
                     case LoadPriority.High:
-                        waitLoading1Queue.Enqueue(AssetPool[url]);
+                        waitLoading1Queue.Enqueue(AssetPool[context.url]);
                         break;
                     case LoadPriority.Middle:
-                        waitLoading2Queue.Enqueue(AssetPool[url]);
+                        waitLoading2Queue.Enqueue(AssetPool[context.url]);
                         break;
                     case LoadPriority.General:
-                        waitLoading3Queue.Enqueue(AssetPool[url]);
+                        waitLoading3Queue.Enqueue(AssetPool[context.url]);
                         break;
                 }
             }
             // 事件监听写在这里是因为存在同一时间多个地方需要加载该资源。
             // 所以每个地方都需要在资源完成加载后进行回调，于是当资源完成回调后删除所有监听事件。
-            AssetPool[url].AddListener(onDone);
+            AssetPool[context.url].AddListener(onDone);
             // 如果资源已经完成下载,则直接返回
-            if (AssetPool[url].IsDone) AssetPool[url].Callback();
+            if (AssetPool[context.url].IsDone) AssetPool[context.url].Callback();
         }
 
         public void Clear(string url)

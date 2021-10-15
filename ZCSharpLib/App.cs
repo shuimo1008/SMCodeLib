@@ -54,6 +54,8 @@ namespace ZCSharpLib
         /// </summary>
         private Dictionary<Type, object> Instances { get; set; }
 
+        private App() { }
+
         private void Initialize()
         {
             Time = new Time();

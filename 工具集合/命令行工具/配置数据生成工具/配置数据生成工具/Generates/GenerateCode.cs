@@ -207,6 +207,7 @@ namespace Tools
             string sMethod = string.Empty;
             if (sType.Equals("int")) sMethod = $"       {fieldName} = buffer.ReadInt32();";
             else if (sType.Equals("float")) sMethod = $"        {fieldName} = buffer.ReadFloat();";
+            else if (sType.Equals("double")) sMethod = $"        {fieldName} = buffer.ReadDouble();";
             else if (sType.Equals("string")) sMethod = $"       {fieldName} = buffer.ReadUTF8();";
             else if (sType.Contains("[]"))
             {
@@ -232,6 +233,17 @@ namespace Tools
                     sMethod = sMethod +
                               $"       __LK__\r\n" +
                               $"          {fieldName}[i] = buffer.ReadFloat();\r\n" +
+                              $"       __RK__";
+                }
+                else if (sType.Equals("double[]"))
+                {
+                    sMethod = sMethod +
+                              $"       {fieldName} = new double[o{fieldName}Count];\r\n";
+                    sMethod = sMethod +
+                              $"       for(int i = 0; i < o{fieldName}Count; i++)\r\n";
+                    sMethod = sMethod +
+                              $"       __LK__\r\n" +
+                              $"          {fieldName}[i] = buffer.ReadDouble();\r\n" +
                               $"       __RK__";
                 }
                 else if (sType.Equals("string[]"))

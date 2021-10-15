@@ -84,13 +84,15 @@ namespace Tools
                                 bool isType = false;
                                 if (strType.Equals("int")) isType = true;
                                 else if (strType.Equals("float")) isType = true;
+                                else if (strType.Equals("double")) isType = true;
                                 else if (strType.Equals("string")) isType = true;
                                 else if (strType.Equals("int[]")) isType = true;
                                 else if (strType.Equals("float[]")) isType = true;
+                                else if (strType.Equals("double[]")) isType = true;
                                 else if (strType.Equals("string[]")) isType = true;
                                 if (!isType)
                                 {
-                                    Logger.Error("<{0}>表第{1}行，第{2}列数据数据异常，数据类型只能为int;float;string;int[];float[];string[]这几种类型!", oFileData.dataTable.Prefix, 1, columnsIndex + 1);
+                                    Logger.Error("<{0}>表第{1}行，第{2}列数据数据异常，数据类型只能为int;float;double;string;int[];float[];double[];string[]这几种类型!", oFileData.dataTable.Prefix, 1, columnsIndex + 1);
                                     isPass = false;
                                 }
                             }

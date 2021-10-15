@@ -12,6 +12,12 @@ using ZCSharpLib.Cores;
 
 namespace ZGameLib.Assets
 {
+    public struct AssetContext
+    {
+        public string url;
+        public AudioType audioType;
+    }
+
     public class Asset : ObjectEvent, IEventArgs
     {
         public string Url { get; protected set; }
@@ -31,21 +37,24 @@ namespace ZGameLib.Assets
         private const string ASSETBUNDLE = "AssetBundle";
 
         private Dictionary<string, object> CacheTable { get; set; }
-        public static Asset MakeGet<T>(string url)
+
+        private Asset() { }
+
+        public static Asset New<T>(AssetContext context)
         {
             Asset asset = new Asset();
-            asset.Url = url;
+            asset.Url = context.url;
             if (typeof(T) == typeof(Texture) ||
                 typeof(T) == typeof(Texture2D))
                 asset.www = UnityWebRequestTexture.GetTexture(asset.Url);
+            else if (typeof(T) == typeof(AudioClip))
+                asset.www = UnityWebRequestMultimedia.GetAudioClip(asset.Url, context.audioType);
+            else if (typeof(T) == typeof(AssetBundle))
+                asset.www = UnityWebRequestAssetBundle.GetAssetBundle(asset.Url);
             else
                 asset.www = UnityWebRequest.Get(asset.Url);
             asset.CacheTable = new Dictionary<string, object>();
             return asset;
-        }
-
-        private Asset()
-        {
         }
 
         public void Start()

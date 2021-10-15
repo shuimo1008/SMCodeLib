@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ZCSharpLib.Cores;
 using ZCSharpLib.Events;
 using ZCSharpLib.Objects;
@@ -11,126 +12,126 @@ namespace ZCSharpLib.Models
         Add, Remove, Modify, RemoveAll,
     }
 
-    public class ModelEventArgs<T> : IEventArgs
+    public class ModelArgs : IEventArgs
     {
-        public T Data { get; set; }
+        public object Data { get; set; }
         public ModelStatus Status { get; set; }
     }
 
     public abstract class Model : ObjectEvent
     {
-        public abstract int DataCount { get; }
+        public int DataCount => Datas.Count;
         public abstract Type DataType { get; }
+        protected Dictionary<string, object> Datas { get; set; }
+
+        public Model()
+        {
+            Datas = new Dictionary<string, object>();
+        }
+
+        public virtual void Add(string guid, object obj)
+        {
+            if (!Datas.ContainsKey(guid))
+            {
+                Datas.Add(guid, obj);
+                Event.Notify(EventCall, new ModelArgs() 
+                {
+                    Data = obj, Status = ModelStatus.Add 
+                });
+            }
+        }
+
+        public virtual void Remove(string guid)
+        {
+            if (Datas.TryGetValue(guid, out var obj))
+            {
+                Datas.Remove(guid);
+                Event.Notify(EventCall, new ModelArgs() 
+                { 
+                    Data = obj, Status = ModelStatus.Remove 
+                });
+                if (obj is IDisposable v) v.Dispose();
+            }
+        }
+
+        public virtual void RemoveAll()
+        {
+            foreach (var obj in Datas.Values)
+                if (obj is IDisposable v) v.Dispose();
+            Datas.Clear();
+            Event.Notify(EventCall, new ModelArgs() { Status = ModelStatus.RemoveAll });
+        }
+
+        public virtual void Modify(string guid, Action<object> modifier)
+        {
+            if (Datas.TryGetValue(guid, out var obj))
+            {
+                modifier?.Invoke(obj);
+                Event.Notify(EventCall, new ModelArgs() { Data = obj, Status = ModelStatus.Modify });
+            }
+        }
+
+        public virtual object Find(Predicate<object> match)
+        {
+            return Datas.Values.FirstOrDefault(t => match(t));
+        }
+
+        public virtual IList<object> FindAll(Predicate<object> match = null)
+        {
+            return Datas.Values.Where(t => match(t)).ToList();
+        }
     }
 
     public abstract class BaseModel<T> : Model where T : BaseData
     {
-        protected Dictionary<string, T> Datas { get; set; }
-
-        public override int DataCount
-        {
-            get
-            {
-                if (Datas != null)
-                {
-                    return Datas.Count;
-                }
-                return 0;
-            }
-        }
-
         public override Type DataType
         {
             get { return typeof(T); }
         }
 
-        protected BaseModel()
+        public virtual void Add(string guid, T t)
         {
-            Datas = new Dictionary<string, T>();
+            base.Add(guid, t);
         }
 
-        public virtual bool Add(string guid, T t)
+        public virtual void Modify(string guid, Action<T> modifier)
         {
-            bool isSucess = false;
-            if (!Datas.ContainsKey(guid))
-            {
-                Datas.Add(guid, t);
-                isSucess = true;
-                Event.Notify(EventCall, new ModelEventArgs<T>() { Data = t, Status = ModelStatus.Add });
-            }
-            return isSucess;
-        }
-
-        public virtual bool Remove(string guid)
-        {
-            bool isSucess = false;
-            if (Datas.TryGetValue(guid, out var t))
-            {
-                Datas.Remove(guid);
-                isSucess = true;
-                Event.Notify(EventCall, new ModelEventArgs<T>() { Data = t, Status = ModelStatus.Remove });
-                t.Dispose();
-            }
-            return isSucess;
-        }
-
-        public virtual bool RemoveAll()
-        {
-            foreach (var item in Datas.Values)
-                item.Dispose();
-            Datas.Clear();
-            Event.Notify(EventCall, new ModelEventArgs<T>() { Status = ModelStatus.RemoveAll });
-            return true;
-        }
-
-        public virtual bool Modify(string guid, Action<T> setter)
-        {
-            return Modify(guid, setter, out var t);
-        }
-
-        public virtual bool Modify(string guid, Action<T> setter, out T t)
-        {
-            bool isSucess = true;
-            if (!Datas.TryGetValue(guid, out var it))
-                isSucess = false;
-            setter?.Invoke(it); t = it;
-            if (isSucess)
-            {
-                ModelEventArgs<T> oEventArgs = new ModelEventArgs<T>() { Data = it, Status = ModelStatus.Modify };
-                Event.Notify(EventCall, oEventArgs);
-            }
-            return isSucess;
+            base.Modify(guid, (_t)=> { modifier?.Invoke(_t as T); });
         }
 
         public virtual T Find(string guid)
         {
-            T t;
-            if (!Datas.TryGetValue(guid, out t)) { }
-            return t;
+            return base.Find((_t) => 
+            { 
+                if (_t is T t) return t.Guid == guid;
+                return false;
+            }) as T;
         }
 
-        public virtual T Find(Predicate<T> match = null)
+        public virtual T Find(Predicate<T> match)
         {
-            T oData = null;
-            foreach (var item in Datas.Values)
+            return base.Find((_t) =>
             {
-                bool isMatch = true;
-                if (match != null) isMatch = match(item);
-                if (isMatch) { oData = item; break; }
-            }
-            return oData;
+                if (_t is T t) return match(t);
+                return false;
+            }) as T;
         }
 
         public virtual IList<T> FindAll(Predicate<T> match = null)
         {
-            IList<T> list = new List<T>();
-            foreach (var item in Datas.Values)
+            return base.FindAll((_t)=>
             {
-                bool isMatch = true;
-                if (match != null) isMatch = match(item);
-                if (isMatch) list.Add(item);
-            }
-            return list;
+                if (_t is T t) return match(t);
+                return false;
+            }).Cast<T>().ToList();
+            //IList<T> list = new List<T>();
+            //foreach (var item in Datas.Values)
+            //{
+            //    bool isMatch = true;
+            //    if (match != null) isMatch = match(item);
+            //    if (isMatch) list.Add(item);
+            //}
+            //return list;
         }
 
         public virtual IList<T> FindAll(int index, int count, Predicate<T> match = null)
@@ -142,8 +143,8 @@ namespace ZCSharpLib.Models
                 if (loopIndex < index) continue;
                 if (loopIndex >= count) break;
                 bool isMatch = true;
-                if (match != null) isMatch = match(item);
-                if (isMatch) list.Add(item);
+                if (match != null) isMatch = match(item as T);
+                if (isMatch) list.Add(item as T);
                 loopIndex++;
             }
             return list;
