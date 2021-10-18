@@ -64,6 +64,7 @@ namespace ZCSharpLib.Nets
         public void Bind<T>()
             where T : class, IDataStream
         {
+            DataStream?.Clear(); // 先清理上一个数据后再重新构造
             DataStream = ReflectionUtils.Construct(typeof(T), BufferSize) as T;
             DataStream.UserToken = this;
         }

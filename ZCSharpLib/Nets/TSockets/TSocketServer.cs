@@ -107,21 +107,31 @@ namespace ZCSharpLib.Nets.TSockets
             }
         }
 
+        private int semaphoreNum = 0;
+        private object semaphoreSync = new object();
         public void StartAccept(SocketAsyncEventArgs eventArgs)
         {
-            if (eventArgs == null)
+            lock (semaphoreSync)
             {
-                eventArgs = new SocketAsyncEventArgs();
-                eventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(AcceptEventArg_Completed);
+                // 如果监听AcceptScoket已经关闭则返回
+                if (ListenSocket == null) 
+                    return;
+
+                if (eventArgs == null)
+                {
+                    eventArgs = new SocketAsyncEventArgs();
+                    eventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(AcceptEventArg_Completed);
+                }
+                else
+                    eventArgs.AcceptSocket = null; //释放上次绑定的Socket，等待下一个Socket连接
+
+                MaxNumberAccepted.WaitOne(); //获取信号量
+                Interlocked.Increment(ref semaphoreNum);
+                bool willRaiseEvent = ListenSocket.AcceptAsync(eventArgs);
+                if (!willRaiseEvent) ProcessAccept(eventArgs);
             }
-            else
-            {
-                eventArgs.AcceptSocket = null; //释放上次绑定的Socket，等待下一个Socket连接
-            }
-            MaxNumberAccepted.WaitOne(); //获取信号量
-            bool willRaiseEvent = ListenSocket.AcceptAsync(eventArgs);
-            if (!willRaiseEvent) ProcessAccept(eventArgs);
         }
+
 
         void AcceptEventArg_Completed(object sender, SocketAsyncEventArgs eventArgs)
         {
@@ -262,17 +272,29 @@ namespace ZCSharpLib.Nets.TSockets
             AsyncSocketUserTokenUsed.Remove(userToken);
             AsyncSocketUserTokenPool.Push(userToken);
 
-            MaxNumberAccepted.Release();
+            MaxNumberAccepted.Release();// 信号量释放
+            Interlocked.Decrement(ref semaphoreNum); 
             // 连接关闭回调
             ConnectStatus?.Invoke(NetworkStatus.Disconnect, userToken);
         }
 
-        public void CloseAllSocket()
+        public void CloseSocketAll()
         {
             for (int i = 0; i < AsyncSocketUserTokenUsed.Count; i++)
+                CloseSocket(AsyncSocketUserTokenUsed[i]);
+
+            lock (semaphoreSync)
             {
-                AsyncUserToken socketToken = AsyncSocketUserTokenUsed[i];
-                CloseSocket(socketToken);
+                if (ListenSocket != null)
+                {
+                    ListenSocket.Close();
+                    ListenSocket = null;
+                }
+            }
+            if (semaphoreNum > 0)
+            {
+                MaxNumberAccepted.Release(semaphoreNum);
+                Interlocked.Add(ref semaphoreNum, -semaphoreNum);
             }
             App.Info("已经关闭所有连接.");
         }

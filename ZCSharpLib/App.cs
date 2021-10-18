@@ -74,7 +74,7 @@ namespace ZCSharpLib
 
             ThreadPool.QueueUserWorkItem((_st) =>
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(5000);
                 if (!updater.IsUpdate)
                     Error("帧更新没有调用,请每帧调用App.Update(float deltaTime)方法!");
             });

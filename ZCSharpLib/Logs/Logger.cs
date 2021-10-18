@@ -48,33 +48,36 @@ namespace ZCSharpLib.Logs
 
         public void Debug(object msg, params object[] args)
         {
-            string str = msg != null ? msg.ToString() : "args is null";
-            Log(args.Length == 0 ? msg.ToString() : string.Format(str, args), LogChannel.Debug, false);
+            string str = msg != null ? msg.ToString() : "null";
+            Log(string.Format(str, args), LogChannel.Debug, false);
         }
 
         public void Warning(object msg, params object[] args)
         {
-            string str = msg != null ? msg.ToString() : "args is null";
-            Log(args.Length == 0 ? msg.ToString() : string.Format(str, args), LogChannel.Warn, false);
+            string str = msg != null ? msg.ToString() : "null";
+            Log(string.Format(str, args), LogChannel.Warn, false);
         }
 
         public void Info(object msg, params object[] args)
         {
-            string str = msg != null ? msg.ToString() : "args is null";
-            Log(args.Length == 0 ? msg.ToString() : string.Format(str, args), LogChannel.Info, false);
+            string str = msg != null ? msg.ToString() : "null";
+            Log(string.Format(str, args), LogChannel.Info, false);
         }
 
         public void Error(object msg, params object[] args)
         {
-            string str = msg != null ? msg.ToString() : "args is null";
-            Log(args.Length == 0 ? msg.ToString() : string.Format(str, args), LogChannel.Error, false);
+            string str = msg != null ? msg.ToString() : "null";
+            Log(string.Format(str, args), LogChannel.Error, false);
         }
 
         private void Log(string msg, LogChannel channel, bool simpleMode)
         {
             bool filter = false;
-            for (int i = 0; i < filters.Length; i++)
-                filter = msg.IndexOf(filters[i]) != -1;
+            if (filters != null)
+            {
+                for (int i = 0; i < filters.Length; i++)
+                    filter = msg.IndexOf(filters[i]) != -1;
+            }
             if (filter) return; // ×Ö¶Î¹ýÂË
 
             string outputMsg;

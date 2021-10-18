@@ -30,8 +30,7 @@ namespace ZCSharpLib.Threads
                 {
                     lock (sync)
                     {
-                        ThreadItem oWorker = new ThreadItem(callback, state, waitHandle);
-                        Items.Enqueue(oWorker);
+                        Items.Enqueue(new ThreadItem(callback, state, waitHandle));
                     }
                     waitHandle.WaitOne();
                 }
@@ -42,8 +41,7 @@ namespace ZCSharpLib.Threads
         {
             lock (sync)
             {
-                ThreadItem item = new ThreadItem(callback, state, null);
-                Items.Enqueue(item);
+                Items.Enqueue(new ThreadItem(callback, state, null));
             }
         }
 
@@ -76,8 +74,7 @@ namespace ZCSharpLib.Threads
             public void Invoke()
             {
                 Callback(State);
-                if (WaitHandle != null)
-                    WaitHandle.Set();
+                if (WaitHandle != null) WaitHandle.Set();
             }
         }
     }
