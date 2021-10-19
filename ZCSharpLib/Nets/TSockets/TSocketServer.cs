@@ -34,7 +34,7 @@ namespace ZCSharpLib.Nets.TSockets
         /// 限制访问接收连接的线程数，用来控制最大并发数
         /// </summary>
         protected Semaphore MaxNumberAccepted { get; set; }
-        protected List<AsyncUserToken> AsyncSocketUserTokenUsed { get; set; }
+        protected ObjectList<AsyncUserToken> AsyncSocketUserTokenUsed { get; set; }
         protected ObjectPool<AsyncUserToken> AsyncSocketUserTokenPool { get; set; }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace ZCSharpLib.Nets.TSockets
 
                 PacketMgr = new PacketMgr();
                 MaxNumberAccepted = new Semaphore(NumConnections, NumConnections);
-                AsyncSocketUserTokenUsed = new List<AsyncUserToken>();
+                AsyncSocketUserTokenUsed = new ObjectList<AsyncUserToken>();
                 AsyncSocketUserTokenPool = new ObjectPool<AsyncUserToken>(numConnections);
 
                 AsyncUserToken socketToken;
@@ -182,10 +182,7 @@ namespace ZCSharpLib.Nets.TSockets
                         OnSendAsync(eventArgs);
                     else if (eventArgs.LastOperation == SocketAsyncOperation.Receive)
                         OnRecvAsync(eventArgs);
-                    else
-                    {
-                        throw new ArgumentException(string.Format("操作错误, 当前Socket={0}最后执行的不是\"发送\"或\"接收\"操作", userToken.SessionID));
-                    }
+                    else throw new ArgumentException($"操作错误, 当前Socket={0}最后执行的不是\"发送\"或\"接收\"操作{userToken.SessionID}");
                 }
             }
             catch (Exception e)
@@ -280,8 +277,13 @@ namespace ZCSharpLib.Nets.TSockets
 
         public void CloseSocketAll()
         {
-            for (int i = 0; i < AsyncSocketUserTokenUsed.Count; i++)
-                CloseSocket(AsyncSocketUserTokenUsed[i]);
+            // 关闭所有连接,List.Remove会自动位移元素,
+            // 所以这里需要另存一个数组对象用于关闭连接.
+            int count = AsyncSocketUserTokenUsed.Count;
+            AsyncUserToken[] userTokens = new AsyncUserToken[count];
+            for (int i = 0; i < count; i++)
+                userTokens[i] = AsyncSocketUserTokenUsed[i];
+            for (int i = 0; i < count; i++) CloseSocket(userTokens[i]);
 
             lock (semaphoreSync)
             {

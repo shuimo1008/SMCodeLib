@@ -84,7 +84,7 @@ namespace ZCSharpLib.Logs
             if (simpleMode)
                 outputMsg = "[" + channel.ToString() + "]  " + msg;
             else
-                outputMsg = "[" + channel.ToString() + "][" + DateTime.Now.ToString() + "]  " + msg;
+                outputMsg = "[" + channel.ToString() + "][" + DateTime.Now.ToString("F") + "]  " + msg;
 
             foreach (ILogListener listener in Listeners)
                 listener.Log(channel, outputMsg);

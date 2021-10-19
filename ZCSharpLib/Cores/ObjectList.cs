@@ -5,17 +5,18 @@ namespace ZCSharpLib.Cores
 {
     public class ObjectList<T> where T : class
     {
-        protected List<T> m_list;
+        protected object sync = new object();
+        protected List<T> list;
 
         public T this[int index]
         {
             get
             {
-                return m_list[index];
+                lock (sync) { return list[index]; }
             }
             set
             {
-                m_list[index] = value;
+                lock (sync) { list[index] = value; }
             }
         }
 
@@ -23,98 +24,72 @@ namespace ZCSharpLib.Cores
         {
             get
             {
-                return m_list.Count;
+                lock (sync) { return list.Count; }
             }
         }
 
         public ObjectList()
         {
-            m_list = new List<T>();
+            list = new List<T>();
         }
 
         public virtual void Add(T item)
         {
-            lock (m_list)
-            {
-                m_list.Add(item);
-            }
+            lock (sync) { list.Add(item); }
         }
 
         public virtual void Remove(T item)
         {
-            lock (m_list)
-            {
-                m_list.Remove(item);
-            }
+            lock (sync) { list.Remove(item); }
         }
 
-        public virtual void Enqueue(T item)
-        {
-            Add(item);
-        }
+        public virtual void Enqueue(T item) => Add(item);
 
         public virtual T Dequeue()
         {
-            lock (m_list)
+            lock (sync)
             {
-                if (m_list.Count > 0)
+                if (list.Count > 0)
                 {
-                    T t = m_list[0];
-                    m_list.RemoveAt(0);
+                    T t = list[0];
+                    list.RemoveAt(0);
                     return t;
                 }
-                else
-                {
-                    throw new System.ArgumentNullException("列表为空!");
-                }
+                else throw new ArgumentNullException("列表为空!");
             }
         }
 
         public virtual T Peek()
         {
-            lock (m_list)
+            lock (sync)
             {
-                if (m_list.Count > 0)
-                {
-                    return m_list[0];
-                }
-                else
-                {
-                    throw new System.ArgumentNullException("列表为空!");
-                }
+                if (list.Count > 0)
+                    return list[0];
+                else throw new ArgumentNullException("列表为空!");
             }
         }
 
         public virtual T Find(Predicate<T> match)
         {
-            lock (m_list)
-            {
-                return m_list.Find(match);
-            }
+            lock (sync) { return list.Find(match); }
         }
 
         public virtual bool Contains(T item)
         {
-            lock (m_list)
-            {
-                return m_list.Contains(item);
-            }
+            lock (sync) { return list.Contains(item); }
         }
 
         public virtual void Clear()
         {
-            lock (m_list)
-            {
-                m_list.Clear();
-            }
+            lock (sync) { list.Clear(); }
         }
 
         public void CopyList(ref T[] array)
         {
-            lock (m_list)
+            lock (sync)
             {
-                array = new T[m_list.Count];
-                m_list.CopyTo(array);
+                array = new T[list.Count];
+                list.CopyTo(array);
             }
         }
     }
