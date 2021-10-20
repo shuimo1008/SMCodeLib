@@ -41,7 +41,7 @@ namespace ZCSharpLib.Nets.TSockets
         /// 包管理
         /// </summary>
         public PacketMgr PacketMgr{ get; set; }
-
+        public int NumberOfConnections => AsyncSocketUserTokenUsed.Count;
         public Action<NetworkStatus, AsyncUserToken> ConnectStatus { get; set; }
 
         public TSocketServer(int numConnections)
