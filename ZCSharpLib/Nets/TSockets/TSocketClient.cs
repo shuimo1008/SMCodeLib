@@ -71,8 +71,8 @@ namespace ZCSharpLib.Nets.TSockets
 
         private void ProcessConnect(SocketAsyncEventArgs eventArgs)
         {
-            UserToken.ConnectDateTime = DateTime.Now;
             UserToken.Socket = eventArgs.AcceptSocket;
+            UserToken.ActiveDateTime = DateTime.Now;
 
             if (eventArgs.SocketError == SocketError.Success)
             {

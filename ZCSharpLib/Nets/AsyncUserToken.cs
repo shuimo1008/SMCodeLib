@@ -20,12 +20,6 @@ namespace ZCSharpLib.Nets
             }
         }
 
-        protected DateTime connectDateTime;
-        public DateTime ConnectDateTime
-        {
-            get { return connectDateTime; }
-            set { connectDateTime = value; }
-        }
         protected DateTime activeDateTime;
         public DateTime ActiveDateTime
         {
@@ -80,6 +74,7 @@ namespace ZCSharpLib.Nets
                 catch (Exception e){
                     App.Error("协议解析出错, 即将关闭远程连接\n{0}", e);
                 }
+                if (!result) App.Error("协议解析出错, 即将关闭远程连接\n{0}");
                 return result;
             }
         }

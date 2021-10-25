@@ -28,7 +28,7 @@ namespace ZCSharpLib.Nets.TSockets
                     {
                         try
                         {
-                            if ((DateTime.Now - UserTokens[i].ActiveDateTime).Milliseconds > TCPServer.SocketTimeOutMS)
+                            if ((DateTime.Now - UserTokens[i].ActiveDateTime).Ticks > TCPServer.SocketTimeOutNS)
                             {
                                 App.Error("连接超时,即将关闭连接TokenID={0}", UserTokens[i].SessionID);
                                 TCPServer.CloseSocket(UserTokens[i]);
