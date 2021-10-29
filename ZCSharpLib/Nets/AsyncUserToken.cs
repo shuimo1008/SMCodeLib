@@ -59,7 +59,7 @@ namespace ZCSharpLib.Nets
             where T : class, IDataStream
         {
             DataStream?.Clear(); // 先清理上一个数据后再重新构造
-            DataStream = ReflectionUtils.Construct(typeof(T), BufferSize) as T;
+            DataStream = ReflUtils.Construct(typeof(T), BufferSize) as T;
             DataStream.UserToken = this;
         }
 
@@ -72,9 +72,9 @@ namespace ZCSharpLib.Nets
                     result = DataStream.RecvStream(RecvEventArgs.Buffer, RecvEventArgs.Offset, RecvEventArgs.BytesTransferred);
                 }
                 catch (Exception e){
-                    App.Error("协议解析出错, 即将关闭远程连接\n{0}", e);
+                    App.Error($"协议解析出错, 即将关闭远程连接\n{e}");
                 }
-                if (!result) App.Error("协议解析出错, 即将关闭远程连接\n{0}");
+                if (!result) App.Error($"协议解析出错, 即将关闭远程连接");
                 return result;
             }
         }

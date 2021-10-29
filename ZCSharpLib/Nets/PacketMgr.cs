@@ -66,7 +66,7 @@ namespace ZCSharpLib.Nets
 
         private void AssemblyProcesser()
         {
-            Type[] oTypes = ReflectionUtils.GetAllTypes();
+            Type[] oTypes = ReflUtils.GetAllTypes();
             foreach (var type in oTypes)
             {
                 if (!type.IsClass) continue;
@@ -83,7 +83,7 @@ namespace ZCSharpLib.Nets
                             PacketAttribute attr = attributes[0];
                             if (Processers.ContainsKey(attr.PacketID))
                             {
-                                App.Error("协议结构处理类已存在!PacketID：{0}", attr.PacketID);
+                                App.Error($"协议结构处理类已存在!PacketID：{attr.PacketID}");
                                 continue;
                             }
                             Processers.Add(attr.PacketID, (IProtocol)Activator.CreateInstance(type));

@@ -20,7 +20,7 @@ namespace ZCSharpLib.Logs
         public Logger()
         {
             Listeners = new List<ILogListener>();
-            Type[] types = ReflectionUtils.GetAllTypes();
+            Type[] types = ReflUtils.GetAllTypes();
             for (int i = 0; i < types.Length; i++)
             {
                 if (types[i].GetInterface(typeof(ILogListener).Name)!=null)
@@ -46,28 +46,28 @@ namespace ZCSharpLib.Logs
             RegisterCount--;
         }
 
-        public void Debug(object msg, params object[] args)
+        public void Debug(object msg)
         {
             string str = msg != null ? msg.ToString() : "null";
-            Log(string.Format(str, args), LogChannel.Debug, false);
+            Log(str, LogChannel.Debug, false);
         }
 
-        public void Warning(object msg, params object[] args)
+        public void Warning(object msg)
         {
             string str = msg != null ? msg.ToString() : "null";
-            Log(string.Format(str, args), LogChannel.Warn, false);
+            Log(str, LogChannel.Warn, false);
         }
 
-        public void Info(object msg, params object[] args)
+        public void Info(object msg)
         {
             string str = msg != null ? msg.ToString() : "null";
-            Log(string.Format(str, args), LogChannel.Info, false);
+            Log(str, LogChannel.Info, false);
         }
 
-        public void Error(object msg, params object[] args)
+        public void Error(object msg)
         {
             string str = msg != null ? msg.ToString() : "null";
-            Log(string.Format(str, args), LogChannel.Error, false);
+            Log(str, LogChannel.Error, false);
         }
 
         private void Log(string msg, LogChannel channel, bool simpleMode)

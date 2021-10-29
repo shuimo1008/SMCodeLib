@@ -124,7 +124,7 @@ namespace ZCSharpLib.Zips
             catch (Exception e)
             {
                 IsSucess = false;
-                App.Error("压缩出错:{0}\n{1}", SrcPath, e.StackTrace);
+                App.Error($"压缩出错:{SrcPath}\n{e.StackTrace}");
             }
 
             if (IsSucess)
@@ -216,7 +216,7 @@ namespace ZCSharpLib.Zips
             {
                 IsSucess = false;
 
-                App.Error("解压出错:{0}\n{1}", SrcPath, e.ToString());
+                App.Error($"解压出错:{SrcPath}\n{e}");
             }
             if (IsSucess)
             {

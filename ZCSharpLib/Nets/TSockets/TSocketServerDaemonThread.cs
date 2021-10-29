@@ -30,13 +30,13 @@ namespace ZCSharpLib.Nets.TSockets
                         {
                             if ((DateTime.Now - UserTokens[i].ActiveDateTime).Ticks > TCPServer.SocketTimeOutNS)
                             {
-                                App.Error("连接超时,即将关闭连接TokenID={0}", UserTokens[i].SessionID);
+                                App.Error($"连接超时,即将关闭连接TokenID={UserTokens[i].SessionID}");
                                 TCPServer.CloseSocket(UserTokens[i]);
                             }
                         }
                         catch (Exception e)
                         {
-                            App.Error("守护线程检测到Socket通信异常, 异常消息: {0}", e.Message);
+                            App.Error($"守护线程检测到Socket通信异常, 异常消息: {e.Message}");
                             App.Error(e.StackTrace);
                         }
                     }

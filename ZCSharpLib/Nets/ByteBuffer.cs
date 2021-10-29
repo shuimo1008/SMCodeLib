@@ -77,6 +77,7 @@ namespace ZCSharpLib.Nets
                 Bytes = tmpBuffer; //替换
             }
         }
+        
         #region 写入
 
         public void WriteByte(byte value)

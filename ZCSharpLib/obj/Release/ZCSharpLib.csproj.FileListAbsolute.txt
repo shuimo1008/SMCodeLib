@@ -49,7 +49,7 @@ E:\work\shuijin\ZCSharpLib\obj\Release\ZCSharpLib.dll
 E:\work\shuijin\ZCSharpLib\obj\Release\ZCSharpLib.pdb
 D:\Dev\Works\SMCodeLib\ZCSharpLib\bin\Release\ZCSharpLib.dll
 D:\Dev\Works\SMCodeLib\ZCSharpLib\bin\Release\ZCSharpLib.pdb
+D:\Dev\Works\SMCodeLib\ZCSharpLib\obj\Release\ZCSharpLib.csproj.AssemblyReference.cache
 D:\Dev\Works\SMCodeLib\ZCSharpLib\obj\Release\ZCSharpLib.csproj.CoreCompileInputs.cache
 D:\Dev\Works\SMCodeLib\ZCSharpLib\obj\Release\ZCSharpLib.dll
 D:\Dev\Works\SMCodeLib\ZCSharpLib\obj\Release\ZCSharpLib.pdb
-D:\Dev\Works\SMCodeLib\ZCSharpLib\obj\Release\ZCSharpLib.csproj.AssemblyReference.cache

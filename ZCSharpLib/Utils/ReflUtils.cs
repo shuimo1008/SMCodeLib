@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace ZCSharpLib.Utils
 {
-    public class ReflectionUtils
+    public class ReflUtils
     {
         /// <summary>
         /// 获取所有程序集的符合条件的类型

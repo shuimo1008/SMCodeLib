@@ -10,6 +10,7 @@ using ZCSharpLib.Coroutines;
 using System.Threading;
 using ZCSharpLib.Cores;
 using ZCSharpLib.Exceptions;
+using ZCSharpLib.Dialogs;
 
 namespace ZCSharpLib
 {
@@ -41,6 +42,9 @@ namespace ZCSharpLib
         private Logger logger;
         public static Logger Logger => Ins.logger;
 
+        private MessageBox message;
+        public static MessageBox Message => Ins.message;
+
         /// <summary>
         /// 主线程
         /// </summary>
@@ -67,6 +71,7 @@ namespace ZCSharpLib
         {
             time = new Time();
             logger = new Logger();
+            message = new MessageBox();
             updater = new Updater();
             mainthread = new Mainthread();
             bootstrap = new Bootstrap();
@@ -104,11 +109,36 @@ namespace ZCSharpLib
         #region 日志输出
         public static void RegistLog(ILogListener listener) => Logger.Register(listener);
         public static void UnregistLog(ILogListener listener) => Logger.Unregistter(listener);
-        public static void Debug(object msg, params object[] args) => Logger.Debug(msg, args);
-        public static void Warning(object msg, params object[] args) => Logger.Warning(msg, args);
-        public static void Info(object msg, params object[] args) => Logger.Info(msg, args);
-        public static void Error(object msg, params object[] args) => Logger.Error(msg, args);
+        public static void Debug(object msg) => Logger.Debug(msg);
+        public static void Warning(object msg) => Logger.Warning(msg);
+        public static void Info(object msg) => Logger.Info(msg);
+        public static void Error(object msg) => Logger.Error(msg);
         public static void SetFilter(string[] filters) => Logger.SetFilter(filters);
+        #endregion
+
+        #region 消息盒子
+        public static void SetupDialog(IDialog dialog)
+        {
+            Message.SetupDialog(dialog);
+        }
+        public static MessageDialog Show(string title, string message, Action<DialogResult> onResult)
+        {
+            try{ return Message.Show(title, message, onResult);}
+            catch (NullDialogExecption e){Error($"{e}.通过App.SetupDialog设置");}
+            return null;
+        }
+        public static MessageDialog Foucs(string title, string message, Action<DialogResult> onResult)
+        {
+            try { return Message.Foucs(title, message, onResult); }
+            catch (NullDialogExecption e) { Error($"{e}.通过App.SetupDialog设置"); }
+            return null;
+        }
+        public static MessageDialog Alert(string title, string message, Action<DialogResult> onResult)
+        {
+            try { return Message.Alert(title, message, onResult); }
+            catch (NullDialogExecption e) { Error($"{e}.通过App.SetupDialog设置"); }
+            return null;
+        }
         #endregion
 
         #region 线程同步
@@ -129,7 +159,7 @@ namespace ZCSharpLib
                 object value = null;
                 if (!Ins.Instances.TryGetValue(type, out value))
                 {
-                    value = ReflectionUtils.Construct(type, args);
+                    value = ReflUtils.Construct(type, args);
                     if (value != null) Ins.Instances.Add(type, value);
                 }
                 return value;

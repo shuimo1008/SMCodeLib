@@ -72,7 +72,7 @@ namespace ZCSharpLib.Coroutines
             {
                 if (Storages.Count > 100)
                 {
-                    App.Warning("警告: 迭代器堆栈存放数据过大[{0}]", Storages.Count);
+                    App.Warning($"警告: 迭代器堆栈存放数据过大[{Storages.Count}]");
                 }
                 Storages.Push(Enumerator); // 保存现有迭代器
                 Enumerator = enumerator;

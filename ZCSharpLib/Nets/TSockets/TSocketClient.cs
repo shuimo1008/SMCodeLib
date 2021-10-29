@@ -47,7 +47,7 @@ namespace ZCSharpLib.Nets.TSockets
             };
             oConnectEventArgs.Completed += ConnectEventArg_Completed;
             StartConnect(oConnectEventArgs);
-            App.Info("连接 {0}", ipEndPoint.ToString());
+            App.Info($"连接 {ipEndPoint}");
         }
 
         private void StartConnect(SocketAsyncEventArgs eventArgs)
@@ -65,7 +65,7 @@ namespace ZCSharpLib.Nets.TSockets
             }
             catch (Exception e)
             {
-                App.Error("接收客户端连接 {0} 错误, 消息: {1}", eventArgs.AcceptSocket, e.Message);
+                App.Error($"接收客户端连接 {eventArgs.AcceptSocket} 错误, 消息: {e.Message}");
             }
         }
 
@@ -77,8 +77,7 @@ namespace ZCSharpLib.Nets.TSockets
             if (eventArgs.SocketError == SocketError.Success)
             {
 
-                App.Info("服务器已连接. 本地地址: {0}, 远程地址: {1}",
-                   eventArgs.AcceptSocket.LocalEndPoint, eventArgs.RemoteEndPoint);
+                App.Info($"服务器已连接. 本地地址: {eventArgs.AcceptSocket.LocalEndPoint}, 远程地址: {eventArgs.RemoteEndPoint}");
 
                 OnConnectEvent?.Invoke(NetworkStatus.Connected, UserToken);
 
@@ -89,7 +88,7 @@ namespace ZCSharpLib.Nets.TSockets
                 }
                 catch (Exception e)
                 {
-                    App.Error("接收客户端连接 {0} 错误, 消息: {1}", UserToken.Socket, e.Message);
+                    App.Error($"接收客户端连接 {UserToken.Socket} 错误, 消息: {e.Message}");
                 }
             }
             else
@@ -111,12 +110,12 @@ namespace ZCSharpLib.Nets.TSockets
                     else if (eventArgs.LastOperation == SocketAsyncOperation.Send)
                         OnSendAsync(eventArgs);
                     else
-                        throw new ArgumentException(string.Format("操作错误, 当前Socket={0}最后执行的不是\"发送\"或\"接收\"操作", socketToken.SessionID));
+                        throw new ArgumentException($"操作错误, 当前Socket={socketToken.SessionID}最后执行的不是\"发送\"或\"接收\"操作");
                 }
             }
             catch (Exception e)
             {
-                App.Error("IO_Completed {0} {1} 错误, 消息: {2}", socketToken.Socket, eventArgs.LastOperation, e);
+                App.Error($"IO_Completed {socketToken.Socket} {eventArgs.LastOperation} 错误, 消息: {e}");
             }
         }
 
@@ -178,7 +177,7 @@ namespace ZCSharpLib.Nets.TSockets
             }
             catch (Exception e)
             {
-                App.Error("发送数据 {0} 错误, 消息: {1}", userToken.Socket, e.Message);
+                App.Error($"发送数据 {userToken.Socket} 错误, 消息: {e.Message}");
                 return false;
             }
         }
@@ -196,11 +195,11 @@ namespace ZCSharpLib.Nets.TSockets
             try
             {
                 userToken.Socket.Shutdown(SocketShutdown.Both);
-                App.Info("关闭连接. {0}", socketInfo);
+                App.Info($"关闭连接. {socketInfo}");
             }
             catch (Exception e)
             {
-                App.Info("关闭连接 {0} 错误, 消息: {1}", socketInfo, e.Message);
+                App.Info($"关闭连接 {socketInfo} 错误, 消息: {e.Message}");
             }
             userToken.Socket.Close();
             userToken.Socket = null; //释放引用，并清理缓存，包括释放协议对象等资源

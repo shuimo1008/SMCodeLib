@@ -41,15 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dialogs\MessageBox.cs" />
     <Compile Include="Cores\Bootstrap.cs" />
     <Compile Include="Coroutines\Coroutine.cs" />
+    <Compile Include="Dialogs\MessageDialog.cs" />
     <Compile Include="Guids\Guid.cs" />
     <Compile Include="Nets\AsyncUserToken.cs" />
     <Compile Include="Nets\DataStream.cs" />
     <Compile Include="Nets\AsyncSocket.cs" />
     <Compile Include="Nets\ByteBuffer.cs" />
     <Compile Include="Nets\USockets\UDPServer.cs" />
-    <Compile Include="Utils\ReflectionUtils.cs" />
+    <Compile Include="Utils\ReflUtils.cs" />
     <Compile Include="Nets\TSockets\TSocketServerDaemonThread.cs" />
     <Compile Include="Nets\PacketMgr.cs" />
     <Compile Include="Threads\SynchronizationThread.cs" />

@@ -119,7 +119,7 @@ namespace ZCSharpLib.Databases
             }
             catch (Exception e)
             {
-                App.Error("数据库操作出错!{0}\n{1}", query, e);
+                App.Error($"数据库操作出错!{query}\n{e}");
             }
             return reader;
         }

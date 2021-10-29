@@ -98,12 +98,12 @@ namespace ZCSharpLib.Nets.TSockets
                 ListenSocket = new Socket(listenPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 ListenSocket.Bind(listenPoint);
                 ListenSocket.Listen(NumConnections);
-                App.Info("开启监听 {0} 成功", listenPoint.ToString());
+                App.Info($"开启监听 {listenPoint} 成功");
                 StartAccept(null);
             }
             catch (Exception e)
             {
-                throw new Exception(string.Format("开启监听失败!{0}\n{1}", listenPoint, e));
+                throw new Exception($"开启监听失败!{listenPoint}\n{e}");
             }
         }
 
@@ -140,7 +140,7 @@ namespace ZCSharpLib.Nets.TSockets
             }
             catch (Exception e)
             {
-                App.Error("接收客户端连接 {0} 错误, 消息: {1}", eventArgs.AcceptSocket, e.Message);
+                App.Error($"接收客户端连接 {eventArgs.AcceptSocket} 错误, 消息: {e.Message}");
             }
         }
 
@@ -148,8 +148,7 @@ namespace ZCSharpLib.Nets.TSockets
         {
             if (eventArgs.SocketError == SocketError.Success)
             {
-                App.Info("客户端已连接. 本地地址: {0}, 远程地址: {1}",
-                    eventArgs.AcceptSocket.LocalEndPoint, eventArgs.AcceptSocket.RemoteEndPoint);
+                App.Info($"客户端已连接. 本地地址: {eventArgs.AcceptSocket.LocalEndPoint}, 远程地址: {eventArgs.AcceptSocket.RemoteEndPoint}");
 
                 AsyncUserToken userToken = AsyncSocketUserTokenPool.Pop();
                 AsyncSocketUserTokenUsed.Add(userToken);    //添加到正在连接列表
@@ -163,7 +162,7 @@ namespace ZCSharpLib.Nets.TSockets
                 }
                 catch (Exception e)
                 {
-                    App.Error("接收客户端连接 {0} 错误, 消息: {1}", userToken.Socket, e.Message);
+                    App.Error($"接收客户端连接 {userToken.Socket} 错误, 消息: {e.Message}");
                 }
             }
             StartAccept(eventArgs); //把当前异步事件释放，等待下次连接
@@ -181,12 +180,12 @@ namespace ZCSharpLib.Nets.TSockets
                         OnSendAsync(eventArgs);
                     else if (eventArgs.LastOperation == SocketAsyncOperation.Receive)
                         OnRecvAsync(eventArgs);
-                    else throw new ArgumentException($"操作错误, 当前Socket={0}最后执行的不是\"发送\"或\"接收\"操作{userToken.SessionID}");
+                    else throw new ArgumentException($"操作错误, 当前Socket={userToken.SessionID}最后执行的不是\"发送\"或\"接收\"操作");
                 }
             }
             catch (Exception e)
             {
-                App.Error("IO_Completed {0} {1} 错误, 消息: {2}", userToken.Socket, eventArgs.LastOperation, e);
+                App.Error($"IO_Completed {userToken.Socket} {eventArgs.LastOperation} 错误, 消息: {e}");
             }
         }
 
@@ -245,23 +244,22 @@ namespace ZCSharpLib.Nets.TSockets
                 return willRaiseEvent;
             }
             catch (Exception e){
-                App.Error("发送数据 {0} 错误, 消息: {1}", userToken.Socket, e.Message);
+                App.Error($"发送数据 {userToken.Socket} 错误, 消息: {e.Message}");
             }
             return false;
         }
 
         public virtual void CloseSocket(AsyncUserToken userToken)
         {
-            string socketInfo = string.Format("本地地址: {0} 远程地址: {1}", userToken.Socket.LocalEndPoint,
-                userToken.Socket.RemoteEndPoint);
+            string socketInfo = string.Format($"本地地址: {userToken.Socket.LocalEndPoint} 远程地址: {userToken.Socket.RemoteEndPoint}");
             try
             {
                 userToken.Socket.Shutdown(SocketShutdown.Both);
-                App.Info("关闭连接. {0}", socketInfo);
+                App.Info($"关闭连接. {socketInfo}");
             }
             catch (Exception e)
             {
-                App.Error("关闭连接 {0} 错误, 消息: {1}", socketInfo, e.Message);
+                App.Error($"关闭连接 {socketInfo} 错误, 消息: {e.Message}");
             }
 
             userToken.Socket.Close();

@@ -19,7 +19,7 @@ namespace ZCSharpLib.Nets
         {
             CreatorTable = new Dictionary<int, IPacketCreator>();
 
-            Type[] oTypes = ReflectionUtils.GetAllTypes();
+            Type[] oTypes = ReflUtils.GetAllTypes();
 
             foreach (var nType in oTypes)
             {
@@ -37,7 +37,7 @@ namespace ZCSharpLib.Nets
 
                         if (CreatorTable.ContainsKey(attribute.PacketID))
                         {
-                            App.Error("协议结构类已存在!PacketID：{0}", attribute.PacketID);
+                            App.Error($"协议结构类已存在!PacketID：{attribute.PacketID}");
                             continue;
                         }
 
@@ -52,7 +52,7 @@ namespace ZCSharpLib.Nets
             IPacketCreator packetCreator = null;
             if (!CreatorTable.TryGetValue(packetID, out packetCreator))
             {
-                App.Error("没有找到对应的协议结构类!PacketID: {0}", packetID);
+                App.Error($"没有找到对应的协议结构类!PacketID: {packetID}");
                 return null;
             }
             return packetCreator.CreatePacket();

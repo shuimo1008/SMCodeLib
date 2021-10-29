@@ -14,14 +14,14 @@ namespace ZGameLib.Loggers
         {
             switch (channel)
             {
-                case LogChannel.DEBUG:
-                case LogChannel.INFO:
+                case LogChannel.Debug:
+                case LogChannel.Info:
                     Debug.Log(msg);
                     break;
-                case LogChannel.WARNING:
+                case LogChannel.Warn:
                     Debug.LogWarning(msg);
                     break;
-                case LogChannel.ERROR:
+                case LogChannel.Error:
                     Debug.LogError(msg);
                     break;
             }

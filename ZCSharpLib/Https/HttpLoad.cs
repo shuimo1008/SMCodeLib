@@ -110,7 +110,7 @@ namespace ZCSharpLib.Webs
                 mThreadIsSucess = true;
                 mThreadIsDone = true;
                 mThreadProgress = 1;
-                App.Debug("文件已经存在!无需再次下载保存:{0}", SavePath);
+                App.Debug($"文件已经存在!无需再次下载保存:{SavePath}");
             }
             else
             {

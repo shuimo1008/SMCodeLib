@@ -121,7 +121,7 @@ namespace ZCSharpLib.Nets
                 }
                 catch (Exception e)
                 {
-                    App.Error("协议解析出错, 即将关闭远程连接\n{0}", e);
+                    App.Error($"协议解析出错, 即将关闭远程连接\n{e}");
                     return false;
                 }
             }
