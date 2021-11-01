@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ZCSharpLib.Nets
 {
-    public class ByteBuffer
+    public class ByteBuffer : IDisposable
     {
         public byte[] Bytes { get; private set; }
 
@@ -270,5 +270,7 @@ namespace ZCSharpLib.Nets
             return bytes;
         }
         #endregion
+
+        public void Dispose() { }
     }
 }

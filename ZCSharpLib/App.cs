@@ -42,8 +42,8 @@ namespace ZCSharpLib
         private Logger logger;
         public static Logger Logger => Ins.logger;
 
-        private MessageBox message;
-        public static MessageBox Message => Ins.message;
+        private WindowMessage message;
+        public static WindowMessage Message => Ins.message;
 
         /// <summary>
         /// 主线程
@@ -71,7 +71,7 @@ namespace ZCSharpLib
         {
             time = new Time();
             logger = new Logger();
-            message = new MessageBox();
+            message = new WindowMessage();
             updater = new Updater();
             mainthread = new Mainthread();
             bootstrap = new Bootstrap();
@@ -117,26 +117,26 @@ namespace ZCSharpLib
         #endregion
 
         #region 消息盒子
-        public static void SetupDialog(IDialog dialog)
+        public static void SetupDialog(IMessageBox dialog)
         {
             Message.SetupDialog(dialog);
         }
-        public static MessageDialog Show(string title, string message, Action<DialogResult> onResult)
+        public static IDialog Show(string title, string message, Action<DialogResult> onResult)
         {
             try{ return Message.Show(title, message, onResult);}
-            catch (NullDialogExecption e){Error($"{e}.通过App.SetupDialog设置");}
+            catch (IMessageBoxIsNullExecption e){Error($"{e}.通过App.SetupDialog设置");}
             return null;
         }
-        public static MessageDialog Foucs(string title, string message, Action<DialogResult> onResult)
+        public static IDialog Foucs(string title, string message, Action<DialogResult> onResult)
         {
             try { return Message.Foucs(title, message, onResult); }
-            catch (NullDialogExecption e) { Error($"{e}.通过App.SetupDialog设置"); }
+            catch (IMessageBoxIsNullExecption e) { Error($"{e}.通过App.SetupDialog设置"); }
             return null;
         }
-        public static MessageDialog Alert(string title, string message, Action<DialogResult> onResult)
+        public static IDialog Alert(string title, string message, Action<DialogResult> onResult)
         {
             try { return Message.Alert(title, message, onResult); }
-            catch (NullDialogExecption e) { Error($"{e}.通过App.SetupDialog设置"); }
+            catch (IMessageBoxIsNullExecption e) { Error($"{e}.通过App.SetupDialog设置"); }
             return null;
         }
         #endregion

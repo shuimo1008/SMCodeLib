@@ -125,7 +125,7 @@ namespace ZGameLib.Assets
                     retObj = bundle.LoadAsset(name);
                     if (retObj == null)
                     {
-                        App.Error("当前资源：{0} AssetBundle中没有找到对应名称 name={1} 的资源!", Url, name);
+                        App.Error($"当前资源：{Url} AssetBundle中没有找到对应名称 name={name} 的资源!");
                     }
                     else { list.Add(retObj); }
                 }

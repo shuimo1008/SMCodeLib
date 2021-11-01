@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ZCSharpLib.Dialogs
 {
-    public interface IDialog
+    public interface IMessageBox
     {
-        MessageDialog OnCreate(MessageDialog dialog);
+        IDialog CreateDialog();
     }
 
     public enum DialogResult
@@ -24,39 +24,39 @@ namespace ZCSharpLib.Dialogs
         Foucs,
     }
 
-    public class NullDialogExecption : Exception
+    public class IMessageBoxIsNullExecption : Exception
     {
         public override string ToString()
         {
-            return "MessageBox没有设置Dialog接口!";
+            return "MessageBox没有设置IMessageBox接口的实现!";
         }
     }
 
-    public class MessageBox
+    public class WindowMessage
     {
-        private IDialog dialog;
+        private IMessageBox messageBox;
 
-        public void SetupDialog(IDialog dialog) => this.dialog = dialog;
+        public void SetupDialog(IMessageBox dialog) => this.messageBox = dialog;
 
-        public MessageDialog Foucs(string title, string message, Action<DialogResult> onResult)
+        public IDialog Foucs(string title, string message, Action<DialogResult> onResult)
         {
-            return CreateDialog(title, message, onResult, DialogType.Foucs);
+            return SetupDialog(title, message, onResult, DialogType.Foucs);
         }
 
-        public MessageDialog Alert(string title, string message, Action<DialogResult> onResult)
+        public IDialog Alert(string title, string message, Action<DialogResult> onResult)
         {
-            return CreateDialog(title, message, onResult, DialogType.Alert);
+            return SetupDialog(title, message, onResult, DialogType.Alert);
         }
 
-        public MessageDialog Show(string title, string message, Action<DialogResult> onResult)
+        public IDialog Show(string title, string message, Action<DialogResult> onResult)
         {
-            return CreateDialog(title, message, onResult, DialogType.None);
+            return SetupDialog(title, message, onResult, DialogType.None);
         }
 
-        public MessageDialog CreateDialog(string title, string message, Action<DialogResult> onResult, DialogType dialogType)
+        public IDialog SetupDialog(string title, string message, Action<DialogResult> onResult, DialogType dialogType)
         {
-            if (dialog == null) throw new NullDialogExecption();
-            return dialog.OnCreate(new MessageDialog(title, message, onResult, dialogType));
+            if (messageBox == null) throw new IMessageBoxIsNullExecption();
+            return messageBox.CreateDialog().SetTitle(title).SetMessage(message).SetType(dialogType).SetCallback(onResult);
         }
     }
 }
