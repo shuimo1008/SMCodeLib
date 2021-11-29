@@ -10,15 +10,32 @@ using ZCSharpLib.Events;
 using Object = UnityEngine.Object;
 using ZCSharpLib.Cores;
 
-namespace ZGameLib.Assets
+namespace ZGameLib.Loads
 {
-    public struct AssetContext
+    public class LoadingFactory
     {
-        public string url;
-        public AudioType audioType;
+        public static Loader New(string url)
+        {
+            return new Loader(UnityWebRequest.Get(url));
+        }
+
+        public static Loader NewAudio(string url, AudioType audioType)
+        {
+            return new Loader(UnityWebRequestMultimedia.GetAudioClip(url, audioType));
+        }
+
+        public static Loader NewImage(string url)
+        {
+            return new Loader(UnityWebRequestTexture.GetTexture(url));
+        }
+
+        public static Loader NewBundle(string url)
+        {
+            return new Loader(UnityWebRequestAssetBundle.GetAssetBundle(url));
+        }
     }
 
-    public class Asset : ObjectEvent, IEventArgs
+    public class Loader : ObjectEvent, IEventArgs
     {
         public string Url { get; protected set; }
         public bool IsDone { get; protected set; }
@@ -36,25 +53,21 @@ namespace ZGameLib.Assets
         private const string ASSETBYTE = "Byte";
         private const string ASSETBUNDLE = "AssetBundle";
 
-        private Dictionary<string, object> CacheTable { get; set; }
-
-        private Asset() { }
-
-        public static Asset New<T>(AssetContext context)
+        private Dictionary<string, object> CacheTable 
         {
-            Asset asset = new Asset();
-            asset.Url = context.url;
-            if (typeof(T) == typeof(Texture) ||
-                typeof(T) == typeof(Texture2D))
-                asset.www = UnityWebRequestTexture.GetTexture(asset.Url);
-            else if (typeof(T) == typeof(AudioClip))
-                asset.www = UnityWebRequestMultimedia.GetAudioClip(asset.Url, context.audioType);
-            else if (typeof(T) == typeof(AssetBundle))
-                asset.www = UnityWebRequestAssetBundle.GetAssetBundle(asset.Url);
-            else
-                asset.www = UnityWebRequest.Get(asset.Url);
-            asset.CacheTable = new Dictionary<string, object>();
-            return asset;
+            get
+            {
+                if (_cacheTable == null)
+                    _cacheTable = new Dictionary<string, object>();
+                return _cacheTable;
+            }
+        }
+        private Dictionary<string, object> _cacheTable;
+
+        public Loader(UnityWebRequest www) 
+        {
+            this.www = www;
+            this.Url = this.www.url;
         }
 
         public void Start()

@@ -9,8 +9,9 @@ using ZCSharpLib.Objects;
 using ZCSharpLib.Times;
 using ZCSharpLib.Coroutines;
 using ZCSharpLib.Cores;
+using UnityEngine;
 
-namespace ZGameLib.Assets
+namespace ZGameLib.Loads
 {
     public enum LoadPriority
     {
@@ -23,35 +24,34 @@ namespace ZGameLib.Assets
     /// 2. 根据加载优先级加载资源;
     /// 3. 成功加载的资源进入缓存;
     /// </summary>
-    public class AssetMgr : ObjectEvent
+    public class LoadMgr : ObjectEvent
     {
-        private Asset[] loadingGroup;
-        private Queue<Asset> waitLoading1Queue; // 最高优先级
-        private Queue<Asset> waitLoading2Queue; // 中等优先级
-        private Queue<Asset> waitLoading3Queue; // 最低优先级
+        private Loader[] loadingGroup;
+        private Queue<Loader> waitLoading1Queue; // 最高优先级
+        private Queue<Loader> waitLoading2Queue; // 中等优先级
+        private Queue<Loader> waitLoading3Queue; // 最低优先级
         /// <summary>
         /// 资源缓存池
         /// </summary>
-        private Dictionary<string, Asset> AssetPool { get; set; }
+        private Dictionary<string, Loader> AssetPool { get; set; }
 
-        public AssetMgr() : this(3) { }
+        public LoadMgr() : this(3) { }
 
-        public AssetMgr(int num)
+        public LoadMgr(int num)
         {
-            loadingGroup = new Asset[num];
-            waitLoading1Queue = new Queue<Asset>(); 
-            waitLoading2Queue = new Queue<Asset>();
-            waitLoading3Queue = new Queue<Asset>();
-            AssetPool = new Dictionary<string, Asset>();
+            loadingGroup = new Loader[num];
+            waitLoading1Queue = new Queue<Loader>(); 
+            waitLoading2Queue = new Queue<Loader>();
+            waitLoading3Queue = new Queue<Loader>();
+            AssetPool = new Dictionary<string, Loader>();
             App.SubscribeUpdate(Update);
         }
-
 
         void Update(float deltaTime)
         {
             for (int i = 0; i < loadingGroup.Length; i++)
             {
-                Asset oAsset = loadingGroup[i];
+                Loader oAsset = loadingGroup[i];
                 if (oAsset != null)
                 {
                     if (oAsset.IsDone)
@@ -88,20 +88,40 @@ namespace ZGameLib.Assets
             }
         }
 
-        public void Load<T>(AssetContext context, Action<IEventArgs> onDone, LoadPriority priority = LoadPriority.General) where T : class
+        public void Load(string url, Action<IEventArgs> onDone, LoadPriority priority = LoadPriority.General)
+        {
+            Load(url, (_url)=> { return LoadingFactory.New(_url); }, onDone, priority);
+        }
+
+        public void LoadAudio(string url, AudioType audioType, Action<IEventArgs> onDone, LoadPriority priority = LoadPriority.General)
+        {
+            Load(url, (_url)=> { return LoadingFactory.NewAudio(_url, audioType); }, onDone, priority);
+        }
+
+        public void LoadImage(string url, Action<IEventArgs> onDone, LoadPriority priority = LoadPriority.General)
+        {
+            Load(url, (_url) => { return LoadingFactory.NewImage(_url); }, onDone, priority);
+        }
+
+        public void LoadBundle(string url, Action<IEventArgs> onDone, LoadPriority priority = LoadPriority.General)
+        {
+            Load(url, (_url) => { return LoadingFactory.NewBundle(_url); }, onDone, priority);
+        }
+
+        private void Load(string url, Func<string, Loader> f, Action<IEventArgs> onDone, LoadPriority priority = LoadPriority.General)
         {
             bool needLoad = true;
-            if (AssetPool.TryGetValue(context.url, out Asset oAsset))
+            if (AssetPool.TryGetValue(url, out Loader oAsset))
             {
                 // 资源池已经有该资源，但是资源没有加载成功,则对资源进行重新加载
                 if (oAsset.IsDone && !oAsset.IsSucess)
                 {
-                    AssetPool[context.url].Dispose();
-                    AssetPool[context.url] = Asset.New<T>(context);
+                    AssetPool[url].Dispose();
+                    AssetPool[url] = f.Invoke(url);// Asset.New<T>(context);
                 }
                 else needLoad = false;
             }
-            else AssetPool.Add(context.url, Asset.New<T>(context)); // 加入资源池
+            else AssetPool.Add(url, f.Invoke(url)); // 加入资源池
 
             if (needLoad)
             {
@@ -109,26 +129,26 @@ namespace ZGameLib.Assets
                 switch (priority)
                 {
                     case LoadPriority.High:
-                        waitLoading1Queue.Enqueue(AssetPool[context.url]);
+                        waitLoading1Queue.Enqueue(AssetPool[url]);
                         break;
                     case LoadPriority.Middle:
-                        waitLoading2Queue.Enqueue(AssetPool[context.url]);
+                        waitLoading2Queue.Enqueue(AssetPool[url]);
                         break;
                     case LoadPriority.General:
-                        waitLoading3Queue.Enqueue(AssetPool[context.url]);
+                        waitLoading3Queue.Enqueue(AssetPool[url]);
                         break;
                 }
             }
             // 事件监听写在这里是因为存在同一时间多个地方需要加载该资源。
             // 所以每个地方都需要在资源完成加载后进行回调，于是当资源完成回调后删除所有监听事件。
-            AssetPool[context.url].AddListener(onDone);
+            AssetPool[url].AddListener(onDone);
             // 如果资源已经完成下载,则直接返回
-            if (AssetPool[context.url].IsDone) AssetPool[context.url].Callback();
+            if (AssetPool[url].IsDone) AssetPool[url].Callback();
         }
 
         public void Clear(string url)
         {
-            Asset oAsset;
+            Loader oAsset;
             if (AssetPool.TryGetValue(url, out oAsset))
             {
                 oAsset.Dispose();
