@@ -34,7 +34,7 @@ namespace ZCSharpLib.Models
             if (!Datas.ContainsKey(guid))
             {
                 Datas.Add(guid, obj);
-                Event.Notify(EventCall, new ModelArgs() 
+                Event.Notify(HashID.ToString(), new ModelArgs() 
                 {
                     Data = obj, Status = ModelStatus.Add 
                 });
@@ -46,7 +46,7 @@ namespace ZCSharpLib.Models
             if (Datas.TryGetValue(guid, out var obj))
             {
                 Datas.Remove(guid);
-                Event.Notify(EventCall, new ModelArgs() 
+                Event.Notify(HashID.ToString(), new ModelArgs() 
                 { 
                     Data = obj, Status = ModelStatus.Remove 
                 });
@@ -59,7 +59,7 @@ namespace ZCSharpLib.Models
             foreach (var obj in Datas.Values)
                 if (obj is IDisposable v) v.Dispose();
             Datas.Clear();
-            Event.Notify(EventCall, new ModelArgs() { Status = ModelStatus.RemoveAll });
+            Event.Notify(HashID.ToString(), new ModelArgs() { Status = ModelStatus.RemoveAll });
         }
 
         public virtual void Modify(string guid, Action<object> modifier)
@@ -67,7 +67,7 @@ namespace ZCSharpLib.Models
             if (Datas.TryGetValue(guid, out var obj))
             {
                 modifier?.Invoke(obj);
-                Event.Notify(EventCall, new ModelArgs() { Data = obj, Status = ModelStatus.Modify });
+                Event.Notify(HashID.ToString(), new ModelArgs() { Data = obj, Status = ModelStatus.Modify });
             }
         }
 
@@ -78,7 +78,20 @@ namespace ZCSharpLib.Models
 
         public virtual IList<object> FindAll(Predicate<object> match = null)
         {
-            return Datas.Values.Where(t => match(t)).ToList();
+            return Datas.Values.Where((t) => 
+            {
+                if (match != null) match(t);
+                return true;
+            }).ToList();
+        }
+
+        public virtual IList<object> FindAll(int index, int count, Predicate<object> match = null)
+        {
+            return Datas.Values.Skip(index).Where((t)=> 
+            {
+                if (match != null) match(t);
+                return true;
+            }).Take(count).ToList();
         }
     }
 
@@ -124,30 +137,27 @@ namespace ZCSharpLib.Models
                 if (_t is T t) return match(t);
                 return false;
             }).Cast<T>().ToList();
-            //IList<T> list = new List<T>();
-            //foreach (var item in Datas.Values)
-            //{
-            //    bool isMatch = true;
-            //    if (match != null) isMatch = match(item);
-            //    if (isMatch) list.Add(item);
-            //}
-            //return list;
         }
 
         public virtual IList<T> FindAll(int index, int count, Predicate<T> match = null)
         {
-            IList<T> list = new List<T>();
-            int loopIndex = 0;
-            foreach (var item in Datas.Values)
+            return base.FindAll(index, count, (_t)=>
             {
-                if (loopIndex < index) continue;
-                if (loopIndex >= count) break;
-                bool isMatch = true;
-                if (match != null) isMatch = match(item as T);
-                if (isMatch) list.Add(item as T);
-                loopIndex++;
-            }
-            return list;
+                if (_t is T t) return match(t);
+                return false;
+            }).Cast<T>().ToList();
+            //IList<T> list = new List<T>();
+            //int loopIndex = 0;
+            //foreach (var item in Datas.Values)
+            //{
+            //    if (loopIndex < index) continue;
+            //    if (loopIndex >= count) break;
+            //    bool isMatch = true;
+            //    if (match != null) isMatch = match(item as T);
+            //    if (isMatch) list.Add(item as T);
+            //    loopIndex++;
+            //}
+            //return list;
         }
     }
 }
