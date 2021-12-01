@@ -134,8 +134,9 @@ namespace ZCSharpLib.Models
         {
             return base.FindAll((_t)=>
             {
+                if (match == null) return true;
                 if (_t is T t) return match(t);
-                return false;
+                else return false;
             }).Cast<T>().ToList();
         }
 
@@ -143,8 +144,9 @@ namespace ZCSharpLib.Models
         {
             return base.FindAll(index, count, (_t)=>
             {
+                if (match == null) return true;
                 if (_t is T t) return match(t);
-                return false;
+                else return false;
             }).Cast<T>().ToList();
             //IList<T> list = new List<T>();
             //int loopIndex = 0;
