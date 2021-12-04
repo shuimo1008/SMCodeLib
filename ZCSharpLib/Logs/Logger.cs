@@ -15,20 +15,17 @@ namespace ZCSharpLib.Logs
     public class Logger
     {
         public int RegisterCount { get; private set; }
-        private List<ILogListener> Listeners { get; set; }
-
-        public Logger()
+        public Action<string> Output { get; private set; }
+        private List<ILogListener> Listeners 
         {
-            Listeners = new List<ILogListener>();
-            Type[] types = ReflUtils.GetAllTypes();
-            for (int i = 0; i < types.Length; i++)
+            get
             {
-                if (types[i].GetInterface(typeof(ILogListener).Name)!=null)
-                    Register(Activator.CreateInstance(types[i]) as ILogListener);
+                if (_listeners == null)
+                    _listeners = new List<ILogListener>();
+                return _listeners;
             }
-            if (RegisterCount == 0)
-                throw new Exception($"日志输出没有监听者(请先通过方法App.RegistLog注册日志监听)!");
         }
+        private List<ILogListener> _listeners;
 
         public void Register(ILogListener listener)
         {
@@ -72,6 +69,9 @@ namespace ZCSharpLib.Logs
 
         private void Log(string msg, LogChannel channel, bool simpleMode)
         {
+            if (RegisterCount == 0)
+                throw new Exception($"日志输出没有监听者(请先通过方法App.RegistLog注册日志监听)!");
+
             bool filter = false;
             if (filters != null)
             {
@@ -88,6 +88,8 @@ namespace ZCSharpLib.Logs
 
             foreach (ILogListener listener in Listeners)
                 listener.Log(channel, outputMsg);
+
+            Output?.Invoke(outputMsg);
         }
 
         private string[] filters;

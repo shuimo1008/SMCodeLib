@@ -41,7 +41,12 @@ namespace ZCSharpLib.Nets.TSockets
         /// 包管理
         /// </summary>
         public PacketMgr PacketMgr{ get; set; }
-        public int NumberOfConnections => AsyncSocketUserTokenUsed.Count;
+        public int NumberOfConnections
+        {
+            get { return numberOfConnections; }
+        }
+        private int numberOfConnections;
+
         public Action<NetworkStatus, AsyncUserToken> ConnectStatus { get; set; }
 
         public TSocketServer(int numConnections)
@@ -154,6 +159,7 @@ namespace ZCSharpLib.Nets.TSockets
                 AsyncSocketUserTokenUsed.Add(userToken);    //添加到正在连接列表
                 userToken.Socket = eventArgs.AcceptSocket;
                 userToken.ActiveDateTime = DateTime.Now;
+                Interlocked.Increment(ref numberOfConnections);
                 ConnectStatus?.Invoke(NetworkStatus.Connected, userToken); // 连接回调
                 try
                 {
@@ -270,7 +276,8 @@ namespace ZCSharpLib.Nets.TSockets
             AsyncSocketUserTokenPool.Push(userToken);
 
             MaxNumberAccepted.Release();// 信号量释放
-            Interlocked.Decrement(ref semaphoreNum); 
+            Interlocked.Decrement(ref semaphoreNum);
+            Interlocked.Decrement(ref numberOfConnections);
             // 连接关闭回调
             ConnectStatus?.Invoke(NetworkStatus.Disconnect, userToken);
         }

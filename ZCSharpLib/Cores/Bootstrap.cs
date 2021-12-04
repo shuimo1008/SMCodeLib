@@ -82,7 +82,6 @@ namespace ZCSharpLib.Cores
         private IEnumerator IEStartup()
         {
             yield return null;
-            App.Info("程序开始初始化...");
             foreach (var item in BootObjects)
             {
                 App.Info("初始化:" + item.obj.GetType());
@@ -93,7 +92,6 @@ namespace ZCSharpLib.Cores
                     if (obj is IEnumerator) yield return obj;
                 }
             }
-            App.Info("程序完成初始化...");
             OnStartupFinished?.Invoke();
         }
 
