@@ -63,7 +63,12 @@ namespace ZCSharpLib
         /// <summary>
         /// 单例对象
         /// </summary>
-        private Dictionary<Type, object> Instances { get; set; }
+        private Dictionary<string, object> instances;
+
+        public IReadOnlyDictionary<string, object> Instance
+        {
+            get { return instances; }
+        }
 
         private App() { }
 
@@ -75,7 +80,7 @@ namespace ZCSharpLib
             updater = new Updater();
             mainthread = new Mainthread();
             bootstrap = new Bootstrap();
-            Instances = new Dictionary<Type, object>();
+            instances = new Dictionary<string, object>();
 
             ThreadPool.QueueUserWorkItem((_st) =>
             {
@@ -96,7 +101,14 @@ namespace ZCSharpLib
         {
             if (objs == null) objs = new object[] { };
             for (int i = 0; i < objs.Length; i++)
-                if (objs[i] != null) Ins.bootstrap.Add(objs[i]);
+            {
+                if (objs[i] != null)
+                {
+                    object obj = objs[i];
+                    Ins.bootstrap.Add(obj);
+                    Ins.instances.Add(obj.GetType().Name, objs[i]); // 管理模块单例话
+                }
+            }
             return Ins.bootstrap.Startup();
         }
 
@@ -154,13 +166,13 @@ namespace ZCSharpLib
 
         public static object MakeSingleton(Type type, params object[] args)
         {
-            lock (Ins.Instances)
+            lock (Ins.instances)
             {
                 object value = null;
-                if (!Ins.Instances.TryGetValue(type, out value))
+                if (!Ins.instances.TryGetValue(type.Name, out value))
                 {
                     value = ReflUtils.Construct(type, args);
-                    if (value != null) Ins.Instances.Add(type, value);
+                    if (value != null) Ins.instances.Add(type.Name, value);
                 }
                 return value;
             }

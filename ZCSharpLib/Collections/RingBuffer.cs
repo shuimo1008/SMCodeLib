@@ -59,5 +59,12 @@ namespace ZCSharpLib.Collections
             }
             else throw new ArgumentOutOfRangeException($"环形Buffer为空, 请存取数据后在读! _rwLenght={_rwLength}");
         }
+
+        public void Clear()
+        {
+            _rwLength = 0;
+            _readPosition = 0;
+            _writePosition = 0;
+        }
     }
 }

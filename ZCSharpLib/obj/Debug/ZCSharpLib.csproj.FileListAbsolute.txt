@@ -82,4 +82,3 @@ D:\Dev\Works\SMCodeLib\ZCSharpLib\bin\Debug\ZCSharpLib.pdb
 D:\Dev\Works\SMCodeLib\ZCSharpLib\obj\Debug\ZCSharpLib.csproj.CoreCompileInputs.cache
 D:\Dev\Works\SMCodeLib\ZCSharpLib\obj\Debug\ZCSharpLib.dll
 D:\Dev\Works\SMCodeLib\ZCSharpLib\obj\Debug\ZCSharpLib.pdb
-D:\Dev\Works\SMCodeLib\ZCSharpLib\obj\Debug\ZCSharpLib.csproj.AssemblyReference.cache

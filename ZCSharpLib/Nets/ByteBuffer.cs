@@ -140,6 +140,15 @@ namespace ZCSharpLib.Nets
             WriteBytes(bytes);
         }
 
+        public void WriteASCII(string value)
+        {
+            value = value == null ? string.Empty : value;
+            byte[] contentBytes = Encoding.ASCII.GetBytes(value);
+            byte[] headBytes = BitConverter.GetBytes(contentBytes.Length);
+            WriteBytes(headBytes);
+            WriteBytes(contentBytes);
+        }
+
         public void WriteUTF8(string value)
         {
             value = value == null ? string.Empty : value;
@@ -241,6 +250,14 @@ namespace ZCSharpLib.Nets
             byte[] bytes = ReadBytes(8);
             double oDouble = BitConverter.ToDouble(bytes, 0);
             return oDouble;
+        }
+
+        public string ReadASCII()
+        {
+            int lenght = ReadInt32();
+            byte[] bytes = ReadBytes(lenght);
+            string content = Encoding.ASCII.GetString(bytes, 0, lenght);
+            return content;
         }
 
         public string ReadUTF8()

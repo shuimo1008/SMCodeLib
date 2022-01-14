@@ -257,19 +257,22 @@ namespace ZCSharpLib.Nets.TSockets
 
         public virtual void CloseSocket(AsyncUserToken userToken)
         {
-            string socketInfo = string.Format($"本地地址: {userToken.Socket.LocalEndPoint} 远程地址: {userToken.Socket.RemoteEndPoint}");
-            try
+            if (userToken != null)
             {
-                userToken.Socket.Shutdown(SocketShutdown.Both);
-                App.Info($"关闭连接. {socketInfo}");
-            }
-            catch (Exception e)
-            {
-                App.Error($"关闭连接 {socketInfo} 错误, 消息: {e.Message}");
-            }
+                string socketInfo = string.Format($"本地地址: {userToken.Socket.LocalEndPoint} 远程地址: {userToken.Socket.RemoteEndPoint}");
+                try
+                {
+                    userToken.Socket.Shutdown(SocketShutdown.Both);
+                    App.Info($"关闭连接. {socketInfo}");
+                }
+                catch (Exception e)
+                {
+                    App.Error($"关闭连接 {socketInfo} 错误, 消息: {e.Message}");
+                }
 
-            userToken.Socket.Close();
-            userToken.Socket = null; //释放引用，并清理缓存，包括释放协议对象等资源
+                userToken.Socket.Close();
+                userToken.Socket = null; //释放引用，并清理缓存，包括释放协议对象等资源
+            }
             userToken.Clear();
 
             AsyncSocketUserTokenUsed.Remove(userToken);
