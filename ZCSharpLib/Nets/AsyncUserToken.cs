@@ -13,7 +13,8 @@ namespace ZCSharpLib.Nets
             set
             {
                 // 当有新的连接时清理缓存
-                if (socket == null) Clear();
+                //if (socket == null) 
+                Clear(); // 有新得连接则需要清理上一次连接的数据
                 socket = value;
                 SendEventArgs.AcceptSocket = socket;
                 RecvEventArgs.AcceptSocket = socket;

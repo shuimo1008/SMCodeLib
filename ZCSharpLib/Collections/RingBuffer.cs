@@ -27,21 +27,35 @@ namespace ZCSharpLib.Collections
                 return _buffer[index];
             }
         }
+        /// <summary>循环输入</summary
+        public bool IsLoop { get; protected set; }
+        /// <summary>循环轮数</summary>
+        public byte Rounds { get; protected set; }
 
-        public RingBuffer(int bufferSize)
+        public bool IsClass { get; protected set; }
+
+        public RingBuffer(int bufferSize, bool isLoop = true)
         {
+            IsLoop = isLoop;
             _bufferSize = bufferSize;
             _buffer = new T[_bufferSize];
+            IsClass = typeof(T).IsClass;
         }
 
         public void Enqueue(T shift)
         {
+            if (IsLoop)
+            {
+                // 如果是循环状态并且缓存容量已满,则先取出留出空位再存
+                if (_rwLength >= BufferSize)
+                    Dequeue();
+            }
+
             if (_rwLength < BufferSize)
             {
                 // 写在赋值前面保证写入索引可以获取到当前赋值的值
                 _rwLength += 1; _writePosition += 1;
                 if (_writePosition >= BufferSize) _writePosition = 0;
-
                 _buffer[_writePosition] = shift;
             }
             else throw new ArgumentOutOfRangeException($"环形Buffer越界, 请清理一部分数据! _rwLenght={_rwLength}");
@@ -57,14 +71,14 @@ namespace ZCSharpLib.Collections
 
                 return _buffer[_readPosition];
             }
-            else throw new ArgumentOutOfRangeException($"环形Buffer为空, 请存取数据后在读! _rwLenght={_rwLength}");
+            else return default(T);
         }
 
         public void Clear()
         {
             _rwLength = 0;
-            _readPosition = 0;
-            _writePosition = 0;
+            _readPosition = -1;
+            _writePosition = -1;
         }
     }
 }
