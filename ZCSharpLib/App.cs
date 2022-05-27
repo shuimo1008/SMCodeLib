@@ -14,6 +14,11 @@ using ZCSharpLib.Dialogs;
 
 namespace ZCSharpLib
 {
+    /// <summary>
+    /// 依赖注入有个好处就是可以在初始化的时候不考虑那个对象是否已经被初始化了
+    /// 管理器会自动对没有初始化的对象进行初始化操作,所以这里需要把这些内容改为
+    /// 依赖注入的创建方式
+    /// </summary>
     public class App
     {
         private static App Ins

@@ -103,7 +103,7 @@ namespace ZGameLib.Preloads
             IsDone = true;
         }
 
-        [Bootstrap]
+        [Startup]
         public IEnumerator Init()
         {
             if (!IsDone)

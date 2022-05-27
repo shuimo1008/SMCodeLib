@@ -10,7 +10,7 @@ using ZCSharpLib.Coroutines;
 namespace ZCSharpLib.Cores
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-    public class BootstrapAttribute : Attribute { }
+    public class StartupAttribute : Attribute { }
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class ShutdownAttribute : Attribute { }
@@ -56,7 +56,7 @@ namespace ZCSharpLib.Cores
                     | BindingFlags.NonPublic | BindingFlags.Instance);
                 for (int i = 0; i < methodInfos.Length; i++)
                 {
-                    BootstrapAttribute initMethodAttr = methodInfos[i].GetCustomAttribute<BootstrapAttribute>();
+                    StartupAttribute initMethodAttr = methodInfos[i].GetCustomAttribute<StartupAttribute>();
                     if (initMethodAttr != null)
                         bootObject.startupMehtod = methodInfos[i];
 
