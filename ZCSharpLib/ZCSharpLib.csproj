@@ -46,6 +46,7 @@
     <Compile Include="Cores\Bootstrap.cs" />
     <Compile Include="Coroutines\Coroutine.cs" />
     <Compile Include="Dialogs\MessageDialog.cs" />
+    <Compile Include="Events\IEventDispatcher.cs" />
     <Compile Include="Guids\Guid.cs" />
     <Compile Include="Nets\AsyncUserToken.cs" />
     <Compile Include="Nets\DataStream.cs" />
@@ -166,7 +167,7 @@
     <Compile Include="Coroutines\Coroutiner.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\EventArgs.cs" />
-    <Compile Include="Events\EventDispatch.cs" />
+    <Compile Include="Events\EventDispatcher.cs" />
     <Compile Include="Events\IEventArgs.cs" />
     <Compile Include="Events\IEventListener.cs" />
     <Compile Include="Times\Updater.cs" />

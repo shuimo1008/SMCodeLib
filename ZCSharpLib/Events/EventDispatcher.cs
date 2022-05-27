@@ -4,21 +4,21 @@ using ZCSharpLib.Objects;
 
 namespace ZCSharpLib.Events
 {
-    public class EventDispatch
+    public class EventDispatcher : IEventDispatcher
     {
-        private Dictionary<string, Delegate> EventTable { get; set; }
+        private Dictionary<string, Delegate> Events { get; set; }
 
-        public EventDispatch()
+        public EventDispatcher()
         {
-            EventTable = new Dictionary<string, Delegate>();
+            Events = new Dictionary<string, Delegate>();
         }
 
         private Delegate OnAddListenerAdding(string eventType, Delegate linstener)
         {
             Delegate @delegate = null;
-            if (!EventTable.TryGetValue(eventType, out @delegate))
+            if (!Events.TryGetValue(eventType, out @delegate))
             {
-                EventTable.Add(eventType, @delegate);
+                Events.Add(eventType, @delegate);
             }
             if (@delegate != null && linstener.GetType() != @delegate.GetType())
             {
@@ -30,31 +30,31 @@ namespace ZCSharpLib.Events
         public void AddListener(string eventType, Action handler)
         {
             Action a = (Action)OnAddListenerAdding(eventType, handler);
-            EventTable[eventType] = (Action)Delegate.Combine(a, handler);
+            Events[eventType] = (Action)Delegate.Combine(a, handler);
         }
 
         public void AddListener<T>(string eventType, Action<T> handler)
         {
             Action<T> a = (Action<T>)OnAddListenerAdding(eventType, handler);
-            EventTable[eventType] = (Action<T>)Delegate.Combine(a, handler);
+            Events[eventType] = (Action<T>)Delegate.Combine(a, handler);
         }
 
         public void AddListener<T, U>(string eventType, Action<T, U> handler)
         {
             Action<T, U> a = (Action<T, U>)OnAddListenerAdding(eventType, handler);
-            EventTable[eventType] = (Action<T, U>)Delegate.Combine(a, handler);
+            Events[eventType] = (Action<T, U>)Delegate.Combine(a, handler);
         }
 
         public void AddListener<T, U, V>(string eventType, Action<T, U, V> handler)
         {
             Action<T, U, V> a = (Action<T, U, V>)OnAddListenerAdding(eventType, handler);
-            EventTable[eventType] = (Action<T, U, V>)Delegate.Combine(a, handler);
+            Events[eventType] = (Action<T, U, V>)Delegate.Combine(a, handler);
         }
 
-        public void OnListenerRemoving(string eventType, Delegate linstener)
+        private void OnListenerRemoving(string eventType, Delegate linstener)
         {
             Delegate @delegate = null;
-            if (!EventTable.TryGetValue(eventType, out @delegate))
+            if (!Events.TryGetValue(eventType, out @delegate))
             {
                 throw new Exception(string.Format("Attempting to remove listener for type \"{0}\" but Messenger doesn't know about this event type.", eventType));
             }
@@ -71,44 +71,44 @@ namespace ZCSharpLib.Events
         public void OnListenerRemoved(string eventType)
         {
             Delegate @delegate = null;
-            if (EventTable.TryGetValue(eventType, out @delegate) && @delegate == null)
+            if (Events.TryGetValue(eventType, out @delegate) && @delegate == null)
             {
-                EventTable.Remove(eventType);
+                Events.Remove(eventType);
             }
         }
 
         public void RemoveListener(string eventType, Action handler)
         {
             OnListenerRemoving(eventType, handler);
-            EventTable[eventType] = (Action)Delegate.Remove((Action)EventTable[eventType], handler);
+            Events[eventType] = (Action)Delegate.Remove((Action)Events[eventType], handler);
             OnListenerRemoved(eventType);
         }
 
         public void RemoveListener<T>(string eventType, Action<T> handler)
         {
             OnListenerRemoving(eventType, handler);
-            EventTable[eventType] = (Action<T>)Delegate.Remove((Action<T>)EventTable[eventType], handler);
+            Events[eventType] = (Action<T>)Delegate.Remove((Action<T>)Events[eventType], handler);
             OnListenerRemoved(eventType);
         }
 
         public void RemoveListener<T, U>(string eventType, Action<T, U> handler)
         {
             OnListenerRemoving(eventType, handler);
-            EventTable[eventType] = (Action<T, U>)Delegate.Remove((Action<T, U>)EventTable[eventType], handler);
+            Events[eventType] = (Action<T, U>)Delegate.Remove((Action<T, U>)Events[eventType], handler);
             OnListenerRemoved(eventType);
         }
 
         public void RemoveListener<T, U, V>(string eventType, Action<T, U, V> handler)
         {
             OnListenerRemoving(eventType, handler);
-            EventTable[eventType] = (Action<T, U, V>)Delegate.Remove((Action<T, U, V>)EventTable[eventType], handler);
+            Events[eventType] = (Action<T, U, V>)Delegate.Remove((Action<T, U, V>)Events[eventType], handler);
             OnListenerRemoved(eventType);
         }
 
         public void Dispatch(string eventType)
         {
             Delegate @delegate = null;
-            if (EventTable.TryGetValue(eventType, out @delegate))
+            if (Events.TryGetValue(eventType, out @delegate))
             {
                 Action callback = @delegate as Action;
                 callback();
@@ -118,7 +118,7 @@ namespace ZCSharpLib.Events
         public void Dispatch<T>(string eventType, T t)
         {
             Delegate @delegate = null;
-            if (EventTable.TryGetValue(eventType, out @delegate))
+            if (Events.TryGetValue(eventType, out @delegate))
             {
                 Action<T> callback = @delegate as Action<T>;
                 callback(t);
@@ -128,7 +128,7 @@ namespace ZCSharpLib.Events
         public void Dispatch<T, U>(string eventType, T t, U u)
         {
             Delegate @delegate = null;
-            if (EventTable.TryGetValue(eventType, out @delegate))
+            if (Events.TryGetValue(eventType, out @delegate))
             {
                 Action<T, U> callback = @delegate as Action<T, U>;
                 callback(t, u);
@@ -138,7 +138,7 @@ namespace ZCSharpLib.Events
         public void Dispatch<T, U, V>(string eventType, T t, U u, V v)
         {
             Delegate @delegate = null;
-            if (EventTable.TryGetValue(eventType, out @delegate))
+            if (Events.TryGetValue(eventType, out @delegate))
             {
                 Action<T, U, V> callback = @delegate as Action<T, U, V>;
                 callback(t, u, v);
