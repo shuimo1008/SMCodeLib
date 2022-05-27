@@ -105,7 +105,7 @@ namespace ZCSharpLib.Events
             OnListenerRemoved(eventType);
         }
 
-        public void Dispatch(string eventType)
+        public void Notify(string eventType)
         {
             Delegate @delegate = null;
             if (Events.TryGetValue(eventType, out @delegate))
@@ -115,7 +115,7 @@ namespace ZCSharpLib.Events
             }
         }
 
-        public void Dispatch<T>(string eventType, T t)
+        public void Notify<T>(string eventType, T t)
         {
             Delegate @delegate = null;
             if (Events.TryGetValue(eventType, out @delegate))
@@ -125,7 +125,7 @@ namespace ZCSharpLib.Events
             }
         }
 
-        public void Dispatch<T, U>(string eventType, T t, U u)
+        public void Notify<T, U>(string eventType, T t, U u)
         {
             Delegate @delegate = null;
             if (Events.TryGetValue(eventType, out @delegate))
@@ -135,7 +135,7 @@ namespace ZCSharpLib.Events
             }
         }
 
-        public void Dispatch<T, U, V>(string eventType, T t, U u, V v)
+        public void Nofity<T, U, V>(string eventType, T t, U u, V v)
         {
             Delegate @delegate = null;
             if (Events.TryGetValue(eventType, out @delegate))
