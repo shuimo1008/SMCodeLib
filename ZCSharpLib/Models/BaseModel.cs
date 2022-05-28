@@ -23,6 +23,7 @@ namespace ZCSharpLib.Models
         public int DataCount => Datas.Count;
         public abstract Type DataType { get; }
         protected Dictionary<string, object> Datas { get; set; }
+        public IReadOnlyDictionary<string, object> IDatas => Datas;
 
         public Model()
         {
@@ -34,9 +35,9 @@ namespace ZCSharpLib.Models
             if (!Datas.ContainsKey(guid))
             {
                 Datas.Add(guid, obj);
-                Event.Notify(HashID.ToString(), new ModelArgs() 
+                Event.Notify(HashID.ToString(), new ModelArgs()
                 {
-                    Data = obj, Status = ModelStatus.Add 
+                    Data = obj, Status = ModelStatus.Add
                 });
             }
         }
@@ -46,9 +47,9 @@ namespace ZCSharpLib.Models
             if (Datas.TryGetValue(guid, out var obj))
             {
                 Datas.Remove(guid);
-                Event.Notify(HashID.ToString(), new ModelArgs() 
-                { 
-                    Data = obj, Status = ModelStatus.Remove 
+                Event.Notify(HashID.ToString(), new ModelArgs()
+                {
+                    Data = obj, Status = ModelStatus.Remove
                 });
                 if (obj is IDisposable v) v.Dispose();
             }
@@ -78,18 +79,18 @@ namespace ZCSharpLib.Models
 
         public virtual IList<object> FindAll(Predicate<object> match = null)
         {
-            return Datas.Values.Where((t) => 
+            return Datas.Values.Where((t) =>
             {
-                if (match != null) match(t);
+                if (match != null) return match(t);
                 return true;
             }).ToList();
         }
 
         public virtual IList<object> FindAll(int index, int count, Predicate<object> match = null)
         {
-            return Datas.Values.Skip(index).Where((t)=> 
+            return Datas.Values.Skip(index).Where((t) =>
             {
-                if (match != null) match(t);
+                if (match != null) return match(t);
                 return true;
             }).Take(count).ToList();
         }
