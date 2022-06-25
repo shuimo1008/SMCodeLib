@@ -72,6 +72,12 @@ namespace ZCSharpLib.Models
             }
         }
 
+        public virtual object Find(string guid)
+        {
+            Datas.TryGetValue(guid, out var obj);
+            return obj;
+        }
+
         public virtual object Find(Predicate<object> match)
         {
             return Datas.Values.FirstOrDefault(t => match(t));
@@ -113,13 +119,9 @@ namespace ZCSharpLib.Models
             base.Modify(guid, (_t)=> { modifier?.Invoke(_t as T); });
         }
 
-        public virtual T Find(string guid)
+        public new virtual T Find(string guid)
         {
-            return base.Find((_t) => 
-            { 
-                if (_t is T t) return t.Guid == guid;
-                return false;
-            }) as T;
+            return base.Find(guid) as T;
         }
 
         public virtual T Find(Predicate<T> match)

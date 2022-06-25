@@ -1,13 +1,13 @@
 ﻿using System;
 
-namespace ZCSharpLib.Dialogs
+namespace ZCSharpLib.Messages
 {
-    public interface IDialog
+    public interface IMessage
     {
-        IDialog SetTitle(string title);
-        IDialog SetMessage(string message);
-        IDialog SetType(DialogType dialogType);
-        IDialog SetCallback(Action<DialogResult> onResult);
+        IMessage SetTitle(string title);
+        IMessage SetMessage(string message, bool outlog = false);
+        IMessage SetType(MessageType messageType);
+        IMessage SetCallback(Action<MessageResult> onResult);
         void Close();
     }
 

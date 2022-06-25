@@ -4,24 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ZCSharpLib.Dialogs
+namespace ZCSharpLib.Messages
 {
     public interface IMessageBox
     {
-        IDialog CreateDialog();
+        IMessage CreateMessage();
     }
 
-    public enum DialogResult
+    public enum MessageResult
     {
         OK = 1,
         Cancel = 2,
     }
 
-    public enum DialogType
+    public enum MessageType
     { 
-        None,
         Alert,
-        Foucs,
+        Dialog,
+        Message,
     }
 
     public class IMessageBoxIsNullExecption : Exception
@@ -36,27 +36,31 @@ namespace ZCSharpLib.Dialogs
     {
         private IMessageBox messageBox;
 
-        public void SetupDialog(IMessageBox dialog) => this.messageBox = dialog;
+        public void SetupMessage(IMessageBox messageBox) => this.messageBox = messageBox;
 
-        public IDialog Foucs(string title, string message, Action<DialogResult> onResult)
+        public IMessage Message(string title, string message, Action<MessageResult> onResult)
         {
-            return SetupDialog(title, message, onResult, DialogType.Foucs);
+            return SetupMessage(title, message, onResult, MessageType.Message);
         }
 
-        public IDialog Alert(string title, string message, Action<DialogResult> onResult)
+        public IMessage Alert(string title, string message, Action<MessageResult> onResult)
         {
-            return SetupDialog(title, message, onResult, DialogType.Alert);
+            return SetupMessage(title, message, onResult, MessageType.Alert);
         }
 
-        public IDialog Show(string title, string message, Action<DialogResult> onResult)
+        public IMessage Dialog(string title, string message, Action<MessageResult> onResult)
         {
-            return SetupDialog(title, message, onResult, DialogType.None);
+            return SetupMessage(title, message, onResult, MessageType.Dialog);
         }
 
-        public IDialog SetupDialog(string title, string message, Action<DialogResult> onResult, DialogType dialogType)
+        public IMessage SetupMessage(string title, string message, Action<MessageResult> onResult, MessageType messageType)
         {
             if (messageBox == null) throw new IMessageBoxIsNullExecption();
-            return messageBox.CreateDialog().SetTitle(title).SetMessage(message).SetType(dialogType).SetCallback(onResult);
+            return messageBox.CreateMessage()
+                .SetTitle(title)
+                .SetMessage(message)
+                .SetType(messageType)
+                .SetCallback(onResult);
         }
     }
 }

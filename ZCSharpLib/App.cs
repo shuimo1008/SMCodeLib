@@ -10,7 +10,7 @@ using ZCSharpLib.Coroutines;
 using System.Threading;
 using ZCSharpLib.Cores;
 using ZCSharpLib.Exceptions;
-using ZCSharpLib.Dialogs;
+using ZCSharpLib.Messages;
 
 namespace ZCSharpLib
 {
@@ -134,26 +134,27 @@ namespace ZCSharpLib
         #endregion
 
         #region 消息盒子
-        public static void SetupDialog(IMessageBox dialog)
+
+        public static void SetupMessage(IMessageBox message)
         {
-            Message.SetupDialog(dialog);
+            Message.SetupMessage(message);
         }
-        public static IDialog Show(string title, string message, Action<DialogResult> onResult)
-        {
-            try{ return Message.Show(title, message, onResult);}
-            catch (IMessageBoxIsNullExecption e){Error($"{e}.通过App.SetupDialog设置");}
-            return null;
-        }
-        public static IDialog Foucs(string title, string message, Action<DialogResult> onResult)
-        {
-            try { return Message.Foucs(title, message, onResult); }
-            catch (IMessageBoxIsNullExecption e) { Error($"{e}.通过App.SetupDialog设置"); }
-            return null;
-        }
-        public static IDialog Alert(string title, string message, Action<DialogResult> onResult)
+        public static IMessage ShowAlert(string title, string message, Action<MessageResult> onResult)
         {
             try { return Message.Alert(title, message, onResult); }
-            catch (IMessageBoxIsNullExecption e) { Error($"{e}.通过App.SetupDialog设置"); }
+            catch (IMessageBoxIsNullExecption e) { Error($"{e}.通过App.SetupMessage设置"); }
+            return null;
+        }
+        public static IMessage ShowDialog(string title, string message, Action<MessageResult> onResult)
+        {
+            try{ return Message.Dialog(title, message, onResult);}
+            catch (IMessageBoxIsNullExecption e){Error($"{e}.通过App.SetupMessage设置");}
+            return null;
+        }
+        public static IMessage ShowMessage(string title, string message)
+        {
+            try { return Message.Message(title, message, null); }
+            catch (IMessageBoxIsNullExecption e) { Error($"{e}.通过App.SetupMessage设置"); }
             return null;
         }
         #endregion
