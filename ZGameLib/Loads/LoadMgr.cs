@@ -146,13 +146,13 @@ namespace ZGameLib.Loads
             if (AssetPool[url].IsDone) AssetPool[url].Callback();
         }
 
-        public void Clear(string url)
+        public void Unload(string url)
         {
             Loader oAsset;
             if (AssetPool.TryGetValue(url, out oAsset))
             {
-                oAsset.Dispose();
                 AssetPool.Remove(url);
+                oAsset.Dispose();
             }
         }
 

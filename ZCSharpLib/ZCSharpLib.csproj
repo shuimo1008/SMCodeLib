@@ -42,10 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\RingBuffer.cs" />
-    <Compile Include="Dialogs\MessageBox.cs" />
+    <Compile Include="Messages\MessageBox.cs" />
     <Compile Include="Cores\Bootstrap.cs" />
     <Compile Include="Coroutines\Coroutine.cs" />
-    <Compile Include="Dialogs\MessageDialog.cs" />
+    <Compile Include="Messages\MessageDialog.cs" />
     <Compile Include="Events\IEventDispatcher.cs" />
     <Compile Include="Guids\Guid.cs" />
     <Compile Include="Nets\AsyncUserToken.cs" />
