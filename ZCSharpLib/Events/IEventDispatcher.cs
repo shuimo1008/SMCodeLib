@@ -20,6 +20,6 @@ namespace ZCSharpLib.Events
         void Notify(string eventType);
         void Notify<T>(string eventType, T t);
         void Notify<T, U>(string eventType, T t, U u);
-        void Nofity<T, U, V>(string eventType, T t, U u, V v);
+        void Notify<T, U, V>(string eventType, T t, U u, V v);
     }
 }

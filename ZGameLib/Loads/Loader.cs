@@ -45,7 +45,7 @@ namespace ZGameLib.Loads
         private UnityWebRequest www { get; set; }
         private UnityWebRequestAsyncOperation AsyncOperation { get; set; }
 
-        private AssetBundle mAssetBundle;
+        private AssetBundle assetBundle;
 
         private const string ASSETAUDIO = "Audio";
         private const string ASSETIMAGE = "Image";
@@ -109,13 +109,19 @@ namespace ZGameLib.Loads
             return GetBundle().GetAllAssetNames();
         }
 
+        private bool isResourceUnload = false;
+        public void SetResourceUnload(bool isResourceUnload)
+        {
+            this.isResourceUnload = isResourceUnload;
+        }
+
         private AssetBundle GetBundle()
         {
-            if (mAssetBundle == null && www.isDone && string.IsNullOrEmpty(www.error))
+            if (assetBundle == null && www.isDone && string.IsNullOrEmpty(www.error))
             {
-                mAssetBundle = DownloadHandlerAssetBundle.GetContent(www);
+                assetBundle = DownloadHandlerAssetBundle.GetContent(www);
             }
-            return mAssetBundle;
+            return assetBundle;
         }
 
         public Object GetAsset(string name)
@@ -204,14 +210,24 @@ namespace ZGameLib.Loads
                 object obj = CacheTable[key];
                 if (key.Equals(ASSETIMAGE))
                 {
-                    Object.DestroyImmediate(obj as Texture2D);
+                    Texture o = obj as Texture;
+                    if (isResourceUnload)
+                    {
+                        //if (o != null) Resources.UnloadAsset(o);
+                    }
+                    if (o != null) Object.Destroy(o);
                 }
                 else if (key.Equals(ASSETAUDIO))
                 {
-                    Object.DestroyImmediate(obj as AudioClip);
+                    AudioClip o = obj as AudioClip;
+                    if (isResourceUnload)
+                    {
+                        //if (o != null) Resources.UnloadAsset(o);
+                    }
+                    if (o != null) Object.Destroy(o);
                 }
             }
-            if (mAssetBundle != null) { mAssetBundle.Unload(true); }
+            if (assetBundle != null) { assetBundle.Unload(true); }
         }
     }
 }

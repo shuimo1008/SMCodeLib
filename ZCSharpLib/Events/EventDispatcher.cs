@@ -135,7 +135,7 @@ namespace ZCSharpLib.Events
             }
         }
 
-        public void Nofity<T, U, V>(string eventType, T t, U u, V v)
+        public void Notify<T, U, V>(string eventType, T t, U u, V v)
         {
             Delegate @delegate = null;
             if (Events.TryGetValue(eventType, out @delegate))

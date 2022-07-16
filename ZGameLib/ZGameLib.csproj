@@ -45,8 +45,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Loads\Load.cs" />
-    <Compile Include="Loads\LoadMgr.cs" />
+    <Compile Include="Loads\Loader.cs" />
+    <Compile Include="Loads\LoaderMgr.cs" />
     <Compile Include="Loggers\Logger.cs" />
     <Compile Include="Preloads\PreloadMgr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
