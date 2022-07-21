@@ -7,12 +7,12 @@ namespace ZCSharpLib.Threads
     public class Mainthread : IDisposable
     {
         public int ThreadID { get; private set; }
-        private SynchronizeThread SynchronizeThread { get; set; }
+        private SynchronizeContext SynchronizeThread { get; set; }
 
         public Mainthread()
         {
             ThreadID = Thread.CurrentThread.ManagedThreadId;
-            SynchronizeThread = new SynchronizeThread();
+            SynchronizeThread = new SynchronizeContext();
             App.SubscribeUpdate(Update);
         }
         

@@ -57,7 +57,7 @@
     <Compile Include="Nets\TSockets\TSocketServerDaemonThread.cs" />
     <Compile Include="Nets\PacketMgr.cs" />
     <Compile Include="Threads\SynchronizationThread.cs" />
-    <Compile Include="Times\LS.cs" />
+    <Compile Include="Utils\TimeUtils.cs" />
     <Compile Include="Crypts\AES.cs" />
     <Compile Include="Crypts\DES.cs" />
     <Compile Include="Crypts\MD5.cs" />

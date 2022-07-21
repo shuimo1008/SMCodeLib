@@ -86,13 +86,6 @@ namespace ZCSharpLib
             mainthread = new Mainthread();
             bootstrap = new Bootstrap();
             instances = new Dictionary<string, object>();
-
-            ThreadPool.QueueUserWorkItem((_st) =>
-            {
-                Thread.Sleep(5000);
-                if (!updater.IsUpdate)
-                    Error("帧更新没有调用,请每帧调用App.Update(float deltaTime)方法!");
-            });
         }
 
         #region 帧循环

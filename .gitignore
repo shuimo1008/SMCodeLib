@@ -1,3 +1,6 @@
 .ide-wal,.suo,.cache,.lock,.ide,.ide-shm,.meta
 /ZDataAccess/ZDataAccess/obj/Debug/*.force
 /ZDataAccess/.vs
+Convert2UTF8/.vs
+UnityLib/.vs
+ZGameLib/.vs

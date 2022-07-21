@@ -6,17 +6,17 @@ using System.Threading;
 
 namespace ZCSharpLib.Threads
 {
-    public class SynchronizeThread
+    public class SynchronizeContext
     {
         private int ThreadID { get; set; }
-        private Queue<ThreadItem> Items { get; set; }
+        private Queue<ThreadNotifer> Notifers { get; set; }
 
         // Post 同步锁
         private object sync = new object();
 
-        public SynchronizeThread()
+        public SynchronizeContext()
         {
-            Items = new Queue<ThreadItem>();
+            Notifers = new Queue<ThreadNotifer>();
             ThreadID = Thread.CurrentThread.ManagedThreadId;
         }
 
@@ -26,13 +26,13 @@ namespace ZCSharpLib.Threads
                 callback(state);
             else
             {
-                using (ManualResetEvent waitHandle = new ManualResetEvent(false))
+                using (ManualResetEvent manualReset = new ManualResetEvent(false))
                 {
                     lock (sync)
                     {
-                        Items.Enqueue(new ThreadItem(callback, state, waitHandle));
+                        Notifers.Enqueue(new ThreadNotifer(callback, state, manualReset));
                     }
-                    waitHandle.WaitOne();
+                    manualReset.WaitOne();
                 }
             }
         }
@@ -41,7 +41,7 @@ namespace ZCSharpLib.Threads
         {
             lock (sync)
             {
-                Items.Enqueue(new ThreadItem(callback, state, null));
+                Notifers.Enqueue(new ThreadNotifer(callback, state, null));
             }
         }
 
@@ -49,22 +49,19 @@ namespace ZCSharpLib.Threads
         {
             lock (sync)
             {
-                var oCount = Items.Count;
+                var oCount = Notifers.Count;
                 for (int i = 0; i < oCount; i++)
-                {
-                    ThreadItem item = Items.Dequeue();
-                    item.Invoke();
-                }
+                    Notifers.Dequeue().Invoke();
             }
         }
 
-        private struct ThreadItem
+        private struct ThreadNotifer
         {
             private object State { get; set; }
             private SendOrPostCallback Callback { get; set; }
             private ManualResetEvent WaitHandle { get; set; }
 
-            public ThreadItem(SendOrPostCallback callback, object state, ManualResetEvent waitHandle = null)
+            public ThreadNotifer(SendOrPostCallback callback, object state, ManualResetEvent waitHandle = null)
             {
                 Callback = callback;
                 State = state;

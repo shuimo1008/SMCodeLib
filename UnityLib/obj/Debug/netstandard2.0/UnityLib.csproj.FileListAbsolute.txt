@@ -1,0 +1,14 @@
+D:\Works\SMCodeLib\UnityLib\bin\Debug\netstandard2.0\UnityLib.deps.json
+D:\Works\SMCodeLib\UnityLib\bin\Debug\netstandard2.0\UnityLib.dll
+D:\Works\SMCodeLib\UnityLib\bin\Debug\netstandard2.0\UnityLib.pdb
+D:\Works\SMCodeLib\UnityLib\bin\Debug\netstandard2.0\SMCore.dll
+D:\Works\SMCodeLib\UnityLib\bin\Debug\netstandard2.0\UnityEngine.dll
+D:\Works\SMCodeLib\UnityLib\bin\Debug\netstandard2.0\SMCore.pdb
+D:\Works\SMCodeLib\UnityLib\obj\Debug\netstandard2.0\UnityLib.csproj.AssemblyReference.cache
+D:\Works\SMCodeLib\UnityLib\obj\Debug\netstandard2.0\UnityLib.GeneratedMSBuildEditorConfig.editorconfig
+D:\Works\SMCodeLib\UnityLib\obj\Debug\netstandard2.0\UnityLib.AssemblyInfoInputs.cache
+D:\Works\SMCodeLib\UnityLib\obj\Debug\netstandard2.0\UnityLib.AssemblyInfo.cs
+D:\Works\SMCodeLib\UnityLib\obj\Debug\netstandard2.0\UnityLib.csproj.CoreCompileInputs.cache
+D:\Works\SMCodeLib\UnityLib\obj\Debug\netstandard2.0\UnityLib.csproj.CopyComplete
+D:\Works\SMCodeLib\UnityLib\obj\Debug\netstandard2.0\UnityLib.dll
+D:\Works\SMCodeLib\UnityLib\obj\Debug\netstandard2.0\UnityLib.pdb

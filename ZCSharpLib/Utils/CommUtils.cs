@@ -79,10 +79,5 @@ namespace ZCSharpLib.Utils
             md5Str = md5Str.Replace("-", "");
             return md5Str;
         }
-
-        public static string Combine(string iPath1, string iPath2)
-        {
-            return Path.Combine(iPath1, iPath2);
-        }
     }
 }

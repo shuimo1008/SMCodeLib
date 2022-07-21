@@ -1,0 +1,9 @@
+D:\Works\SMCodeLib\SMCore\bin\Debug\netstandard2.0\SMCore.deps.json
+D:\Works\SMCodeLib\SMCore\bin\Debug\netstandard2.0\SMCore.dll
+D:\Works\SMCodeLib\SMCore\bin\Debug\netstandard2.0\SMCore.pdb
+D:\Works\SMCodeLib\SMCore\obj\Debug\netstandard2.0\SMCore.GeneratedMSBuildEditorConfig.editorconfig
+D:\Works\SMCodeLib\SMCore\obj\Debug\netstandard2.0\SMCore.AssemblyInfoInputs.cache
+D:\Works\SMCodeLib\SMCore\obj\Debug\netstandard2.0\SMCore.AssemblyInfo.cs
+D:\Works\SMCodeLib\SMCore\obj\Debug\netstandard2.0\SMCore.csproj.CoreCompileInputs.cache
+D:\Works\SMCodeLib\SMCore\obj\Debug\netstandard2.0\SMCore.dll
+D:\Works\SMCodeLib\SMCore\obj\Debug\netstandard2.0\SMCore.pdb
