@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace SMCore.Coroutines.Build
+namespace SMCore.Coros.Build
 {
     public class WaitForSecondsSM : IYielInstruction
     {

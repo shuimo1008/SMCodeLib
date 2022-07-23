@@ -1,4 +1,5 @@
 ﻿using SMCore.Services;
+using SMCore.SUtils;
 using System;
 
 namespace SMCore
@@ -46,6 +47,17 @@ namespace SMCore
         {
             Container.Register(factory);
             return Container.Resolve<T>();
+        }
+
+        public static T MakeService<T>(params object[] args) where T : class
+        {
+            return MakeService(typeof(T), args) as T;
+        }
+
+        public static object MakeService(Type type, params object[] args)
+        {
+            Container.Register(Utils.Construct(type, args));
+            return Container.Resolve(type);
         }
     }
 }

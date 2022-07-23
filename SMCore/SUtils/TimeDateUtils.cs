@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace SMCore.Times
+namespace SMCore.SUtils
 {
     public class Lunar
     {

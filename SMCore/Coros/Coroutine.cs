@@ -7,9 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SMCore.Coroutines;
 
-namespace SMCore.Coroutines
+namespace SMCore.Coros
 {
     public class Coroutine
     {

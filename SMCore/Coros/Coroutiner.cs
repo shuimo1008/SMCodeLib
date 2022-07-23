@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SMCore.Coroutines
+namespace SMCore.Coros
 {
     /// <summary>
     /// 协程之间不能相互嵌套使用,因为会出现内存溢出.
