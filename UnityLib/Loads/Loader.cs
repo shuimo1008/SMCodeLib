@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using System;
 using UnityEngine.Networking;
@@ -109,40 +108,52 @@ namespace UnityLib.Loads
             if (IsDone) RemoveAllListener();
         }
 
-        public string[] GetAllScenePaths()
+        public string[] GetAllScenePaths(bool fromMemory = false)
         {
-            return GetBundle().GetAllScenePaths();
+            return GetBundle(fromMemory).GetAllScenePaths();
         }
 
-        public string[] GetAllAssetNames()
+        public string[] GetAllAssetNames(bool fromMemory = false)
         {
-            return GetBundle().GetAllAssetNames();
+            return GetBundle(fromMemory).GetAllAssetNames();
         }
 
-        private AssetBundle GetBundle()
+        private AssetBundle GetBundle(bool fromMemory)
         {
-            if (assetBundle == null && www.isDone && string.IsNullOrEmpty(www.error))
+            if (fromMemory)
             {
-                assetBundle = DownloadHandlerAssetBundle.GetContent(www);
+                if (assetBundle == null)
+                {
+                    byte[] bytes = GetBytes();
+                    assetBundle = AssetBundle.LoadFromMemory(bytes);
+                }
+            }
+            else
+            {
+                bool verified = true;
+                verified = verified && www.isDone;
+                verified = verified && assetBundle == null;
+                verified = verified && string.IsNullOrEmpty(Error);
+                if (verified) assetBundle = DownloadHandlerAssetBundle.GetContent(www);
             }
             return assetBundle;
         }
 
-        public Object GetAsset(string name)
+        public Object GetAsset(string name, bool fromMemory = false)
         {
-            List<Object> list = null;
+            List<Object> inBundleAssets = null;
             if (!CacheTable.ContainsKey(ASSETBUNDLE))
             {
-                list = new List<Object>();
-                CacheTable.Add(ASSETBUNDLE, list);
+                inBundleAssets = new List<Object>();
+                CacheTable.Add(ASSETBUNDLE, inBundleAssets);
             }
-            else list = CacheTable[ASSETBUNDLE] as List<Object>;
+            else inBundleAssets = CacheTable[ASSETBUNDLE] as List<Object>;
 
-            AssetBundle bundle = GetBundle();
+            AssetBundle bundle = GetBundle(fromMemory);
             Object retObj = null;
             if (bundle != null)
             {
-                retObj = list.Find((t) => t.name.Equals(name));
+                retObj = inBundleAssets.Find((t) => t.name.Equals(name));
                 if (retObj == null)
                 {
                     retObj = bundle.LoadAsset(name);
@@ -150,7 +161,7 @@ namespace UnityLib.Loads
                     {
                         Logger.Error($"当前资源：{Uri} AssetBundle中没有找到对应名称 name={name} 的资源!");
                     }
-                    else { list.Add(retObj); }
+                    else { inBundleAssets.Add(retObj); }
                 }
             }
             return retObj;
@@ -211,19 +222,20 @@ namespace UnityLib.Loads
             for (int i = 0; i < keys.Count; i++)
             {
                 string key = keys[i];
-                object obj = CacheTable[key];
                 if (key.Equals(ASSETIMAGE))
                 {
-                    Texture o = obj as Texture;
+                    Texture o = CacheTable[key] as Texture;
                     if (o != null) Object.Destroy(o);
                 }
                 else if (key.Equals(ASSETAUDIO))
                 {
-                    AudioClip o = obj as AudioClip;
+                    AudioClip o = CacheTable[key] as AudioClip;
                     if (o != null) Object.Destroy(o);
                 }
+                CacheTable[key] = null;
             }
             if (assetBundle != null) { assetBundle.Unload(true); }
+            CacheTable.Clear(); // 缓存清理
         }
     }
 }

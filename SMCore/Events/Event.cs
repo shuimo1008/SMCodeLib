@@ -34,7 +34,7 @@ namespace SMCore.Events
         {
             //App.Logger.Info("参数1：" + eventName);
             if (listener == null) return;
-            List<Action<IEventArgs>> listeners = null;
+            List<Action<IEventArgs>> listeners;
             if (!EventDict.TryGetValue(eventName, out listeners))
             {
                 listeners = new List<Action<IEventArgs>>();
@@ -103,7 +103,7 @@ namespace SMCore.Events
                     for (int i = 0; i < listeners.Count; i++)
                     {
                         Action<IEventArgs> listener = listeners[i];
-                        try { listener(args); }
+                        try { listener?.Invoke(args); }
                         catch (Exception e) { Logger.Error(e); }
                     }
                 }
@@ -154,16 +154,9 @@ namespace SMCore.Events
                 UseTime = Clamp(UseTime + deltaTime, 0, DelayTime);
                 if (UseTime == DelayTime)
                 {
-                    try
-                    {
-                        OnNotify?.Invoke(CallEvent, EventArgs, 0);
-                    }
-                    catch (Exception e)
-                    {
-                        IoC.Resolve<ILoggerService>().Error(e);
-                    }
-                    Driver.Unsubscribe(Update);
-                    Dispose();
+                    try { OnNotify?.Invoke(CallEvent, EventArgs, 0); }
+                    catch (Exception e) { IoC.Resolve<ILoggerService>().Error(e); }
+                    Driver.Unsubscribe(Update); Dispose();
                 }
             }
 

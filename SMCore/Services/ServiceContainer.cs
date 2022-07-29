@@ -114,12 +114,31 @@ namespace SMCore.Services
         {
             private Func<T> func;
 
+            private object target;
+
             public GenericFactory(Func<T> func)
             {
                 this.func = func;
             }
 
-            public virtual object Create() => func();
+            public virtual object Create()
+            {
+                if (target == null)
+                {
+                    target = func();
+                    return target;
+                }
+                else return target;
+            }
+
+            protected override void DoManagedObjectDispose()
+            {
+                base.DoManagedObjectDispose();
+
+                var disposable = target as IDisposable;
+                if (disposable != null) disposable.Dispose();
+                target = null;
+            }
         }
 
         internal class SingleInstanceFactory : ObjectBase, IFactory

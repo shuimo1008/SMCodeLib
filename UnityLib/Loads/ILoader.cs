@@ -17,9 +17,15 @@ namespace UnityLib.Loads
         void Start();
         void Update(float deltaTime);
         void Callback();
-        string[] GetAllScenePaths();
-        string[] GetAllAssetNames();
-        Object GetAsset(string name);
+        /// <summary>获取AssetBundle场景的路径</summary>
+        /// <param name="fromMemory">有些情况下无法从AssetBundle中获取资源,需要从内存中获取</param>
+        string[] GetAllScenePaths(bool fromMemory = false);
+        /// <summary>获取AssetBundle资源的名称</summary>
+        /// <param name="fromMemory">有些情况下无法从AssetBundle中获取资源,需要从内存中获取</param>
+        string[] GetAllAssetNames(bool fromMemory = false);
+        /// <summary>获取AssetBundle中的资源</summary>
+        /// <param name="fromMemory">有些情况下无法从AssetBundle中获取资源,需要从内存中获取</param>
+        Object GetAsset(string name, bool fromMemory = false);
         AudioClip GetAudioClip();
         Texture2D GetTexture();
         string GetText();
