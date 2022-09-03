@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SMCore.Logger
 {
-    public interface ILoggerService
+    public interface ILoggerS
     {
         void Register(ILoggerListener listener);
 

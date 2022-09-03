@@ -7,16 +7,16 @@ namespace SMCore.Events
 {
     public class Event : IEvent
     {
-        private ILoggerService Logger
+        private ILoggerS Logger
         {
             get
             {
                 if (_Logger == null)
-                    _Logger = IoC.Resolve<ILoggerService>();
+                    _Logger = IoC.Resolve<ILoggerS>();
                 return _Logger;
             }
         }
-        private ILoggerService _Logger;
+        private ILoggerS _Logger;
 
         protected Dictionary<string, List<Action<IEventArgs>>> EventDict { get; set; }
 
@@ -117,16 +117,16 @@ namespace SMCore.Events
 
         protected class Delay : IDisposable
         {
-            public IDriverService Driver
+            public IDriverS Driver
             {
                 get
                 {
                     if (_Driver == null)
-                        _Driver = IoC.Resolve<IDriverService>();
+                        _Driver = IoC.Resolve<IDriverS>();
                     return _Driver;
                 }
             }
-            private IDriverService _Driver;
+            private IDriverS _Driver;
 
             private float UseTime { get; set; }
             private float DelayTime { get; set; }
@@ -155,7 +155,7 @@ namespace SMCore.Events
                 if (UseTime == DelayTime)
                 {
                     try { OnNotify?.Invoke(CallEvent, EventArgs, 0); }
-                    catch (Exception e) { IoC.Resolve<ILoggerService>().Error(e); }
+                    catch (Exception e) { IoC.Resolve<ILoggerS>().Error(e); }
                     Driver.Unsubscribe(Update); Dispose();
                 }
             }

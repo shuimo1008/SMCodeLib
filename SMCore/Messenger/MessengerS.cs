@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SMCore.Messenger
 {
-    public class MessengerService : ObjectBase, IMessengerService
+    public class MessengerS : ObjectBase, IMessengerS
     {
         public List<Action<IMessenger>> Subscribers
         {
@@ -27,7 +27,7 @@ namespace SMCore.Messenger
                 {
                     subscriber?.Invoke(messenger);
                 }
-                catch (Exception e) { IoC.Resolve<ILoggerService>().Error(e); }
+                catch (Exception e) { IoC.Resolve<ILoggerS>().Error(e); }
             }
         }
 

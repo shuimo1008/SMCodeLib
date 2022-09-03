@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SMCore.Messenger
 {
-    public interface IMessengerService : IObject
+    public interface IMessengerS : IObject
     {
 
         void Publish(IMessenger messenger);

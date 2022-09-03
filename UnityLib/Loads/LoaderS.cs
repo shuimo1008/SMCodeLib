@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace UnityLib.Loads
 {
-    public enum LoadPriority
+    public enum Priority
     {
         General = 0, Middle = 1, High = 2,
     }
@@ -22,32 +22,32 @@ namespace UnityLib.Loads
     /// 2. 根据加载优先级加载资源;
     /// 3. 成功加载的资源进入缓存;
     /// </summary>
-    public class LoaderService : ObjectBase, ILoaderService
+    public class LoaderS : ObjectBase, ILoaderS
     {
         private ILoader[] loadingGroup;
         private Queue<ILoader> waitLoading1Queue; // 最高优先级
         private Queue<ILoader> waitLoading2Queue; // 中等优先级
         private Queue<ILoader> waitLoading3Queue; // 最低优先级
 
-        private IDriverService Driver
+        private IDriverS Driver
         {
             get
             {
                 if (_Driver == null)
-                    _Driver = IoC.Resolve<IDriverService>();
+                    _Driver = IoC.Resolve<IDriverS>();
                 return _Driver;
             }
         }
-        private IDriverService _Driver;
+        private IDriverS _Driver;
 
         /// <summary>
         /// 缓存加载者
         /// </summary>
         private Dictionary<string, ILoader> CacheLoader { get; set; }
 
-        public LoaderService() : this(3) { }
+        public LoaderS() : this(3) { }
 
-        public LoaderService(int num)
+        public LoaderS(int num)
         {
             loadingGroup = new Loader[num];
             waitLoading1Queue = new Queue<ILoader>(); 
@@ -103,27 +103,27 @@ namespace UnityLib.Loads
             }
         }
 
-        public void Load(string uri, Action<IEventArgs> onDone, LoadPriority priority = LoadPriority.General)
+        public void Load(string uri, Action<IEventArgs> onDone, Priority priority = Priority.General)
         {
             Load(uri, (_uri)=> { return LoadingFactory.New(_uri); }, onDone, priority);
         }
 
-        public void LoadImage(string uri, Action<IEventArgs> onDone, LoadPriority priority = LoadPriority.General)
+        public void LoadImage(string uri, Action<IEventArgs> onDone, Priority priority = Priority.General)
         {
             Load(uri, (_uri) => { return LoadingFactory.NewImage(_uri); }, onDone, priority);
         }
 
-        public void LoadBundle(string uri, Action<IEventArgs> onDone, LoadPriority priority = LoadPriority.General)
+        public void LoadBundle(string uri, Action<IEventArgs> onDone, Priority priority = Priority.General)
         {
             Load(uri, (_uri) => { return LoadingFactory.NewBundle(_uri); }, onDone, priority);
         }
 
-        public void LoadAudio(string uri, Action<IEventArgs> onDone, LoadPriority priority = LoadPriority.General, AudioType audioType = AudioType.MPEG)
+        public void LoadAudio(string uri, Action<IEventArgs> onDone, Priority priority = Priority.General, AudioType audioType = AudioType.MPEG)
         {
             Load(uri, (_uri) => { return LoadingFactory.NewAudio(_uri, audioType); }, onDone, priority);
         }
 
-        private void Load(string url, Func<string, ILoader> f, Action<IEventArgs> onDone, LoadPriority priority = LoadPriority.General)
+        private void Load(string url, Func<string, ILoader> f, Action<IEventArgs> onDone, Priority priority = Priority.General)
         {
             if (string.IsNullOrEmpty(url))
                 throw new Exception("Loader方法 Url 不能为空\n");
@@ -148,13 +148,13 @@ namespace UnityLib.Loads
                 // 进入等待加载队列
                 switch (priority)
                 {
-                    case LoadPriority.High:
+                    case Priority.High:
                         waitLoading1Queue.Enqueue(CacheLoader[url]);
                         break;
-                    case LoadPriority.Middle:
+                    case Priority.Middle:
                         waitLoading2Queue.Enqueue(CacheLoader[url]);
                         break;
-                    case LoadPriority.General:
+                    case Priority.General:
                         waitLoading3Queue.Enqueue(CacheLoader[url]);
                         break;
                 }

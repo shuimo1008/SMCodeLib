@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SMCore.Driver
 {
-    public interface IDriverService
+    public interface IDriverS
     {
         void Update(float deltaTime);
 
