@@ -16,10 +16,10 @@ namespace SMCore.Coros
         public IEnumerator Enumerator { get; private set; }
         private Stack<IEnumerator> Storages { get; set; }
 
-        public Coroutine(IEnumerator iEnumerator)
+        public Coroutine(IEnumerator enumerator)
         {
             Storages = new Stack<IEnumerator>();
-            Enumerator = iEnumerator;
+            Enumerator = enumerator;
         }
 
         public void Setup(Coroutiner coroutineer)
@@ -29,7 +29,7 @@ namespace SMCore.Coros
 
         public void Start()
         {
-            IoC.Resolve<IDriverService>().Subscribe(Update);
+            IoC.Resolve<IDriverS>().Subscribe(Update);
         }
 
         private bool isWaiting = false;
@@ -73,7 +73,7 @@ namespace SMCore.Coros
             {
                 if (Storages.Count > 100)
                 {
-                    IoC.Resolve<ILoggerService>().Warning($"警告: 迭代器堆栈存放数据过大[{Storages.Count}]");
+                    IoC.Resolve<ILoggerS>().Warning($"警告: 迭代器堆存放数据过大[{Storages.Count}]");
                 }
                 Storages.Push(Enumerator); // 保存现有迭代器
                 Enumerator = enumerator;
@@ -83,7 +83,7 @@ namespace SMCore.Coros
 
         public void Stop()
         {
-            IoC.Resolve<IDriverService>().Unsubscribe(Update);
+            IoC.Resolve<IDriverS>().Unsubscribe(Update);
         }
     }
 }

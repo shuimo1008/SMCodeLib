@@ -21,7 +21,12 @@ namespace SMCore.Messenger
         public Messenger(MessengerStyle style)
         {
             Style = style;
-            IoC.Resolve<IMessengerService>().Publish(this);
+        }
+
+        public IMessenger Publish()
+        {
+            IoC.Resolve<IMessengerS>().Publish(this);
+            return this;
         }
 
         protected override void DoManagedObjectDispose()
@@ -42,7 +47,7 @@ namespace SMCore.Messenger
     {
         public DailogMessenger()
             : base(MessengerStyle.Dialog)
-        { }
+        { Title = "对话"; }
     }
 
     public class SystemMessenger : Messenger
@@ -56,6 +61,6 @@ namespace SMCore.Messenger
     {
         public ActivelyMessenger()
             : base(MessengerStyle.Actively)
-        { }
+        { Title = "提示"; }
     }
 }

@@ -51,27 +51,27 @@ namespace UnityLib.Loads
         private const string ASSETBYTE = "Byte";
         private const string ASSETBUNDLE = "AssetBundle";
 
-        private Dictionary<string, object> CacheTable 
+        private Dictionary<string, object> Caches
         {
             get
             {
-                if (_CacheTable == null)
-                    _CacheTable = new Dictionary<string, object>();
-                return _CacheTable;
+                if (_Caches == null)
+                    _Caches = new Dictionary<string, object>();
+                return _Caches;
             }
         }
-        private Dictionary<string, object> _CacheTable;
+        private Dictionary<string, object> _Caches;
 
-        private ILoggerService Logger
+        private ILoggerS Logger
         {
             get
             {
                 if (_Logger == null)
-                    _Logger = IoC.Resolve<ILoggerService>();
+                    _Logger = IoC.Resolve<ILoggerS>();
                 return _Logger;
             }
         }
-        private ILoggerService _Logger;
+        private ILoggerS _Logger;
 
         public Loader(UnityWebRequest www) 
         {
@@ -118,7 +118,7 @@ namespace UnityLib.Loads
             return GetBundle(fromMemory).GetAllAssetNames();
         }
 
-        private AssetBundle GetBundle(bool fromMemory)
+        public AssetBundle GetBundle(bool fromMemory = false)
         {
             if (fromMemory)
             {
@@ -136,32 +136,33 @@ namespace UnityLib.Loads
                 verified = verified && string.IsNullOrEmpty(Error);
                 if (verified) assetBundle = DownloadHandlerAssetBundle.GetContent(www);
             }
+
             return assetBundle;
         }
 
         public Object GetAsset(string name, bool fromMemory = false)
         {
-            List<Object> inBundleAssets = null;
-            if (!CacheTable.ContainsKey(ASSETBUNDLE))
+            Dictionary<string, Object> bundleAssets;
+            if (!Caches.ContainsKey(ASSETBUNDLE))
             {
-                inBundleAssets = new List<Object>();
-                CacheTable.Add(ASSETBUNDLE, inBundleAssets);
+                bundleAssets = new Dictionary<string, Object>();
+                Caches.Add(ASSETBUNDLE, bundleAssets);
             }
-            else inBundleAssets = CacheTable[ASSETBUNDLE] as List<Object>;
+            else bundleAssets = Caches[ASSETBUNDLE] as Dictionary<string, Object>;
+           
+            Object retObj = null;
 
             AssetBundle bundle = GetBundle(fromMemory);
-            Object retObj = null;
             if (bundle != null)
             {
-                retObj = inBundleAssets.Find((t) => t.name.Equals(name));
-                if (retObj == null)
+                if (!bundleAssets.TryGetValue(name, out retObj))
                 {
                     retObj = bundle.LoadAsset(name);
                     if (retObj == null)
                     {
                         Logger.Error($"当前资源：{Uri} AssetBundle中没有找到对应名称 name={name} 的资源!");
                     }
-                    else { inBundleAssets.Add(retObj); }
+                    else { bundleAssets.Add(name, retObj); }
                 }
             }
             return retObj;
@@ -169,31 +170,31 @@ namespace UnityLib.Loads
 
         public AudioClip GetAudioClip()
         {
-            if (!CacheTable.TryGetValue(ASSETAUDIO, out var obj))
+            if (!Caches.TryGetValue(ASSETAUDIO, out var obj))
             {
                 obj = DownloadHandlerAudioClip.GetContent(www);
-                CacheTable.Add(ASSETAUDIO, obj);
+                Caches.Add(ASSETAUDIO, obj);
             }
             return obj as AudioClip;
         }
 
         public Texture2D GetTexture()
         {
-            if (!CacheTable.TryGetValue(ASSETIMAGE, out var obj))
+            if (!Caches.TryGetValue(ASSETIMAGE, out var obj))
             {
                 obj = DownloadHandlerTexture.GetContent(www);
-                CacheTable.Add(ASSETIMAGE, obj);
+                Caches.Add(ASSETIMAGE, obj);
             }
             return obj as Texture2D;
         }
 
         public string GetText()
         {
-            System.Object obj = null;
-            if (!CacheTable.TryGetValue(ASSETTEXT, out obj))
+            object obj;
+            if (!Caches.TryGetValue(ASSETTEXT, out obj))
             {
                 obj = www.downloadHandler.text;
-                CacheTable.Add(ASSETTEXT, obj);
+                Caches.Add(ASSETTEXT, obj);
             }
             if (obj != null) return obj.ToString();
             else return string.Empty;
@@ -201,10 +202,10 @@ namespace UnityLib.Loads
 
         public byte[] GetBytes()
         {
-            if (!CacheTable.TryGetValue(ASSETBYTE, out var obj))
+            if (!Caches.TryGetValue(ASSETBYTE, out var obj))
             {
                 obj = www.downloadHandler.data;
-                CacheTable.Add(ASSETBYTE, obj);
+                Caches.Add(ASSETBYTE, obj);
             }
             return obj as byte[];
         }
@@ -218,24 +219,24 @@ namespace UnityLib.Loads
         protected override void DoUnManagedObjectDispose()
         {
             base.DoUnManagedObjectDispose();
-            List<string> keys = new List<string>(CacheTable.Keys);
+            List<string> keys = new List<string>(Caches.Keys);
             for (int i = 0; i < keys.Count; i++)
             {
                 string key = keys[i];
                 if (key.Equals(ASSETIMAGE))
                 {
-                    Texture o = CacheTable[key] as Texture;
+                    Texture o = Caches[key] as Texture;
                     if (o != null) Object.Destroy(o);
                 }
                 else if (key.Equals(ASSETAUDIO))
                 {
-                    AudioClip o = CacheTable[key] as AudioClip;
+                    AudioClip o = Caches[key] as AudioClip;
                     if (o != null) Object.Destroy(o);
                 }
-                CacheTable[key] = null;
+                Caches[key] = null;
             }
             if (assetBundle != null) { assetBundle.Unload(true); }
-            CacheTable.Clear(); // 缓存清理
+            Caches.Clear(); // 缓存清理
         }
     }
 }

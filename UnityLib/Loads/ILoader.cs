@@ -26,6 +26,7 @@ namespace UnityLib.Loads
         /// <summary>获取AssetBundle中的资源</summary>
         /// <param name="fromMemory">有些情况下无法从AssetBundle中获取资源,需要从内存中获取</param>
         Object GetAsset(string name, bool fromMemory = false);
+        AssetBundle GetBundle(bool fromMemory = false);
         AudioClip GetAudioClip();
         Texture2D GetTexture();
         string GetText();

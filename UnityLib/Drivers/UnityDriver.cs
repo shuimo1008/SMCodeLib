@@ -14,26 +14,30 @@ namespace UnityLib.Drivers
     {
         private static UnityDriver ins;
 
-        public IDriverService Service
+        public IDriverS Service
         {
             get
             {
                 if (_Service == null)
                 {
-                    _Service = IoC.Resolve<IDriverService>();
+                    _Service = IoC.Resolve<IDriverS>();
                 }
                 return _Service;
             }
         }
-        private IDriverService _Service;
+        private IDriverS _Service;
 
-        private void Awake()
+        void Awake()
         {
-            IoC.Register<IDriverService>(new DriverService());
+            IoC.Register<IDriverS>(new DriverS());
             ins = this;
         }
 
         void Update() => Service.Update(Time.deltaTime);
+
+        public void Subscribe(Action<float> onDriving) => Service.Subscribe(onDriving);
+
+        public void Unsubscribe(Action<float> onDriving) => Service.Unsubscribe(onDriving);
 
         public static UnityDriver Get()
         {

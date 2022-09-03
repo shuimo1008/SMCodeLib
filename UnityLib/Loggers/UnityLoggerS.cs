@@ -8,9 +8,9 @@ using SMCore.Logger;
 
 namespace UnityLib.Loggers
 {
-    public class UnityLoggerService : LoggerService
+    public class UnityLoggerS : LoggerS
     {
-        public UnityLoggerService()
+        public UnityLoggerS()
         {
             Register(new UnityLogger());
         }

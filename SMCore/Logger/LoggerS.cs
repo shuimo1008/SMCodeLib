@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace SMCore.Logger
 {
-    public class LoggerService : ILoggerService
+    public class LoggerS : ILoggerS
     {
         public int RegisterCount { get; private set; }
         public Action<string> Output { get; private set; }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SMCore.Driver
 {
-    public class DriverService : IDriverService
+    public class DriverS : IDriverS
     {
         private Action<float>[] subscribers;
 

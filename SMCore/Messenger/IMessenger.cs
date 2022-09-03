@@ -20,6 +20,7 @@ namespace SMCore.Messenger
         string Title { get; set; }
         string Content { get; set; }
         MessengerStyle Style { get; }
+        IMessenger Publish();
         Action<MessengerResult> OnResult { get; set; }
         Action OnDisposed { get; set; }
     }
