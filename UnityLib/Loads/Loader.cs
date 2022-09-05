@@ -233,6 +233,15 @@ namespace UnityLib.Loads
                     AudioClip o = Caches[key] as AudioClip;
                     if (o != null) Object.Destroy(o);
                 }
+                else if (key.Equals(ASSETBUNDLE))
+                {
+                    Dictionary<string, Object> os = Caches[ASSETBUNDLE] as Dictionary<string, Object>;
+                    foreach (var o in os.Values)
+                    {
+                        if (o != null) Object.Destroy(o);
+                    }
+                    os.Clear();
+                }
                 Caches[key] = null;
             }
             if (assetBundle != null) { assetBundle.Unload(true); }

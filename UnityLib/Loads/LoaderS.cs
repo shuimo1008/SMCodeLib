@@ -43,7 +43,7 @@ namespace UnityLib.Loads
         /// <summary>
         /// 缓存加载者
         /// </summary>
-        private Dictionary<string, ILoader> CacheLoader { get; set; }
+        private Dictionary<string, ILoader> Caches { get; set; }
 
         public LoaderS() : this(3) { }
 
@@ -53,7 +53,7 @@ namespace UnityLib.Loads
             waitLoading1Queue = new Queue<ILoader>(); 
             waitLoading2Queue = new Queue<ILoader>();
             waitLoading3Queue = new Queue<ILoader>();
-            CacheLoader = new Dictionary<string, ILoader>();
+            Caches = new Dictionary<string, ILoader>();
             Driver.Subscribe(Update);
         }
 
@@ -73,8 +73,8 @@ namespace UnityLib.Loads
                 {
                     if (!loader.IsSucess)
                     {
-                        if (CacheLoader.ContainsKey(loader.Uri))
-                            CacheLoader.Remove(loader.Uri);
+                        if (Caches.ContainsKey(loader.Uri))
+                            Caches.Remove(loader.Uri);
                     }
                     loadingGroup[i] = null;
                 }
@@ -129,7 +129,7 @@ namespace UnityLib.Loads
                 throw new Exception("Loader方法 Url 不能为空\n");
 
             bool needLoad = true;
-            if (CacheLoader.TryGetValue(url, out ILoader loader))
+            if (Caches.TryGetValue(url, out ILoader loader))
             {
                 // 资源池已经有该资源，但是资源没有加载成功,则对资源进行重新加载
                 if (loader.IsDone && !loader.IsSucess)
@@ -137,11 +137,11 @@ namespace UnityLib.Loads
                     // 先释放资源,然后再重新加载
                     Unload(url);
                     // 重新加载资源
-                    CacheLoader.Add(url, f.Invoke(url));// Asset.New<T>(context);
+                    Caches.Add(url, f.Invoke(url));// Asset.New<T>(context);
                 }
                 else needLoad = false;
             }
-            else CacheLoader.Add(url, f.Invoke(url)); // 加入资源池
+            else Caches.Add(url, f.Invoke(url)); // 加入资源池
 
             if (needLoad)
             {
@@ -149,21 +149,21 @@ namespace UnityLib.Loads
                 switch (priority)
                 {
                     case Priority.High:
-                        waitLoading1Queue.Enqueue(CacheLoader[url]);
+                        waitLoading1Queue.Enqueue(Caches[url]);
                         break;
                     case Priority.Middle:
-                        waitLoading2Queue.Enqueue(CacheLoader[url]);
+                        waitLoading2Queue.Enqueue(Caches[url]);
                         break;
                     case Priority.General:
-                        waitLoading3Queue.Enqueue(CacheLoader[url]);
+                        waitLoading3Queue.Enqueue(Caches[url]);
                         break;
                 }
             }
             // 事件监听写在这里是因为存在同一时间多个地方需要加载该资源。
             // 所以每个地方都需要在资源完成加载后进行回调，于是当资源完成回调后删除所有监听事件。
-            CacheLoader[url].AddListener(onDone);
+            Caches[url].AddListener(onDone);
             // 如果资源已经完成下载,则直接返回
-            if (CacheLoader[url].IsDone) CacheLoader[url].Callback();
+            if (Caches[url].IsDone) Caches[url].Callback();
         }
 
         public void Unload(string uri)
@@ -172,18 +172,18 @@ namespace UnityLib.Loads
                 throw new Exception("Loader方法 Url 不能为空\n");
 
             ILoader oAsset;
-            if (CacheLoader.TryGetValue(uri, out oAsset))
+            if (Caches.TryGetValue(uri, out oAsset))
             {
-                CacheLoader.Remove(uri);
+                Caches.Remove(uri);
                 oAsset.Dispose();
             }
         }
 
         public void UnloadAll()
         {
-            foreach (var assetCache in CacheLoader.Values)
+            foreach (var assetCache in Caches.Values)
                 assetCache.Dispose();
-            CacheLoader.Clear();
+            Caches.Clear();
         }
 
         protected override void DoManagedObjectDispose()

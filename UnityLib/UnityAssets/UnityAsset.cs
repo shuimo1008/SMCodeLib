@@ -67,10 +67,7 @@ namespace UnityLib.UnityAssets
 
         public virtual void GetAsync(Action<IUnityAsset<T>> onAsync)
         {
-            IoC.Resolve<ILoaderS>().LoadImage(Uri, (args) => 
-            { 
-                if (args is Loader loader) { Loader = loader; onAsync?.Invoke(this); } 
-            }, Priority);
+
         }
 
         public abstract T GetAsset();
@@ -96,6 +93,16 @@ namespace UnityLib.UnityAssets
             if (Loader == null)
                 return null;
             return Loader.GetTexture();
+        }
+
+        public override void GetAsync(Action<IUnityAsset<Texture2D>> onAsync)
+        {
+            base.GetAsync(onAsync);
+
+            IoC.Resolve<ILoaderS>().LoadImage(Uri, (args) =>
+            {
+                if (args is Loader loader) { Loader = loader; onAsync?.Invoke(this); }
+            }, Priority);
         }
     }
 
@@ -123,6 +130,16 @@ namespace UnityLib.UnityAssets
                 return null;
             return Loader.GetAudioClip();
         }
+
+        public override void GetAsync(Action<IUnityAsset<AudioClip>> onAsync)
+        {
+            base.GetAsync(onAsync);
+
+            IoC.Resolve<ILoaderS>().LoadAudio(Uri, (args) =>
+            {
+                if (args is Loader loader) { Loader = loader; onAsync?.Invoke(this); }
+            }, Priority);
+        }
     }
 
     public class ByteAsset : UnityAsset<byte[]>
@@ -136,27 +153,75 @@ namespace UnityLib.UnityAssets
                 return null;
             return Loader.GetBytes();
         }
+
+        public override void GetAsync(Action<IUnityAsset<byte[]>> onAsync)
+        {
+            base.GetAsync(onAsync);
+
+            IoC.Resolve<ILoaderS>().Load(Uri, (args) =>
+            {
+                if (args is Loader loader) { Loader = loader; onAsync?.Invoke(this); }
+            }, Priority);
+        }
     }
 
-    public class AssetBundleAsset : UnityAsset<AssetBundle>
+    public class BundleAssetS
     {
-        private bool IsMemory { get; set; }
-
-        private Dictionary<string, int> Countings
+        private static Dictionary<string, BundleAsset> Bundles
         {
             get
             {
-                if (_Countings == null)
-                    _Countings = new Dictionary<string, int>();
-                return _Countings;
+                if (_Bundles == null)
+                    _Bundles = new Dictionary<string, BundleAsset>();
+                return _Bundles;
             }
         }
-        private Dictionary<string, int> _Countings;
+        private static Dictionary<string, BundleAsset> _Bundles;
 
-        public AssetBundleAsset(string uri)
+        public static void GetAsync(string uri, Action<BundleAsset> onAsync)
+        {
+            if (!Bundles.TryGetValue(uri, out var bundle))
+            {
+                Bundles.Add(uri, bundle = new BundleAsset(uri));
+                bundle.OnWillbeDestoryed = OnDestoryHandler;
+                bundle.GetAsync((asset) => { onAsync?.Invoke(asset as BundleAsset); });
+            }
+            else bundle.GetAsync((asset) => { onAsync?.Invoke(asset as BundleAsset); });
+        }
+
+        public static void Destory(string uri) => OnDestoryHandler(uri);
+
+        private static void OnDestoryHandler(string uri)
+        {
+            if (Bundles.TryGetValue(uri, out var bundle))
+                Bundles.Remove(uri);
+            if (bundle != null) bundle.Dispose();
+        }
+    }
+
+    public class BundleAsset : UnityAsset<AssetBundle>
+    {
+        private bool IsMemory { get; set; }
+
+        public Action<string> OnWillbeDestoryed { get; set; }
+
+        private int _counting;
+
+        //private Dictionary<string, int> Countings
+        //{
+        //    get
+        //    {
+        //        if (_Countings == null)
+        //            _Countings = new Dictionary<string, int>();
+        //        return _Countings;
+        //    }
+        //}
+        //private Dictionary<string, int> _Countings;
+
+        public BundleAsset(string uri)
             : base(uri) { }
 
-        public AssetBundleAsset(string uri, bool isMemory)
+        public BundleAsset(string uri, bool isMemory)
             : base(uri) { IsMemory = isMemory; }
 
         public string[] GetAllScenePaths()
@@ -171,51 +236,62 @@ namespace UnityLib.UnityAssets
             return Loader.GetAllAssetNames(IsMemory);
         }
 
-        public BundleObject<T> GetAsset<T>(string name)
+        public IBundleObject GetAsset(string name)
         {
             if (Loader == null) return null;
 
-            if (Countings.TryGetValue(name, out var counting))
-                Countings[name] = ++counting;
+            //if (Countings.TryGetValue(name, out var counting))
+            //    Countings[name] = ++counting;
+            _counting = _counting + 1;
 
-            BundleObject<T> bundleObject = new BundleObject<T>(name);
+            BundleObject bundleObject = new BundleObject(name);
             bundleObject.OnDispose = OnBundleDestoryHandler;
+            bundleObject.Asset = Loader.GetAsset(name, IsMemory);
 
-            return  Loader.GetAsset(name, IsMemory);
+            return bundleObject;
         }
 
         private void OnBundleDestoryHandler(string name)
         {
-            if (Countings.TryGetValue(name, out var counting))
-                Countings[name] = --counting;
+            //if (Countings.TryGetValue(name, out var counting))
+            //    Countings[name] = --counting;
+            _counting = Mathf.Max(0, _counting - 1);
 
-            for (int i = 0; i < C; i++)
-            {
-
-            }
+            if (_counting == 0) OnWillbeDestoryed?.Invoke(Uri);
         }
 
         public override AssetBundle GetAsset()
         {
             throw new Exception("该方法未实现, 请使用GetAsset(string name)获取详细资源!");
         }
+
+        public override void GetAsync(Action<IUnityAsset<AssetBundle>> onAsync)
+        {
+            base.GetAsync(onAsync);
+
+            IoC.Resolve<ILoaderS>().LoadBundle(Uri, (args) =>
+            {
+                if (args is Loader loader) { Loader = loader; onAsync?.Invoke(this); }
+            }, Priority);
+        }
     }
 
-    public class BundleObject<T> : IDisposable
+    public class BundleObject : IBundleObject
     {
         public string Name { get; }
 
+        public Object Asset { get; set; }
+
         public Action<string> OnDispose { get; set; }
 
-        public BundleObject(string name)
+        public BundleObject(string name) => Name = name;
+
+        public T As<T>() where T : Object
         {
-            Name = name;
+            return Asset as T;
         }
 
-        public void Dispose()
-        {
-            OnDispose?.Invoke(Name);
-        }
+        public void Dispose() => OnDispose?.Invoke(Name);
     }
 
 }

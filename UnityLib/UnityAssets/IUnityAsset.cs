@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using UnityLib.Loads;
+using UnityEngine;
 
 namespace UnityLib.UnityAssets
 {
@@ -17,5 +18,11 @@ namespace UnityLib.UnityAssets
         void GetAsync(Action<IUnityAsset<T>> onAsync);
 
         T GetAsset();
+    }
+
+    public interface IBundleObject : IDisposable
+    { 
+        string Name { get; }
+        T As<T>() where T : UnityEngine.Object;
     }
 }
