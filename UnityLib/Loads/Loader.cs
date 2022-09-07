@@ -238,7 +238,7 @@ namespace UnityLib.Loads
                     Dictionary<string, Object> os = Caches[ASSETBUNDLE] as Dictionary<string, Object>;
                     foreach (var o in os.Values)
                     {
-                        if (o != null) Object.Destroy(o);
+                        if (o != null) Object.DestroyImmediate(o, true);
                     }
                     os.Clear();
                 }

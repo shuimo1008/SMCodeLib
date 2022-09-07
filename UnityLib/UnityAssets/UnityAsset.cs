@@ -61,6 +61,8 @@ namespace UnityLib.UnityAssets
 
         public UnityAsset(string uri)
         {
+            if (string.IsNullOrEmpty(uri))
+                throw new ArgumentNullException("Uri不能为空");
             Uri = uri;
             UnityAssetRefrenceS.GetRefrence(Uri).Increment();
         }

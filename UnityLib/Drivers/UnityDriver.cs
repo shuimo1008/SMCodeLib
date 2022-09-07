@@ -10,6 +10,7 @@ using UnityLib.Loggers;
 
 namespace UnityLib.Drivers
 {
+    [DefaultExecutionOrder(-1000)]
     public class UnityDriver : MonoBehaviour
     {
         private static UnityDriver ins;
