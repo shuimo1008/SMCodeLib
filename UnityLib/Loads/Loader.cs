@@ -90,7 +90,7 @@ namespace UnityLib.Loads
             if (isDone)
             {
                 if (string.IsNullOrEmpty(www.error)) IsSucess = true;
-                else { IsSucess = false; Error = www.error; }
+                else { IsSucess = false; Error = www.error + "\n" + Uri; }
             }
             Progress = www.downloadProgress;
             IsDone = isDone;

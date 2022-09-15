@@ -288,12 +288,24 @@ namespace UnityLib.UnityAssets
 
         public BundleObject(string name) => Name = name;
 
+        private Object clone;
+
         public T As<T>() where T : Object
         {
             return Asset as T;
         }
 
-        public void Dispose() => OnDispose?.Invoke(Name);
-    }
+        public T AsClone<T>() where T : Object
+        {
+            clone = Object.Instantiate(Asset as T);
+            return clone as T;
+        }
 
+        public void Dispose()
+        {
+            if (clone != null)
+                Object.DestroyImmediate(clone);
+            OnDispose?.Invoke(Name);
+        }
+    }
 }

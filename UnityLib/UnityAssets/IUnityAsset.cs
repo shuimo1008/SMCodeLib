@@ -24,5 +24,6 @@ namespace UnityLib.UnityAssets
     { 
         string Name { get; }
         T As<T>() where T : UnityEngine.Object;
+        T AsClone<T>() where T : UnityEngine.Object;
     }
 }
