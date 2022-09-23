@@ -14,8 +14,9 @@ namespace Tools
             "using System;\r\n" +
             "using System.Collections.Generic;\r\n" +
             "using System.Linq;\r\n" +
-            "using ZCSharpLib;\r\n" +
-            "using ZCSharpLib.Nets;\r\n";
+            "using SMCore;\r\n" +
+            "using SMCore.Cores;\r\n" +
+            "using SMCore.Logger;\r\n";
 
         public string TMP_BASETPL =
             "public abstract class BaseTpl\r\n" +
@@ -37,7 +38,7 @@ namespace Tools
             "           T t = new T();\r\n" +
             "           t.SetupData(buffer);\r\n" +
             "           if (!DataTable.ContainsKey(t.Tid)) DataTable.Add(t.Tid, t);\r\n" +
-            "           else App.Error($\"模板__LK__typeof(T).Name__RK__Mgr已经包含Tid=__LK__t.Tid__RK__的对象!\");\r\n" +
+            "           else IoC.Resolve<ILoggerS>().Error($\"模板__LK__typeof(T).Name__RK__Mgr已经包含Tid=__LK__t.Tid__RK__的对象!\");\r\n" +
             "       __RK__ \r\n" +
             "   __RK__ \r\n" +
             "\r\n" +
@@ -45,7 +46,7 @@ namespace Tools
             "   __LK__ \r\n" +
             "       if (!DataTable.TryGetValue(id, out var tpl))\r\n" +
             "       __LK__\r\n" +
-            "           App.Error($\"模板__LK__typeof(T).Name__RK__Mgr没有包含Tid=__LK__id__RK__的对象!\");\r\n" +
+            "           IoC.Resolve<ILoggerS>().Error($\"模板__LK__typeof(T).Name__RK__Mgr没有包含Tid=__LK__id__RK__的对象!\");\r\n" +
             "       __RK__\r\n" +
             "       return tpl;\r\n" +
             "   __RK__ \r\n" +
@@ -67,7 +68,7 @@ namespace Tools
             "public class Tpl\r\n" +
             "__LK__ \r\n" +
                 "{0}"+
-            "   public static void Load(byte[] bytes)\r\n" +
+            "   public static void Setup(byte[] bytes)\r\n" +
             "   __LK__ \r\n" +
             "       ByteBuffer buffer = new ByteBuffer(bytes);\r\n" +
                     "{1}" +

@@ -144,5 +144,10 @@ namespace SMCore.Events
                 callback(t, u, v);
             }
         }
+
+        public void Dispose()
+        {
+            Events.Clear();
+        }
     }
 }

@@ -52,3 +52,15 @@ D:\Dev\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配
 D:\Dev\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Debug\netcoreapp2.1\配置数据生成工具.dll
 D:\Dev\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Debug\netcoreapp2.1\配置数据生成工具.pdb
 D:\Dev\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Debug\netcoreapp2.1\配置数据生成工具.genruntimeconfig.cache
+D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Debug\netcoreapp2.1\配置数据生成工具.deps.json
+D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Debug\netcoreapp2.1\配置数据生成工具.runtimeconfig.json
+D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Debug\netcoreapp2.1\配置数据生成工具.runtimeconfig.dev.json
+D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Debug\netcoreapp2.1\配置数据生成工具.dll
+D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Debug\netcoreapp2.1\配置数据生成工具.pdb
+D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Debug\netcoreapp2.1\配置数据生成工具.GeneratedMSBuildEditorConfig.editorconfig
+D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Debug\netcoreapp2.1\配置数据生成工具.AssemblyInfoInputs.cache
+D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Debug\netcoreapp2.1\配置数据生成工具.AssemblyInfo.cs
+D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Debug\netcoreapp2.1\配置数据生成工具.csproj.CoreCompileInputs.cache
+D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Debug\netcoreapp2.1\配置数据生成工具.dll
+D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Debug\netcoreapp2.1\配置数据生成工具.pdb
+D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Debug\netcoreapp2.1\配置数据生成工具.genruntimeconfig.cache

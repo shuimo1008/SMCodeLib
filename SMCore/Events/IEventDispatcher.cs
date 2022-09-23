@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SMCore.Events
 {
-    public interface IEventDispatcher
+    public interface IEventDispatcher : IDisposable
     {
         void AddListener(string eventType, Action handler);
         void AddListener<T>(string eventType, Action<T> handler);
