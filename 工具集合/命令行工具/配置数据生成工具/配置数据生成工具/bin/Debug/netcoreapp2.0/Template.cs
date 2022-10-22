@@ -1,28 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ZCSharpLib;
-using ZCSharpLib.Nets;
+using SMCore;
+using SMCore.Cores;
+using SMCore.Logger;
 
 public class Tpl
 { 
-   public readonly static DefaultAssetMgr DefaultAssetMgr = new DefaultAssetMgr();
-   public static void Load(byte[] bytes)
+   public readonly static localizationMgr localizationMgr = new localizationMgr();
+   public static void Setup(byte[] bytes)
    { 
        ByteBuffer buffer = new ByteBuffer(bytes);
-       DefaultAssetMgr.SetupData(buffer);
+       localizationMgr.SetupData(buffer);
     } 
 } 
 
 public abstract class BaseTpl
 { 
-   public int Tid { get; protected set; }
+   public string Tid { get; protected set; }
    public abstract void SetupData(ByteBuffer buffer);
 } 
 
 public class TemplateMgr<T> where T : BaseTpl, new()
 { 
-   private readonly Dictionary<int, T> DataTable = new Dictionary<int, T>();
+   private readonly Dictionary<string, T> DataTable = new Dictionary<string, T>();
 
    public void SetupData(ByteBuffer buffer) 
    { 
@@ -32,15 +33,15 @@ public class TemplateMgr<T> where T : BaseTpl, new()
            T t = new T();
            t.SetupData(buffer);
            if (!DataTable.ContainsKey(t.Tid)) DataTable.Add(t.Tid, t);
-           else App.Error($"模板{typeof(T).Name}Mgr已经包含Tid={t.Tid}的对象!");
+           else IoC.Resolve<ILoggerS>().Error($"模板{typeof(T).Name}Mgr已经包含Tid={t.Tid}的对象!");
        } 
    } 
 
-   public T Find(int id)
+   public T Find(string id)
    { 
        if (!DataTable.TryGetValue(id, out var tpl))
        {
-           App.Error($"模板{typeof(T).Name}Mgr没有包含Tid={id}的对象!");
+           IoC.Resolve<ILoggerS>().Error($"模板{typeof(T).Name}Mgr没有包含Tid={id}的对象!");
        }
        return tpl;
    } 
@@ -59,23 +60,28 @@ public class TemplateMgr<T> where T : BaseTpl, new()
 } 
 
 /// <summary> 
-/// Sheet1 
+/// localization 
 /// </summary> 
-public class DefaultAssetMgr
-   : TemplateMgr<DefaultAssetTpl>
+public class localizationMgr
+   : TemplateMgr<localizationTpl>
 { 
 } 
-public class DefaultAssetTpl : BaseTpl
+public class localizationTpl : BaseTpl
 { 
    /// <summary> 
-   /// 名称 
+   /// 中文 
    /// </summary> 
-   public string Name {get; private set; } 
+   public string Chinese {get; private set; } 
+   /// <summary> 
+   /// 英文 
+   /// </summary> 
+   public string English {get; private set; } 
 
    public override void SetupData(ByteBuffer buffer)
    { 
-       Tid = buffer.ReadInt32();
-       Name = buffer.ReadUTF8(); 
+       Tid = buffer.ReadUTF8();
+       Chinese = buffer.ReadUTF8();
+       English = buffer.ReadUTF8(); 
    } 
 } 
 

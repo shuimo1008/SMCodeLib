@@ -21,6 +21,7 @@ namespace UnityLib.Drivers
             {
                 if (_Service == null)
                 {
+                    IoC.Register<IDriverS>(new DriverS());
                     _Service = IoC.Resolve<IDriverS>();
                 }
                 return _Service;
@@ -28,10 +29,20 @@ namespace UnityLib.Drivers
         }
         private IDriverS _Service;
 
+        private bool isInitialized;
+
         void Awake()
         {
-            IoC.Register<IDriverS>(new DriverS());
             ins = this;
+
+            Initalize();
+        }
+
+        void Initalize()
+        {
+            if (!isInitialized) return;
+            DontDestroyOnLoad(gameObject);
+            isInitialized = true;
         }
 
         void Update() => Service.Update(Time.deltaTime);
@@ -44,9 +55,9 @@ namespace UnityLib.Drivers
         {
             if (ins == null)
             {
-                GameObject o = new GameObject("UnityDriver");
-                DontDestroyOnLoad(o);
-                ins = o.AddComponent<UnityDriver>();
+                ins = new GameObject("UnityDriver")
+                    .AddComponent<UnityDriver>();
+                ins.Initalize();
             }
             return ins;
         }

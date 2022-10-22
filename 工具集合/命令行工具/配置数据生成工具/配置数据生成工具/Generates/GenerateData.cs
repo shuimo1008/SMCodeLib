@@ -11,12 +11,32 @@ namespace Tools
 {
     public class GenerateData
     {
+        public bool IsRepeat { get; private set; }
+
+        private Dictionary<string, IReadOnlyDictionary<string, bool>> DataRepeatChecks
+        {
+            get
+            {
+                if (_DataRepeatChecks == null)
+                    _DataRepeatChecks = new Dictionary<string, IReadOnlyDictionary<string, bool>>();
+                return _DataRepeatChecks;
+            }
+        }
+        private Dictionary<string, IReadOnlyDictionary<string, bool>> _DataRepeatChecks;
+
+        public IReadOnlyDictionary<string, IReadOnlyDictionary<string, bool>> RepeatChecks => DataRepeatChecks;
+
+
         public byte[] Gen(List<FileData> fileDatas)
         {
             ByteBuffer buffer = new ByteBuffer();
             for (int fileIndex = 0; fileIndex < fileDatas.Count; fileIndex++)
             {
                 FileData oFileData = fileDatas[fileIndex];
+
+                // 重复数Key据检查表
+                Dictionary<string, bool> repeatKeys = new Dictionary<string, bool>();
+                DataRepeatChecks.Add(oFileData.file, repeatKeys);
 
                 Logger.Info($"打包数据:{oFileData.file}");
 
@@ -49,6 +69,18 @@ namespace Tools
                         try
                         {
                             object obj = oDataRow[columnIndex];
+
+                            // 数据重复检查
+                            if (columnIndex == 0)
+                            {
+                                if (!repeatKeys.TryGetValue(obj.ToString(), out var v))
+                                    repeatKeys[obj.ToString()] = false;
+                                else
+                                {
+                                    IsRepeat = true;
+                                    repeatKeys[obj.ToString()] = true;
+                                }
+                            }
 
                             string strType = strTypes[columnIndex];
                             if (strType.Equals("int"))
@@ -129,7 +161,7 @@ namespace Tools
         {
             if (obj == null)
                 return string.Empty;
-            return obj.ToString();
+            return obj.ToString().Trim();
         }
     }
 }

@@ -29,15 +29,16 @@ namespace Tools
         {
             Logger.Explain("配置表示例:", ConsoleColor.Green);
             Logger.Explain("---------------------------", ConsoleColor.Green);
-            Logger.Explain("| int | string |  string  |", ConsoleColor.Green);
+            Logger.Explain("| int / string | string |  string  |", ConsoleColor.Green);
             Logger.Explain("---------------------------", ConsoleColor.Green);
-            Logger.Explain("| TID |  name  | xxxxxxxx |", ConsoleColor.Green);
+            Logger.Explain("|    TID       |  name  | xxxxxxxx |", ConsoleColor.Green);
             Logger.Explain("---------------------------", ConsoleColor.Green);
-            Logger.Explain("| TID |  名称  |   xxxx   |", ConsoleColor.Green);
+            Logger.Explain("|    TID       |  名称  |   xxxx   |", ConsoleColor.Green);
             Logger.Explain("---------------------------", ConsoleColor.Green);
             Logger.Explain("注意:一行一列TID;第一行字段类型;第二行字段名称;第三行字段注释.", ConsoleColor.Green);
             Logger.Explain("配置表描述文件命名:\"_Define_名称.xlsx\"（描述文件不会被处理）.", ConsoleColor.Green);
             Logger.Explain("字段类型支持:int/float/string/int[]/float[]/string[], 数组以\"|\"进行分割.", ConsoleColor.Green);
+            //Logger.Explain("Author: ShuiMo. Contact: 564857808@qq.com");
             Logger.Explain("===================================================================");
             Logger.Explain("配置文件输入目录:"+ srcDirectory);
             Logger.Explain("生成文件输出目录:" + destDirectory);
@@ -85,6 +86,22 @@ namespace Tools
                             byte[] bytes = Encoding.UTF8.GetBytes(strScript);
                             fs.Write(bytes, 0, bytes.Length);
                         }
+
+                        if (oGenData.IsRepeat)
+                        {
+                            Logger.Info("**********************************************************************");
+                            Logger.Waring("请注意检查到以下文件TID重复出现!");
+                            foreach (var kvp in oGenData.RepeatChecks)
+                            {
+                                string file = kvp.Key;
+                                foreach (var kvp2 in kvp.Value)
+                                {
+                                    if (kvp2.Value)
+                                        Logger.Waring($"文件\"{Path.GetFileName(file)}\" 键值 {kvp2.Key} 已经重复");
+                                }
+                            }
+                        }
+
                         Logger.Info("**********************************************************************");
                         Logger.Info("代码生成地址:" + destDirectory + "/Template.cs");
                         Logger.Info("数据生成地址:" + destDirectory + "/Template.dat");

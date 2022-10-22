@@ -73,9 +73,9 @@ namespace Tools
 
                             if (columnsIndex == 0)
                             {
-                                if (!strType.Equals("int"))
+                                if (!strType.Equals("int") && !strType.Equals("string"))
                                 {
-                                    Logger.Error("<{0}>表第一列必须是int类型的唯一ID", oFileData.dataTable.Prefix);
+                                    Logger.Error("<{0}>表第一列必须是int或string类型的唯一ID", oFileData.dataTable.Prefix);
                                     isPass = false;
                                 }
                             }

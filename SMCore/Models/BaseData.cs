@@ -1,4 +1,7 @@
 ﻿using SMCore.Objects;
+using SMCore.SUtils;
+using System;
+using System.Collections.Generic;
 
 namespace SMCore.Models
 {
@@ -13,6 +16,28 @@ namespace SMCore.Models
         }
 
         public BaseData(string guid) => Guid = guid;
+    }
+
+    public abstract class BaseEventData : BaseData
+    {
+        protected Action<string> Event { get; set; }
+
+        protected void SetClass<T>(string name, ref T currentValue, T newValue) where T : class
+        {
+            if (Utils.SetClass(ref currentValue, newValue)) NotifyPropertyChanged(name);
+        }
+
+        protected void SetStruct<T>(string name, ref T currentValue, T newValue) where T : struct
+        {
+            if (Utils.SetStruct(ref currentValue, newValue)) NotifyPropertyChanged(name);
+        }
+
+        protected BaseEventData(string guid)
+            : base(guid) { }
+
+        public void Watch(Action<string> action) => Event = action;
+
+        private void NotifyPropertyChanged(string name) => Event?.Invoke(name);
     }
 }
 

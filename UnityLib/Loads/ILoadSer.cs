@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace UnityLib.Loads
 {
-    public interface ILoaderS
+    public interface ILoadSer
     {
         void Load(string uri, Action<IEventArgs> onDone, Priority priority = Priority.General);
         void LoadImage(string uri, Action<IEventArgs> onDone, Priority priority = Priority.General);

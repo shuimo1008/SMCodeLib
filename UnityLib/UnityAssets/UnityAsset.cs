@@ -1,4 +1,5 @@
 ﻿using SMCore;
+using SMCore.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -57,6 +58,17 @@ namespace UnityLib.UnityAssets
                 return Loader.Progress;
             }
         }
+
+        public ProcessStatus Status
+        {
+            get
+            {
+                if (Loader == null)
+                    return ProcessStatus.None;
+                return Loader.Status;
+            }
+        }
+
         protected Loader Loader { get; set; }
 
         public UnityAsset(string uri)
@@ -80,7 +92,7 @@ namespace UnityLib.UnityAssets
             int counting = UnityAssetRefrenceS.GetRefrence(Uri).Decrement();
             if (counting == 0)
             {
-                IoC.Resolve<ILoaderS>().Unload(Uri);
+                IoC.Resolve<ILoadSer>().Unload(Uri);
             }
         }
     }
@@ -101,8 +113,8 @@ namespace UnityLib.UnityAssets
         {
             base.GetAsync(onAsync);
 
-            IoC.Resolve<ILoaderS>().LoadImage(Uri, (args) =>
-            {
+            IoC.Resolve<ILoadSer>().LoadImage(Uri, (args) => 
+            { 
                 if (args is Loader loader) { Loader = loader; onAsync?.Invoke(this); }
             }, Priority);
         }
@@ -137,7 +149,7 @@ namespace UnityLib.UnityAssets
         {
             base.GetAsync(onAsync);
 
-            IoC.Resolve<ILoaderS>().LoadAudio(Uri, (args) =>
+            IoC.Resolve<ILoadSer>().LoadAudio(Uri, (args) =>
             {
                 if (args is Loader loader) { Loader = loader; onAsync?.Invoke(this); }
             }, Priority);
@@ -160,7 +172,7 @@ namespace UnityLib.UnityAssets
         {
             base.GetAsync(onAsync);
 
-            IoC.Resolve<ILoaderS>().Load(Uri, (args) =>
+            IoC.Resolve<ILoadSer>().Load(Uri, (args) =>
             {
                 if (args is Loader loader) { Loader = loader; onAsync?.Invoke(this); }
             }, Priority);
@@ -271,7 +283,7 @@ namespace UnityLib.UnityAssets
         {
             base.GetAsync(onAsync);
 
-            IoC.Resolve<ILoaderS>().LoadBundle(Uri, (args) =>
+            IoC.Resolve<ILoadSer>().LoadBundle(Uri, (args) =>
             {
                 if (args is Loader loader) { Loader = loader; onAsync?.Invoke(this); }
             }, Priority);

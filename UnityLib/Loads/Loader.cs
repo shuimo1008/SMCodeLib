@@ -7,32 +7,10 @@ using SMCore.Objects;
 using SMCore.Events;
 using Object = UnityEngine.Object;
 using SMCore.Logger;
+using SMCore.Enums;
 
 namespace UnityLib.Loads
 {
-    public class LoadingFactory
-    {
-        public static Loader New(string url)
-        {
-            return new Loader(UnityWebRequest.Get(url));
-        }
-
-        public static Loader NewAudio(string url, AudioType audioType)
-        {
-            return new Loader(UnityWebRequestMultimedia.GetAudioClip(url, audioType));
-        }
-
-        public static Loader NewImage(string url)
-        {
-            return new Loader(UnityWebRequestTexture.GetTexture(url));
-        }
-
-        public static Loader NewBundle(string url)
-        {
-            return new Loader(UnityWebRequestAssetBundle.GetAssetBundle(url));
-        }
-    }
-
     public class Loader : ObjectEvent, IEventArgs, ILoader
     {
         public string Uri { get; protected set; }
@@ -40,6 +18,8 @@ namespace UnityLib.Loads
         public bool IsSucess { get; protected set; }
         public float Progress { get; protected set; }
         public string Error { get; protected set; }
+        public ProcessStatus Status { get; protected set; } = ProcessStatus.Prepare;
+
         private UnityWebRequest www { get; set; }
         private UnityWebRequestAsyncOperation AsyncOperation { get; set; }
 
@@ -51,36 +31,41 @@ namespace UnityLib.Loads
         private const string ASSETBYTE = "Byte";
         private const string ASSETBUNDLE = "AssetBundle";
 
-        private Dictionary<string, object> Caches
+        private ILoggerS LogS
         {
             get
             {
-                if (_Caches == null)
-                    _Caches = new Dictionary<string, object>();
-                return _Caches;
+                if (_LogS == null)
+                    _LogS = IoC.Resolve<ILoggerS>();
+                return _LogS;
             }
         }
-        private Dictionary<string, object> _Caches;
+        private ILoggerS _LogS;
 
-        private ILoggerS Logger
+        private Dictionary<string, object> Cache
         {
             get
             {
-                if (_Logger == null)
-                    _Logger = IoC.Resolve<ILoggerS>();
-                return _Logger;
+                if (_Cache == null)
+                    _Cache = new Dictionary<string, object>();
+                return _Cache;
             }
         }
-        private ILoggerS _Logger;
+        private Dictionary<string, object> _Cache;
+
 
         public Loader(UnityWebRequest www) 
         {
             this.www = www;
             this.Uri = this.www.url;
+            Status = ProcessStatus.Prepare;
+            Callback();
         }
 
         public void Start()
         {
+            Status = ProcessStatus.Start;
+            Callback();
             AsyncOperation = www.SendWebRequest();
         }
 
@@ -89,9 +74,12 @@ namespace UnityLib.Loads
             bool isDone = www.isDone; // www 是异步操作, 所以这里用变量来记录是否下载完成，防止在同一个方法里面多次使用www.isDone获取的值不同
             if (isDone)
             {
+                Status = ProcessStatus.Finish;
                 if (string.IsNullOrEmpty(www.error)) IsSucess = true;
                 else { IsSucess = false; Error = www.error + "\n" + Uri; }
             }
+            else Status = ProcessStatus.Execute;
+
             Progress = www.downloadProgress;
             IsDone = isDone;
             Callback(); // 回调,发送是否加载完成，是否加载成功，加载进度等等信息
@@ -104,7 +92,7 @@ namespace UnityLib.Loads
                 if (!IsDisposed)
                     Notify(this);
             }
-            catch (Exception e) { Logger.Info(e); }
+            catch (Exception e) { LogS.Info(e); }
             if (IsDone) RemoveAllListener();
         }
 
@@ -143,12 +131,12 @@ namespace UnityLib.Loads
         public Object GetAsset(string name, bool fromMemory = false)
         {
             Dictionary<string, Object> bundleAssets;
-            if (!Caches.ContainsKey(ASSETBUNDLE))
+            if (!Cache.ContainsKey(ASSETBUNDLE))
             {
                 bundleAssets = new Dictionary<string, Object>();
-                Caches.Add(ASSETBUNDLE, bundleAssets);
+                Cache.Add(ASSETBUNDLE, bundleAssets);
             }
-            else bundleAssets = Caches[ASSETBUNDLE] as Dictionary<string, Object>;
+            else bundleAssets = Cache[ASSETBUNDLE] as Dictionary<string, Object>;
            
             Object retObj = null;
 
@@ -160,7 +148,7 @@ namespace UnityLib.Loads
                     retObj = bundle.LoadAsset(name);
                     if (retObj == null)
                     {
-                        Logger.Error($"当前资源：{Uri} AssetBundle中没有找到对应名称 name={name} 的资源!");
+                        LogS.Error($"当前资源：{Uri} AssetBundle中没有找到对应名称 name={name} 的资源!");
                     }
                     else { bundleAssets.Add(name, retObj); }
                 }
@@ -170,20 +158,20 @@ namespace UnityLib.Loads
 
         public AudioClip GetAudioClip()
         {
-            if (!Caches.TryGetValue(ASSETAUDIO, out var obj))
+            if (!Cache.TryGetValue(ASSETAUDIO, out var obj))
             {
                 obj = DownloadHandlerAudioClip.GetContent(www);
-                Caches.Add(ASSETAUDIO, obj);
+                Cache.Add(ASSETAUDIO, obj);
             }
             return obj as AudioClip;
         }
 
         public Texture2D GetTexture()
         {
-            if (!Caches.TryGetValue(ASSETIMAGE, out var obj))
+            if (!Cache.TryGetValue(ASSETIMAGE, out var obj))
             {
                 obj = DownloadHandlerTexture.GetContent(www);
-                Caches.Add(ASSETIMAGE, obj);
+                Cache.Add(ASSETIMAGE, obj);
             }
             return obj as Texture2D;
         }
@@ -191,10 +179,10 @@ namespace UnityLib.Loads
         public string GetText()
         {
             object obj;
-            if (!Caches.TryGetValue(ASSETTEXT, out obj))
+            if (!Cache.TryGetValue(ASSETTEXT, out obj))
             {
                 obj = www.downloadHandler.text;
-                Caches.Add(ASSETTEXT, obj);
+                Cache.Add(ASSETTEXT, obj);
             }
             if (obj != null) return obj.ToString();
             else return string.Empty;
@@ -202,10 +190,10 @@ namespace UnityLib.Loads
 
         public byte[] GetBytes()
         {
-            if (!Caches.TryGetValue(ASSETBYTE, out var obj))
+            if (!Cache.TryGetValue(ASSETBYTE, out var obj))
             {
                 obj = www.downloadHandler.data;
-                Caches.Add(ASSETBYTE, obj);
+                Cache.Add(ASSETBYTE, obj);
             }
             return obj as byte[];
         }
@@ -219,33 +207,33 @@ namespace UnityLib.Loads
         protected override void DoUnManagedObjectDispose()
         {
             base.DoUnManagedObjectDispose();
-            List<string> keys = new List<string>(Caches.Keys);
+            List<string> keys = new List<string>(Cache.Keys);
             for (int i = 0; i < keys.Count; i++)
             {
                 string key = keys[i];
                 if (key.Equals(ASSETIMAGE))
                 {
-                    Texture o = Caches[key] as Texture;
+                    Texture o = Cache[key] as Texture;
                     if (o != null) Object.Destroy(o);
                 }
                 else if (key.Equals(ASSETAUDIO))
                 {
-                    AudioClip o = Caches[key] as AudioClip;
+                    AudioClip o = Cache[key] as AudioClip;
                     if (o != null) Object.Destroy(o);
                 }
                 else if (key.Equals(ASSETBUNDLE))
                 {
-                    Dictionary<string, Object> os = Caches[ASSETBUNDLE] as Dictionary<string, Object>;
+                    Dictionary<string, Object> os = Cache[ASSETBUNDLE] as Dictionary<string, Object>;
                     foreach (var o in os.Values)
                     {
                         if (o != null) Object.DestroyImmediate(o, true);
                     }
                     os.Clear();
                 }
-                Caches[key] = null;
+                Cache[key] = null;
             }
             if (assetBundle != null) { assetBundle.Unload(true); }
-            Caches.Clear(); // 缓存清理
+            Cache.Clear(); // 缓存清理
         }
     }
 }
