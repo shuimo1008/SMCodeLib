@@ -10,6 +10,7 @@ namespace UnityLib.Loads
     public interface ILoader : IObjectEvent
     {
         string Uri { get; }
+        string Version { get; }
         string Error { get; }
         bool IsDone { get; }
         bool IsSucess { get; }

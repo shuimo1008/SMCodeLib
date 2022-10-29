@@ -14,6 +14,7 @@ namespace UnityLib.Loads
     public class Loader : ObjectEvent, IEventArgs, ILoader
     {
         public string Uri { get; protected set; }
+        public string Version { get; protected set; }
         public bool IsDone { get; protected set; }
         public bool IsSucess { get; protected set; }
         public float Progress { get; protected set; }
@@ -53,11 +54,16 @@ namespace UnityLib.Loads
         }
         private Dictionary<string, object> _Cache;
 
-
         public Loader(UnityWebRequest www) 
+            :this(www, string.Empty)
+        {
+        }
+
+        public Loader(UnityWebRequest www, string version)
         {
             this.www = www;
-            this.Uri = this.www.url;
+            Uri = this.www.url;
+            Version = version;
             Status = ProcessStatus.Prepare;
             Callback();
         }

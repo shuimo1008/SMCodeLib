@@ -4,9 +4,9 @@ using System.Text;
 using UnityLib.Loads;
 using UnityEngine;
 
-namespace UnityLib.UnityAssets
+namespace UnityLib.Assets
 {
-    public interface IUnityAsset<T> : IDisposable
+    public interface IAssetUnity<T> : IDisposable
     {
         string Uri { get; }
         string Error { get; }
@@ -15,15 +15,7 @@ namespace UnityLib.UnityAssets
         float Progress { get; }
         Priority Priority { get; }
 
-        void GetAsync(Action<IUnityAsset<T>> onAsync);
-
         T GetAsset();
     }
 
-    public interface IBundleObject : IDisposable
-    { 
-        string Name { get; }
-        T As<T>() where T : UnityEngine.Object;
-        T AsClone<T>() where T : UnityEngine.Object;
-    }
 }

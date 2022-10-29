@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using UnityLib.Loads;
 
-namespace UnityLib.UnityAssets
+namespace UnityLib.Assets
 {
-    public interface IUnityAssetRefrence
+    public interface IAssetUnityRefrence
     {
-        int Counting { get;  }
+        int RefrenceCounting { get;  }
 
         int Increment();
 

@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Assets\AssetPackageObject.cs~RF1fc2eaa.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SMCore\SMCore.csproj" />
   </ItemGroup>
 

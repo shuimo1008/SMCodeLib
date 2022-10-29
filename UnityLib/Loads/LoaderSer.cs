@@ -22,7 +22,7 @@ namespace UnityLib.Loads
     /// 2. 根据加载优先级加载资源;
     /// 3. 成功加载的资源进入缓存;
     /// </summary>
-    public class LoadSer : ObjectBase, ILoadSer
+    public class LoaderSer : ObjectBase, ILoaderSer
     {
         private ILoader[] loadingGroup;
         private Queue<ILoader> waitLoading1Queue; // 最高优先级
@@ -40,14 +40,25 @@ namespace UnityLib.Loads
         }
         private IDriverS _Driver;
 
+        public ILoaderFactory Factory
+        {
+            get
+            {
+                if (_Factory == null)
+                    _Factory = new LoaderFactory();
+                return _Factory;
+            }
+        }
+        private ILoaderFactory _Factory;
+
         /// <summary>
         /// 缓存加载者
         /// </summary>
         private Dictionary<string, ILoader> Caches { get; set; }
 
-        public LoadSer() : this(3) { }
+        public LoaderSer() : this(3) { }
 
-        public LoadSer(int num)
+        public LoaderSer(int num)
         {
             loadingGroup = new Loader[num];
             waitLoading1Queue = new Queue<ILoader>(); 
@@ -105,22 +116,42 @@ namespace UnityLib.Loads
 
         public void Load(string uri, Action<IEventArgs> onDone, Priority priority = Priority.General)
         {
-            Load(uri, (_uri)=> { return LoaderFactory.New(_uri); }, onDone, priority);
+            Load(uri, string.Empty, onDone, priority);
         }
 
         public void LoadImage(string uri, Action<IEventArgs> onDone, Priority priority = Priority.General)
         {
-            Load(uri, (_uri) => { return LoaderFactory.NewImage(_uri); }, onDone, priority);
+            LoadImage(uri, string.Empty, onDone, priority);
         }
 
         public void LoadBundle(string uri, Action<IEventArgs> onDone, Priority priority = Priority.General)
         {
-            Load(uri, (_uri) => { return LoaderFactory.NewBundle(_uri); }, onDone, priority);
+            LoadBundle(uri, string.Empty, onDone, priority);
         }
 
         public void LoadAudio(string uri, Action<IEventArgs> onDone, Priority priority = Priority.General, AudioType audioType = AudioType.MPEG)
         {
-            Load(uri, (_uri) => { return LoaderFactory.NewAudio(_uri, audioType); }, onDone, priority);
+            LoadAudio(uri, string.Empty, onDone, priority, audioType);
+        }
+
+        public void Load(string uri, string version, Action<IEventArgs> onDone, Priority priority = Priority.General)
+        {
+            Load(uri, (_uri) => { return Factory.New(_uri, version); }, onDone, priority);
+        }
+
+        public void LoadImage(string uri, string version, Action<IEventArgs> onDone, Priority priority = Priority.General)
+        {
+            Load(uri, (_uri) => { return Factory.NewImage(_uri, version); }, onDone, priority);
+        }
+
+        public void LoadBundle(string uri, string version, Action<IEventArgs> onDone, Priority priority = Priority.General)
+        {
+            Load(uri, (_uri) => { return Factory.NewBundle(_uri, version); }, onDone, priority);
+        }
+
+        public void LoadAudio(string uri, string version, Action<IEventArgs> onDone, Priority priority = Priority.General, AudioType audioType = AudioType.MPEG)
+        {
+            Load(uri, (_uri) => { return Factory.NewAudio(_uri, version, audioType); }, onDone, priority);
         }
 
         private void Load(string url, Func<string, ILoader> f, Action<IEventArgs> onDone, Priority priority = Priority.General)

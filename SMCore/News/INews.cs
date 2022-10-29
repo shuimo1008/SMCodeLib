@@ -18,11 +18,7 @@ namespace SMCore.News
     public interface INews<T> : INews
     {
         T SetTitle(string title);
-        T OutputNews(string content);
-        IBox SetPrepare(Action<IBox> action);
-        IBox SetStart(Action<IBox> action);
-        IBox SetExecute(Func<IBox, bool> func);
-        IBox SetFinish(Action<IBox> action);
+        T OutputNews(string content, bool log = false);
         /// <summary>
         /// 异步处理
         /// </summary>

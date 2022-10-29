@@ -31,6 +31,6 @@ namespace SMCore.News
 
         public static IAlertNews AlertNews() => new AlertNews();
 
-        public static ISystemNews SystemNew() => new SystemNews();
+        public static ISystemNews SystemNews() => new SystemNews();
     }
 }
