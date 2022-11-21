@@ -9,6 +9,8 @@ namespace UnityLib.Assets
 {
     public class AssetAudio : AssetUnity<AudioClip, AssetAudio>
     {
+        public AssetAudio(string uri) : base(uri) { }
+
         public AssetAudio(string uri, Action<AssetAudio> onAsync)
             : base(uri, onAsync) { }
 
@@ -19,12 +21,13 @@ namespace UnityLib.Assets
             return Loader.GetAudioClip();
         }
 
-        public override void StartAsync(Action<AssetAudio> onAsync)
+        protected override AssetAudio StartAsync()
         {
             IoC.Resolve<ILoaderSer>().LoadAudio(Uri, (args) =>
             {
-                if (args is Loader loader) { Loader = loader; onAsync?.Invoke(this); }
+                if (args is Loader loader) { Loader = loader; OnAsync?.Invoke(this); }
             }, Priority);
+            return this;
         }
     }
 }

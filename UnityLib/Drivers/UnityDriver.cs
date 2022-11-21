@@ -11,45 +11,45 @@ using UnityLib.Loggers;
 namespace UnityLib.Drivers
 {
     [DefaultExecutionOrder(-1000)]
-    public class UnityDriver : MonoBehaviour
+    public class UnityDriver : MonoBehaviour, IUnityDriver
     {
         private static UnityDriver ins;
 
-        public IDriverS Service
+        public IDriverSer Service
         {
-            get
-            {
-                if (_Service == null)
-                {
-                    IoC.Register<IDriverS>(new DriverS());
-                    _Service = IoC.Resolve<IDriverS>();
-                }
-                return _Service;
-            }
+            get => _Service;
         }
-        private IDriverS _Service;
+        private IDriverSer _Service;
 
         private bool isInitialized;
 
         void Awake()
         {
             ins = this;
-
             Initalize();
         }
 
-        void Initalize()
+        public void Initalize()
         {
-            if (!isInitialized) return;
+            if (isInitialized) return;
+            _Service = IoC.MakeService<IDriverSer>(()=> new DriverSer());
             DontDestroyOnLoad(gameObject);
             isInitialized = true;
         }
 
-        void Update() => Service.Update(Time.deltaTime);
+        void Update() => Update(Time.deltaTime);
 
-        public void Subscribe(Action<float> onDriving) => Service.Subscribe(onDriving);
+        public void Subscribe(Action<float> onDriving)
+        {
+            if (!isInitialized) return;
+            Service.Subscribe(onDriving);
+        }
 
-        public void Unsubscribe(Action<float> onDriving) => Service.Unsubscribe(onDriving);
+        public void Unsubscribe(Action<float> onDriving)
+        {
+            if (!isInitialized) return;
+            Service.Unsubscribe(onDriving);
+        }
 
         public static UnityDriver Get()
         {
@@ -60,6 +60,12 @@ namespace UnityLib.Drivers
                 ins.Initalize();
             }
             return ins;
+        }
+
+        public void Update(float deltaTime)
+        {
+            if (!isInitialized) return;
+            Service.Update(Time.deltaTime);
         }
     }
 }

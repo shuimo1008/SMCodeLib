@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 namespace UnityLib.Assets
 {
-    public class AssetPackageObject : IAssetPackageObject
+    public class AssetPackageObject : CustomYieldInstruction, IAssetPackageObject
     {
         public string Uri 
         {
@@ -39,6 +39,8 @@ namespace UnityLib.Assets
             get => AssetPackage.Priority;
         }
 
+        public override bool keepWaiting => !IsDone;
+
         private Object Clone { get; set; }
 
         public string AssetName { get; private set; }
@@ -47,6 +49,8 @@ namespace UnityLib.Assets
             => AssetPackageRefrence.AssetPackage;
 
         public AssetPackageRefrence AssetPackageRefrence { get; set; }
+
+        public AssetPackageObject(string uri) : this(uri, null) { }
 
         public AssetPackageObject(string url, Action<AssetPackageObject> onAsync)
             : this(url, string.Empty, false, onAsync) { }

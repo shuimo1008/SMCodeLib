@@ -117,16 +117,16 @@ namespace SMCore.Events
 
         protected class Delay : IDisposable
         {
-            public IDriverS Driver
+            public IDriverSer Driver
             {
                 get
                 {
                     if (_Driver == null)
-                        _Driver = IoC.Resolve<IDriverS>();
+                        _Driver = IoC.Resolve<IDriverSer>();
                     return _Driver;
                 }
             }
-            private IDriverS _Driver;
+            private IDriverSer _Driver;
 
             private float UseTime { get; set; }
             private float DelayTime { get; set; }

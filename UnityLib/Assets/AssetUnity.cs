@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace UnityLib.Assets
 {
-    public abstract class AssetUnity<T, U> : IAssetUnity<T> where U : IAssetUnity<T>
+    public abstract class AssetUnity<T, U> : CustomYieldInstruction, IAssetUnity<T> where U : IAssetUnity<T>
     {
         public string Uri 
         { 
@@ -69,7 +69,14 @@ namespace UnityLib.Assets
             }
         }
 
+        public override bool keepWaiting => !IsDone;
+
         protected Loader Loader { get; set; }
+
+        protected Action<U> OnAsync { get; set; }
+
+        public AssetUnity(string uri)
+            : this(uri, null) { }
 
         public AssetUnity(string uri, Action<U> onAsync)
         {
@@ -77,15 +84,16 @@ namespace UnityLib.Assets
                 throw new ArgumentNullException("Uri不能为空");
             AssetUnityRefrenceUtility.GetRefrence(uri).Increment();
             Uri = uri;
-            StartAsync(onAsync);
+            OnAsync = onAsync;
+            StartAsync();
         }
 
         public abstract T GetAsset();
 
-        public abstract void StartAsync(Action<U> onAsync);
+        protected abstract U StartAsync();
 
 
-        protected bool IsDisposed { get; set; }
+        public bool IsDisposed { get; protected set; }
         public virtual void Dispose()
         {
             if (IsDisposed) return;

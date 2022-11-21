@@ -29,7 +29,7 @@ namespace SMCore.Coros
 
         public void Start()
         {
-            IoC.Resolve<IDriverS>().Subscribe(Update);
+            IoC.Resolve<IDriverSer>().Subscribe(Update);
         }
 
         private bool isWaiting = false;
@@ -83,7 +83,7 @@ namespace SMCore.Coros
 
         public void Stop()
         {
-            IoC.Resolve<IDriverS>().Unsubscribe(Update);
+            IoC.Resolve<IDriverSer>().Unsubscribe(Update);
         }
     }
 }

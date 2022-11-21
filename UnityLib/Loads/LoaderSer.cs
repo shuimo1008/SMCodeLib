@@ -29,16 +29,16 @@ namespace UnityLib.Loads
         private Queue<ILoader> waitLoading2Queue; // 中等优先级
         private Queue<ILoader> waitLoading3Queue; // 最低优先级
 
-        private IDriverS Driver
+        private IDriverSer Driver
         {
             get
             {
                 if (_Driver == null)
-                    _Driver = IoC.Resolve<IDriverS>();
+                    _Driver = IoC.Resolve<IDriverSer>();
                 return _Driver;
             }
         }
-        private IDriverS _Driver;
+        private IDriverSer _Driver;
 
         public ILoaderFactory Factory
         {

@@ -1,5 +1,5 @@
 ﻿using SMCore.Objects;
-using SMCore.SUtils;
+using SMCore.Utils;
 using System;
 using System.Collections.Generic;
 
@@ -24,12 +24,12 @@ namespace SMCore.Models
 
         protected void SetClass<T>(string name, ref T currentValue, T newValue) where T : class
         {
-            if (Utils.SetClass(ref currentValue, newValue)) NotifyPropertyChanged(name);
+            if (CommUtils.SetClass(ref currentValue, newValue)) NotifyPropertyChanged(name);
         }
 
         protected void SetStruct<T>(string name, ref T currentValue, T newValue) where T : struct
         {
-            if (Utils.SetStruct(ref currentValue, newValue)) NotifyPropertyChanged(name);
+            if (CommUtils.SetStruct(ref currentValue, newValue)) NotifyPropertyChanged(name);
         }
 
         protected BaseEventData(string guid)

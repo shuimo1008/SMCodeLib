@@ -14,6 +14,8 @@ namespace UnityLib.Assets
     {
         private bool IsMemory { get; set; }
 
+        public AssetPackage(string uri) : base(uri) { }
+
         public AssetPackage(string uri, Action<AssetPackage> onAsync)
             : this(uri, false, onAsync) { }
 
@@ -23,12 +25,13 @@ namespace UnityLib.Assets
             IsMemory = isMemory;
         }
 
-        public override void StartAsync(Action<AssetPackage> onAsync)
+        protected override AssetPackage StartAsync()
         {
             IoC.Resolve<ILoaderSer>().LoadBundle(Uri, (args) =>
             {
-                if (args is Loader loader) { Loader = loader; onAsync?.Invoke(this); }
+                if (args is Loader loader) { Loader = loader; OnAsync?.Invoke(this); }
             }, Priority);
+            return this;
         }
 
         public string[] GetAllScenePaths()

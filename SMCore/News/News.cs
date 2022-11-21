@@ -18,7 +18,7 @@ namespace SMCore.News
 
         public void Publish()
         {
-            IoC.Resolve<IDriverS>()
+            IoC.Resolve<IDriverSer>()
                 .Subscribe(OnUpdate);
         }
 
@@ -26,7 +26,7 @@ namespace SMCore.News
 
         public virtual void Dispose() 
         {
-            IoC.Resolve<IDriverS>()
+            IoC.Resolve<IDriverSer>()
                 .Unsubscribe(OnUpdate);
             if (View != null) View.Dispose();
         }

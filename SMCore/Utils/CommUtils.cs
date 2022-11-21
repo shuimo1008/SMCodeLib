@@ -6,9 +6,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace SMCore.SUtils
+namespace SMCore.Utils
 {
-    public class Utils
+    public partial class CommUtils
     {
         /// <summary>
         /// 生成唯一GUID

@@ -1,5 +1,5 @@
 ﻿using SMCore.Services;
-using SMCore.SUtils;
+using SMCore.Utils;
 using System;
 
 namespace SMCore
@@ -56,7 +56,7 @@ namespace SMCore
 
         public static object MakeService(Type type, params object[] args)
         {
-            Container.Register(Utils.Construct(type, args));
+            Container.Register(CommUtils.Construct(type, args));
             return Container.Resolve(type);
         }
     }
