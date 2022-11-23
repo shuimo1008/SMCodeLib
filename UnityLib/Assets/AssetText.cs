@@ -8,10 +8,10 @@ namespace UnityLib.Assets
 {
     public class AssetText : AssetUnity<string, AssetText>
     {
-        public AssetText(string uri) : base(uri, null) { }
+        public AssetText(AssetContext context) : base(context, null) { }
 
-        public AssetText(string uri, Action<AssetText> onAsync)
-            : base(uri, onAsync) { }
+        public AssetText(AssetContext context, Action<AssetText> onAsync)
+            : base(context, onAsync) { }
 
         public override string GetAsset()
         {
@@ -22,7 +22,7 @@ namespace UnityLib.Assets
 
         protected override AssetText StartAsync()
         {
-            IoC.Resolve<ILoaderSer>().Load(Uri, (args) =>
+            IoC.Resolve<ILoaderSer>().Load(Context, (args) =>
             {
                 if (args is Loader loader) { Loader = loader; OnAsync?.Invoke(this); }
             }, Priority);

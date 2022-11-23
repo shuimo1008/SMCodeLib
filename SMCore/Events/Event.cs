@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SMCore.Events
 {
-    public class Event : IEvent
+    public class Event<T> : IEvent<T> where T : IEventArgs
     {
         private ILoggerS Logger
         {
@@ -18,11 +18,11 @@ namespace SMCore.Events
         }
         private ILoggerS _Logger;
 
-        protected Dictionary<string, List<Action<IEventArgs>>> EventDict { get; set; }
+        protected Dictionary<string, List<Action<T>>> EventDict { get; set; }
 
         public Event()
         {
-            EventDict = new Dictionary<string, List<Action<IEventArgs>>>();
+            EventDict = new Dictionary<string, List<Action<T>>>();
         }
 
         /// <summary>
@@ -30,14 +30,14 @@ namespace SMCore.Events
         /// </summary>
         /// <param name="eventName">事件名称</param>
         /// <param name="listener">事件监听者</param>
-        public void AddListener(string eventName, Action<IEventArgs> listener)
+        public void AddListener(string eventName, Action<T> listener)
         {
             //App.Logger.Info("参数1：" + eventName);
             if (listener == null) return;
-            List<Action<IEventArgs>> listeners;
+            List<Action<T>> listeners;
             if (!EventDict.TryGetValue(eventName, out listeners))
             {
-                listeners = new List<Action<IEventArgs>>();
+                listeners = new List<Action<T>>();
                 EventDict.Add(eventName, listeners);
             }
             if (!listeners.Contains(listener)) listeners.Add(listener);
@@ -48,10 +48,10 @@ namespace SMCore.Events
         /// </summary>
         /// <param name="eventName">指定的事件名</param>
         /// <param name="listener">指定的事件</param>
-        public void RemoveListener(string eventName, Action<IEventArgs> listener)
+        public void RemoveListener(string eventName, Action<T> listener)
         {
             if (listener == null) return;
-            List<Action<IEventArgs>> listeners = null;
+            List<Action<T>> listeners = null;
             if (EventDict.TryGetValue(eventName, out listeners))
             {
                 if (listeners.Count > 0)
@@ -72,7 +72,7 @@ namespace SMCore.Events
         /// <param name="eventName">指定事件的名称</param>
         public void RemoveAllListener(string eventName)
         {
-            List<Action<IEventArgs>> listeners = null;
+            List<Action<T>> listeners = null;
             if (EventDict.TryGetValue(eventName, out listeners))
             {
                 listeners.Clear();
@@ -93,16 +93,16 @@ namespace SMCore.Events
             EventDict.Clear();
         }
 
-        public void Notify(string eventName, IEventArgs args, float delayTime = 0)
+        public void Notify(string eventName, T args, float delayTime = 0)
         {
-            List<Action<IEventArgs>> listeners = null;
+            List<Action<T>> listeners = null;
             if (EventDict.TryGetValue(eventName, out listeners))
             {
                 if (delayTime == 0)
                 {
                     for (int i = 0; i < listeners.Count; i++)
                     {
-                        Action<IEventArgs> listener = listeners[i];
+                        Action<T> listener = listeners[i];
                         try { listener?.Invoke(args); }
                         catch (Exception e) { Logger.Error(e); }
                     }
@@ -131,11 +131,11 @@ namespace SMCore.Events
             private float UseTime { get; set; }
             private float DelayTime { get; set; }
             private string CallEvent { get; set; }
-            private IEventArgs EventArgs { get; set; }
-            public Action<string, IEventArgs, float> OnNotify { get; set; }
+            private T EventArgs { get; set; }
+            public Action<string, T, float> OnNotify { get; set; }
 
-            public Delay(string callEvent, IEventArgs eventArgs,
-                float delayTime, Action<string, IEventArgs, float> onNotify)
+            public Delay(string callEvent, T eventArgs,
+                float delayTime, Action<string, T, float> onNotify)
             {
                 CallEvent = callEvent;
                 EventArgs = eventArgs;

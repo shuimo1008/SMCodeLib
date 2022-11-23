@@ -11,14 +11,34 @@ using SMCore.Enums;
 
 namespace UnityLib.Loads
 {
-    public class Loader : ObjectEvent, IEventArgs, ILoader
+    public struct AssetContext
     {
-        public string Uri { get; protected set; }
-        public string Version { get; protected set; }
-        public bool IsDone { get; protected set; }
-        public bool IsSucess { get; protected set; }
-        public float Progress { get; protected set; }
-        public string Error { get; protected set; }
+        public string Url { get; set; }
+        public string Tag { get; set; }
+        public string Name { get; set; }
+        public string Describe { get; set; }
+        public string Version { get; set; }
+
+        public bool IsDone { get; set; }
+        public bool IsSucess { get; set; }
+        public float Progress { get; set; }
+        public string Error { get; set; }
+    }
+
+    public class Loader : ObjectEvent<ILoader>, ILoader
+    {
+        public string Url => Context.Url;
+        public bool IsDone => Context.IsDone;
+        public bool IsSucess => Context.IsSucess;
+        public float Progress => Context.Progress;
+        public string Error => Context.Error;
+
+        public AssetContext Context 
+        {
+            get => _Context;
+        }
+        private AssetContext _Context;
+
         public ProcessStatus Status { get; protected set; } = ProcessStatus.Prepare;
 
         private UnityWebRequest www { get; set; }
@@ -54,16 +74,13 @@ namespace UnityLib.Loads
         }
         private Dictionary<string, object> _Cache;
 
-        public Loader(UnityWebRequest www) 
-            :this(www, string.Empty)
-        {
-        }
-
-        public Loader(UnityWebRequest www, string version)
+        public Loader(UnityWebRequest www)
+            : this(www, default(AssetContext)) { }
+        
+        public Loader(UnityWebRequest www, AssetContext context)
         {
             this.www = www;
-            Uri = this.www.url;
-            Version = version;
+            _Context = context;
             Status = ProcessStatus.Prepare;
             Callback();
         }
@@ -81,13 +98,13 @@ namespace UnityLib.Loads
             if (isDone)
             {
                 Status = ProcessStatus.Finish;
-                if (string.IsNullOrEmpty(www.error)) IsSucess = true;
-                else { IsSucess = false; Error = www.error + "\n" + Uri; }
+                if (string.IsNullOrEmpty(www.error)) _Context.IsSucess = true;
+                else { _Context.IsSucess = false; _Context.Error = www.error + "\n" + Url; }
             }
             else Status = ProcessStatus.Execute;
 
-            Progress = www.downloadProgress;
-            IsDone = isDone;
+            _Context.Progress = www.downloadProgress;
+            _Context.IsDone = isDone;
             Callback(); // 回调,发送是否加载完成，是否加载成功，加载进度等等信息
         }
 
@@ -99,7 +116,7 @@ namespace UnityLib.Loads
                     Notify(this);
             }
             catch (Exception e) { LogS.Info(e); }
-            if (IsDone) RemoveAllListener();
+            if (_Context.IsDone) RemoveAllListener();
         }
 
         public string[] GetAllScenePaths(bool fromMemory = false)
@@ -127,7 +144,7 @@ namespace UnityLib.Loads
                 bool verified = true;
                 verified = verified && www.isDone;
                 verified = verified && assetBundle == null;
-                verified = verified && string.IsNullOrEmpty(Error);
+                verified = verified && string.IsNullOrEmpty(_Context.Error);
                 if (verified) assetBundle = DownloadHandlerAssetBundle.GetContent(www);
             }
 
@@ -154,7 +171,7 @@ namespace UnityLib.Loads
                     retObj = bundle.LoadAsset(name);
                     if (retObj == null)
                     {
-                        LogS.Error($"当前资源：{Uri} AssetBundle中没有找到对应名称 name={name} 的资源!");
+                        LogS.Error($"当前资源：{Url} AssetBundle中没有找到对应名称 name={name} 的资源!");
                     }
                     else { bundleAssets.Add(name, retObj); }
                 }

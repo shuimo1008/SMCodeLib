@@ -17,7 +17,7 @@ namespace SMCore.Models
         public ModelStatus Status { get; set; }
     }
 
-    public abstract class Model : ObjectEvent
+    public abstract class Model : ObjectEvent<ModelArgs>
     {
         public int DataCount => Datas.Count;
         public abstract Type DataType { get; }

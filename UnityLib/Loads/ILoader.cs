@@ -1,4 +1,5 @@
-﻿using SMCore.Objects;
+﻿using SMCore.Events;
+using SMCore.Objects;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,13 +8,14 @@ using Object = UnityEngine.Object;
 
 namespace UnityLib.Loads
 {
-    public interface ILoader : IObjectEvent
+    public interface ILoader : IEventArgs, IObjectEvent<ILoader>
     {
-        string Uri { get; }
-        string Version { get; }
-        string Error { get; }
-        bool IsDone { get; }
-        bool IsSucess { get; }
+        string Url { get; }
+        bool IsDone { get;  }
+        bool IsSucess { get;  }
+        float Progress { get;  }
+        string Error { get;  }
+        AssetContext Context { get; }
 
         void Start();
         void Update(float deltaTime);

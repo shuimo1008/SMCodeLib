@@ -9,10 +9,10 @@ namespace UnityLib.Assets
 {
     public class AssetImage : AssetUnity<Texture2D, AssetImage>
     {
-        public AssetImage(string uri) : base(uri) { }
+        public AssetImage(AssetContext context) : base(context) { }
 
-        public AssetImage(string uri, Action<AssetImage> onAsync)
-            : base(uri, onAsync) { }
+        public AssetImage(AssetContext context, Action<AssetImage> onAsync)
+            : base(context, onAsync) { }
 
         public override Texture2D GetAsset()
         {
@@ -23,7 +23,7 @@ namespace UnityLib.Assets
 
         protected override AssetImage StartAsync()
         {
-            IoC.Resolve<ILoaderSer>().LoadImage(Uri, (args) =>
+            IoC.Resolve<ILoaderSer>().LoadImage(Context, (args) =>
             {
                 if (args is Loader loader) { Loader = loader; OnAsync?.Invoke(this); }
             }, Priority);

@@ -11,11 +11,12 @@ namespace UnityLib.Assets
 {
     public abstract class AssetUnity<T, U> : CustomYieldInstruction, IAssetUnity<T> where U : IAssetUnity<T>
     {
-        public string Uri 
+        public AssetContext Context 
         { 
             get; 
-            private set; 
+            protected set; 
         }
+
         public Priority Priority 
         { 
             get; 
@@ -75,15 +76,18 @@ namespace UnityLib.Assets
 
         protected Action<U> OnAsync { get; set; }
 
-        public AssetUnity(string uri)
-            : this(uri, null) { }
+        public AssetUnity(AssetContext info)
+            : this(info, null) { }
 
-        public AssetUnity(string uri, Action<U> onAsync)
+        public AssetUnity(AssetContext info, Action<U> onAsync)
         {
-            if (string.IsNullOrEmpty(uri))
-                throw new ArgumentNullException("Uri不能为空");
-            AssetUnityRefrenceUtility.GetRefrence(uri).Increment();
-            Uri = uri;
+            if(info.Equals(default(AssetContext)))
+                throw new ArgumentNullException("AssetInfo不能为空");
+            if (string.IsNullOrEmpty(info.Url))
+                throw new ArgumentNullException("AssetInfo.Url不能为空");
+
+            AssetUnityRefrenceUtility.GetRefrence(info.Url).Increment();
+            Context = info;
             OnAsync = onAsync;
             StartAsync();
         }
@@ -99,8 +103,8 @@ namespace UnityLib.Assets
             if (IsDisposed) return;
             IsDisposed = true;
             // 只有已经加载过才减少引用计数
-            int counting = AssetUnityRefrenceUtility.GetRefrence(Uri).Decrement();
-            if (counting == 0) IoC.Resolve<ILoaderSer>().Unload(Uri);
+            int counting = AssetUnityRefrenceUtility.GetRefrence(Context.Url).Decrement();
+            if (counting == 0) IoC.Resolve<ILoaderSer>().Unload(Context.Url);
         }
     }
 }

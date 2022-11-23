@@ -10,9 +10,9 @@ namespace UnityLib.Assets
 {
     public class AssetPackageObject : CustomYieldInstruction, IAssetPackageObject
     {
-        public string Uri 
+        public AssetContext Context 
         {
-            get => AssetPackage.Uri;
+            get => AssetPackage.Context;
         }
         public string Error 
         {
@@ -50,19 +50,19 @@ namespace UnityLib.Assets
 
         public AssetPackageRefrence AssetPackageRefrence { get; set; }
 
-        public AssetPackageObject(string uri) : this(uri, null) { }
+        public AssetPackageObject(AssetContext context) : this(context, null) { }
 
-        public AssetPackageObject(string url, Action<AssetPackageObject> onAsync)
-            : this(url, string.Empty, false, onAsync) { }
+        public AssetPackageObject(AssetContext context, Action<AssetPackageObject> onAsync)
+            : this(context, string.Empty, false, onAsync) { }
 
-        public AssetPackageObject(string url, bool isMemory,  Action<AssetPackageObject> onAsync)
-            : this(url, string.Empty, isMemory, onAsync) { }
+        public AssetPackageObject(AssetContext context, bool isMemory,  Action<AssetPackageObject> onAsync)
+            : this(context, string.Empty, isMemory, onAsync) { }
 
-        public AssetPackageObject(string url, string assetname, bool isMemory, Action<AssetPackageObject> onAsync)
+        public AssetPackageObject(AssetContext context, string assetname, bool isMemory, Action<AssetPackageObject> onAsync)
         {
             AssetName = assetname;
             AssetPackageRefrence = AssetPackageRefrenceUtility
-                .GetAssetPackageRefrence(url, isMemory, (package) => { onAsync?.Invoke(this); });
+                .GetAssetPackageRefrence(context, isMemory, (package) => { onAsync?.Invoke(this); });
             AssetPackageRefrence.Increment(); // 标记引用计数
 
             if (AssetPackage.IsDone) AssetPackageRefrence.Notify();

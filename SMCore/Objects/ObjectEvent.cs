@@ -5,19 +5,19 @@ using System.Text;
 
 namespace SMCore.Objects
 {
-    public class ObjectEvent : ObjectBase, IObjectEvent
+    public abstract class ObjectEvent<T> : ObjectBase, IObjectEvent<T> where T : IEventArgs
     {
-        protected IEvent Event 
+        protected IEvent<T> Event 
         {
             get
             {
                 if (_Event == null)
-                    _Event = new Events.Event();
+                    _Event = new Event<T>();
                 return _Event;
             }
         }
 
-        protected IEvent _Event;
+        protected IEvent<T> _Event;
 
         protected int HashID
         {
@@ -31,12 +31,12 @@ namespace SMCore.Objects
         protected int _hashID;
 
         #region 事件
-        public virtual void AddListener(Action<IEventArgs> listener)
+        public virtual void AddListener(Action<T> listener)
         {
             Event.AddListener(HashID.ToString(), listener);
         }
 
-        public virtual void RemoveListener(Action<IEventArgs> listener)
+        public virtual void RemoveListener(Action<T> listener)
         {
             Event.RemoveListener(HashID.ToString(), listener);
         }
@@ -46,7 +46,7 @@ namespace SMCore.Objects
             Event.RemoveAllListener(HashID.ToString());
         }
 
-        public virtual void Notify(IEventArgs args, float delayTime = 0)
+        public virtual void Notify(T args, float delayTime = 0)
         {
             Event.Notify(HashID.ToString(), args, delayTime);
         }
@@ -65,15 +65,15 @@ namespace SMCore.Objects
         /// <summary>全盘通知</summary>
         public virtual void OverallNotify()
         {
-            Event.Notify(NotifyAllName, null);
+            Event.Notify(NotifyAllName, default(T));
         }
 
-        public virtual void AddOverallListener(Action<IEventArgs> listener)
+        public virtual void AddOverallListener(Action<T> listener)
         {
             Event.AddListener(NotifyAllName, listener);
         }
 
-        public virtual void RemoveOverallListener(Action<IEventArgs> listener)
+        public virtual void RemoveOverallListener(Action<T> listener)
         {
             Event.RemoveListener(NotifyAllName, listener);
         }

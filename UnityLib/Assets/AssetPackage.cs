@@ -14,20 +14,20 @@ namespace UnityLib.Assets
     {
         private bool IsMemory { get; set; }
 
-        public AssetPackage(string uri) : base(uri) { }
+        public AssetPackage(AssetContext context) : base(context) { }
 
-        public AssetPackage(string uri, Action<AssetPackage> onAsync)
-            : this(uri, false, onAsync) { }
+        public AssetPackage(AssetContext context, Action<AssetPackage> onAsync)
+            : this(context, false, onAsync) { }
 
-        public AssetPackage(string uri, bool isMemory, Action<AssetPackage> onAsync)
-            : base(uri, onAsync) 
+        public AssetPackage(AssetContext context, bool isMemory, Action<AssetPackage> onAsync)
+            : base(context, onAsync) 
         { 
             IsMemory = isMemory;
         }
 
         protected override AssetPackage StartAsync()
         {
-            IoC.Resolve<ILoaderSer>().LoadBundle(Uri, (args) =>
+            IoC.Resolve<ILoaderSer>().LoadBundle(Context, (args) =>
             {
                 if (args is Loader loader) { Loader = loader; OnAsync?.Invoke(this); }
             }, Priority);

@@ -5,18 +5,18 @@ using System.Text;
 
 namespace SMCore.Objects
 {
-    public interface IObjectEvent : IObject
+    public interface IObjectEvent<T> : IObject where T : IEventArgs
     {
-        void AddListener(Action<IEventArgs> listener);
-        void RemoveListener(Action<IEventArgs> listener);
+        void AddListener(Action<T> listener);
+        void RemoveListener(Action<T> listener);
         void RemoveAllListener();
-        void Notify(IEventArgs args, float delayTime = 0);
+        void Notify(T args, float delayTime = 0);
         string NotifyAllName { get; }
         /// <summary>全盘通知</summary>
         void OverallNotify();
-        void AddOverallListener(Action<IEventArgs> listener);
+        void AddOverallListener(Action<T> listener);
 
-        void RemoveOverallListener(Action<IEventArgs> listener);
+        void RemoveOverallListener(Action<T> listener);
 
         void RemoveAllOverallListener();
     }

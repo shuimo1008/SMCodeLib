@@ -8,10 +8,10 @@ namespace UnityLib.Assets
 {
     public class AssetByte : AssetUnity<byte[], AssetByte>
     {
-        public AssetByte(string uri) : base(uri) { }
+        public AssetByte(AssetContext context) : base(context) { }
 
-        public AssetByte(string uri, Action<AssetByte> onAsync)
-            : base(uri, onAsync) { }
+        public AssetByte(AssetContext context, Action<AssetByte> onAsync)
+            : base(context, onAsync) { }
 
         public override byte[] GetAsset()
         {
@@ -22,7 +22,7 @@ namespace UnityLib.Assets
 
         protected override AssetByte StartAsync()
         {
-            IoC.Resolve<ILoaderSer>().Load(Uri, (args) =>
+            IoC.Resolve<ILoaderSer>().Load(Context, (args) =>
             {
                 if (args is Loader loader) { Loader = loader; OnAsync?.Invoke(this); }
             }, Priority);

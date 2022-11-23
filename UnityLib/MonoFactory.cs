@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace UnityLib
 {
-    public class MonoSingleton
+    public class MonoFactory
     {
         public static T Get<T>(GameObject o) where T : MonoBehaviour
         {
@@ -14,9 +14,7 @@ namespace UnityLib
             return t;
         }
 
-        public static T Get<T, U>(GameObject o) where U : MonoBehaviour, T
-        {
-            return Get<U>(o);
-        }
+        public static T Get<T, U>(GameObject o)
+            where U : MonoBehaviour, T => Get<U>(o);
     }
 }

@@ -8,67 +8,43 @@ namespace UnityLib.Loads
 {
     public interface ILoaderFactory
     {
-        ILoader New(string url);
-        ILoader NewAudio(string url, AudioType audioType);
-        ILoader NewImage(string url);
-        ILoader NewBundle(string url);
-        ILoader New(string url, string version);
-        ILoader NewAudio(string url, string version, AudioType audioType);
-        ILoader NewImage(string url, string version);
-        ILoader NewBundle(string url, string version);
+        ILoader New(AssetContext context);
+        ILoader NewAudio(AssetContext context, AudioType audioType);
+        ILoader NewImage(AssetContext context);
+        ILoader NewBundle(AssetContext context);
     }
 
     public class LoaderFactory : ILoaderFactory
     {
-        public ILoader New(string url)
+        public ILoader New(AssetContext context)
         {
-            return New(url, LoaderContext.DefaultVersion);
+            string requestUrl = GetUrl(context);
+            return new Loader(UnityWebRequest.Get(requestUrl), context);
         }
 
-        public ILoader NewAudio(string url, AudioType audioType)
+        public ILoader NewAudio(AssetContext context, AudioType audioType)
         {
-            return NewAudio(url, string.Empty, audioType);
+            string requestUrl = GetUrl(context);
+            return new Loader(UnityWebRequestMultimedia.GetAudioClip(requestUrl, audioType), context);
         }
 
-        public ILoader NewImage(string url)
+        public ILoader NewImage(AssetContext context)
         {
-            return NewImage(url, string.Empty);
+            string requestUrl = GetUrl(context);
+            return new Loader(UnityWebRequestTexture.GetTexture(requestUrl), context);
         }
 
-        public ILoader NewBundle(string url)
+        public ILoader NewBundle(AssetContext context)
         {
-            return NewBundle(url, string.Empty);
+            string requestUrl = GetUrl(context);
+            return new Loader(UnityWebRequestAssetBundle.GetAssetBundle(requestUrl), context);
         }
 
-        public ILoader New(string url, string version)
+        private string GetUrl(AssetContext context)
         {
-            string requestUrl = GetUrl(url, version);
-            return new Loader(UnityWebRequest.Get(requestUrl), version);
-        }
-
-        public ILoader NewAudio(string url, string version, AudioType audioType)
-        {
-            string requestUrl = GetUrl(url, version);
-            return new Loader(UnityWebRequestMultimedia.GetAudioClip(requestUrl, audioType), version);
-        }
-
-        public ILoader NewImage(string url, string version)
-        {
-            string requestUrl = GetUrl(url, version);
-            return new Loader(UnityWebRequestTexture.GetTexture(requestUrl), version);
-        }
-
-        public ILoader NewBundle(string url, string version)
-        {
-            string requestUrl = GetUrl(url, version);
-            return new Loader(UnityWebRequestAssetBundle.GetAssetBundle(requestUrl), version);
-        }
-
-        private string GetUrl(string url, string version)
-        {
-            string requestUrl = url;
-            if (!string.IsNullOrEmpty(version))
-                requestUrl = $"{requestUrl}?version={version}";
+            string requestUrl = context.Url;
+            if (!string.IsNullOrEmpty(context.Version))
+                requestUrl = $"{requestUrl}?version={context.Version}";
             return requestUrl;
         }
     }

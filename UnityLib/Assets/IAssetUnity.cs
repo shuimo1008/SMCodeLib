@@ -8,7 +8,7 @@ namespace UnityLib.Assets
 {
     public interface IAssetUnity<T> : IDisposable
     {
-        string Uri { get; }
+        AssetContext Context { get; }
         string Error { get; }
         bool IsDone { get; }
         bool IsSucess { get; }

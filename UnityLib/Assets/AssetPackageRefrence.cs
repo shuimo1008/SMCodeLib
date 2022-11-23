@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using UnityLib.Loads;
 
 namespace UnityLib.Assets
 {
@@ -13,7 +14,7 @@ namespace UnityLib.Assets
         }
         private int _RefrenceCounting;
 
-        public string Uri { get; private set; }
+        public AssetContext Context { get; private set; }
 
         public AssetPackage AssetPackage { get; private set; }
 
@@ -28,10 +29,10 @@ namespace UnityLib.Assets
         }
         private Dictionary<int, Action<AssetPackage>> _Listeners;
 
-        public AssetPackageRefrence(string uri, bool isMemory)
+        public AssetPackageRefrence(AssetContext info, bool isMemory)
         {
-            Uri = uri;
-            AssetPackage = new AssetPackage(uri, isMemory, OnAsyncUpdate);
+            Context = info;
+            AssetPackage = new AssetPackage(info, isMemory, OnAsyncUpdate);
         }
 
         public int Increment()

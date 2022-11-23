@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SMCore.Events
 {
-    public interface IEvent
+    public interface IEvent<T> where T : IEventArgs
     {
 
         /// <summary>
@@ -12,14 +12,14 @@ namespace SMCore.Events
         /// </summary>
         /// <param name="eventName">事件名称</param>
         /// <param name="listener">事件监听者</param>
-        void AddListener(string eventName, Action<IEventArgs> listener);
+        void AddListener(string eventName, Action<T> listener);
 
         /// <summary>
         /// 移除指定的事件
         /// </summary>
         /// <param name="eventName">指定的事件名</param>
         /// <param name="listener">指定的事件</param>
-        void RemoveListener(string eventName, Action<IEventArgs> listener);
+        void RemoveListener(string eventName, Action<T> listener);
 
         /// <summary>
         /// 移除列表中所有给定名称的事件
@@ -38,6 +38,6 @@ namespace SMCore.Events
         /// <param name="eventName">事件名称</param>
         /// <param name="args">参数</param>
         /// <param name="delayTime"></param>
-        void Notify(string eventName, IEventArgs args, float delayTime = 0);
+        void Notify(string eventName, T args, float delayTime = 0);
     }
 }

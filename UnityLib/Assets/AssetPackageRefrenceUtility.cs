@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using UnityLib.Loads;
 
 namespace UnityLib.Assets
 {
@@ -17,11 +18,11 @@ namespace UnityLib.Assets
         }
         private static Dictionary<string, AssetPackageRefrence> _Refrences;
 
-        public static AssetPackageRefrence GetAssetPackageRefrence(string uri, bool isMemory, Action<AssetPackage> onAsync)
+        public static AssetPackageRefrence GetAssetPackageRefrence(AssetContext context, bool isMemory, Action<AssetPackage> onAsync)
         {
-            if (!Refrences.TryGetValue(uri, out var refrence))
+            if (!Refrences.TryGetValue(context.Url, out var refrence))
             {
-                Refrences.Add(uri, refrence = new AssetPackageRefrence(uri, isMemory));
+                Refrences.Add(context.Url, refrence = new AssetPackageRefrence(context, isMemory));
             }
             refrence.AddListener(onAsync);
             return refrence;
@@ -32,13 +33,13 @@ namespace UnityLib.Assets
             if (refrence == null) return;
 
             if (refrence.RefrenceCounting == 0) 
-                Destory(refrence.Uri);
+                Destory(refrence.Context.Url);
         }
 
-        public static void Destory(string uri)
+        public static void Destory(string url)
         {
-            if (Refrences.TryGetValue(uri, out var refrence))
-                Refrences.Remove(uri);
+            if (Refrences.TryGetValue(url, out var refrence))
+                Refrences.Remove(url);
             if (refrence != null) refrence.Dispose();
         }
     }
