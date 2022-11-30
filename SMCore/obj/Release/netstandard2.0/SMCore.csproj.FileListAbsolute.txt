@@ -7,3 +7,4 @@ D:\Works\SMCodeLib\SMCore\obj\Release\netstandard2.0\SMCore.AssemblyInfo.cs
 D:\Works\SMCodeLib\SMCore\obj\Release\netstandard2.0\SMCore.csproj.CoreCompileInputs.cache
 D:\Works\SMCodeLib\SMCore\obj\Release\netstandard2.0\SMCore.dll
 D:\Works\SMCodeLib\SMCore\obj\Release\netstandard2.0\SMCore.pdb
+D:\Works\SMCodeLib\SMCore\obj\Release\netstandard2.0\SMCore.csproj.AssemblyReference.cache

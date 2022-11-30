@@ -183,7 +183,7 @@ namespace UnityLib.Loads
         {
             if (!Cache.TryGetValue(ASSETAUDIO, out var obj))
             {
-                obj = DownloadHandlerAudioClip.GetContent(www);
+                obj = DownloadHandlerAudioClip.GetContent(www);// equal: ((DownloadHandlerAudioClip)www.downloadHandler).audioClip; 
                 Cache.Add(ASSETAUDIO, obj);
             }
             return obj as AudioClip;

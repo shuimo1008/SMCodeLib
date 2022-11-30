@@ -23,7 +23,7 @@ namespace UnityLib.Loads
     /// 2. 根据加载优先级加载资源;
     /// 3. 成功加载的资源进入缓存;
     /// </summary>
-    public class LoaderSer : ObjectBase, ILoaderSer
+    public class LoaderSer : ObjectEvent<ILoader>, ILoaderSer
     {
         private ILoader[] loadingGroup;
         private Queue<ILoader> waitLoading1Queue; // 最高优先级
@@ -81,6 +81,8 @@ namespace UnityLib.Loads
 
                 if (loader != null && loader.IsDisposed)
                 {
+                    if (toBeloads.TryRemove(loader.Url, out _)) { };
+
                     loader = null;
                     loadingGroup[i] = null;
                 }
@@ -168,8 +170,6 @@ namespace UnityLib.Loads
                 loader = f.Invoke(info);
                 // 加入资源池
                 Caches.Add(info.Url, loader); 
-                // 进入待加载队列, 以便查询
-                toBeloads.TryAdd(info.Url, loader);
             }
 
             if (needLoad)
@@ -187,6 +187,10 @@ namespace UnityLib.Loads
                         waitLoading3Queue.Enqueue(Caches[info.Url]);
                         break;
                 }
+
+                // 进入待加载队列, 以便查询
+                toBeloads.TryAdd(info.Url, loader);
+                Notify(loader); // 通知新的加载进入队列
             }
             // 事件监听写在这里是因为存在同一时间多个地方需要加载该资源。
             // 所以每个地方都需要在资源完成加载后进行回调，于是当资源完成回调后删除所有监听事件。
@@ -204,8 +208,6 @@ namespace UnityLib.Loads
             if (Caches.TryGetValue(uri, out loader))
                 Caches.Remove(uri);
             if (loader != null) loader.Dispose();
-
-            if (toBeloads.TryRemove(uri, out _)) { };
         }
 
         public void UnloadAll()
