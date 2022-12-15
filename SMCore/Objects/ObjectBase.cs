@@ -30,10 +30,10 @@ namespace SMCore.Objects
             }
         }
 
-        ~ObjectBase()
-        {
-            Dispose(false);
-        }
+        //~ObjectBase()
+        //{
+        //    Dispose(false);
+        //}
 
         protected virtual void DoManagedObjectDispose() { }
 

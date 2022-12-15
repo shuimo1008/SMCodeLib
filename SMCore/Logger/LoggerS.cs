@@ -35,34 +35,36 @@ namespace SMCore.Logger
             RegisterCount--;
         }
 
-        public void Debug(object msg)
+        public string Debug(object msg)
         {
             string str = msg != null ? msg.ToString() : "null";
-            Log(str, LogChannel.Debug, false);
+            return Log(str, LogChannel.Debug);
         }
 
-        public void Warning(object msg)
+        public string Warning(object msg)
         {
             string str = msg != null ? msg.ToString() : "null";
-            Log(str, LogChannel.Warn, false);
+            return Log(str, LogChannel.Warn);
         }
 
-        public void Info(object msg)
+        public string Info(object msg)
         {
             string str = msg != null ? msg.ToString() : "null";
-            Log(str, LogChannel.Info, false);
+            return Log(str, LogChannel.Info);
         }
 
-        public void Error(object msg)
+        public string Error(object msg)
         {
             string str = msg != null ? msg.ToString() : "null";
-            Log(str, LogChannel.Error, false);
+            return Log(str, LogChannel.Error);
         }
 
-        private void Log(string msg, LogChannel channel, bool simpleMode)
+        private string Log(string msg, LogChannel channel)
         {
             if (RegisterCount == 0)
                 throw new Exception($"日志输出没有监听者(请先通过方法App.RegistLog注册日志监听)!");
+
+            string logTime = DateTime.Now.ToString("F");
 
             bool filter = false;
             if (filters != null)
@@ -70,18 +72,16 @@ namespace SMCore.Logger
                 for (int i = 0; i < filters.Length; i++)
                     filter = msg.IndexOf(filters[i]) != -1;
             }
-            if (filter) return; // 字段过滤
+            if (filter) return logTime; // 字段过滤
 
-            string outputMsg;
-            if (simpleMode)
-                outputMsg = "[" + channel.ToString() + "]  " + msg;
-            else
-                outputMsg = "[" + channel.ToString() + "][" + DateTime.Now.ToString("F") + "]  " + msg;
+            string outputMsg = "[" + channel.ToString() + "][" + logTime + "]  " + msg;
 
             foreach (ILoggerListener listener in Listeners)
                 listener.Log(channel, outputMsg);
 
             Output?.Invoke(outputMsg);
+
+            return logTime;
         }
 
         private string[] filters;
