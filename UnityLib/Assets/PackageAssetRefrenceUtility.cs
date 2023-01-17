@@ -5,30 +5,30 @@ using UnityLib.Loads;
 
 namespace UnityLib.Assets
 {
-    public class AssetPackageRefrenceUtility
+    public class PackageAssetRefrenceUtility
     {
-        private static Dictionary<string, AssetPackageRefrence> Refrences
+        private static Dictionary<string, PackageAssetRefrence> Refrences
         {
             get
             {
                 if (_Refrences == null)
-                    _Refrences = new Dictionary<string, AssetPackageRefrence>();
+                    _Refrences = new Dictionary<string, PackageAssetRefrence>();
                 return _Refrences;
             }
         }
-        private static Dictionary<string, AssetPackageRefrence> _Refrences;
+        private static Dictionary<string, PackageAssetRefrence> _Refrences;
 
-        public static AssetPackageRefrence GetAssetPackageRefrence(AssetContext context, bool isMemory, Action<AssetPackage> onAsync)
+        public static PackageAssetRefrence GetAssetPackageRefrence(AssetContext context, bool isMemory, Action<PackageAsset> onAsync)
         {
             if (!Refrences.TryGetValue(context.Url, out var refrence))
             {
-                Refrences.Add(context.Url, refrence = new AssetPackageRefrence(context, isMemory));
+                Refrences.Add(context.Url, refrence = new PackageAssetRefrence(context, isMemory));
             }
             refrence.AddListener(onAsync);
             return refrence;
         }
 
-        public static void TryDestoryAssetBundleAsync(AssetPackageRefrence refrence)
+        public static void TryDestoryAssetBundleAsync(PackageAssetRefrence refrence)
         {
             if (refrence == null) return;
 

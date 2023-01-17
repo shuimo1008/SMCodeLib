@@ -145,7 +145,14 @@ namespace UnityLib.Loads
                 verified = verified && www.isDone;
                 verified = verified && assetBundle == null;
                 verified = verified && string.IsNullOrEmpty(_Context.Error);
-                if (verified) assetBundle = DownloadHandlerAssetBundle.GetContent(www);
+                if (verified)
+                {
+                    try
+                    {
+                        assetBundle = DownloadHandlerAssetBundle.GetContent(www);
+                    }
+                    catch (Exception e) { LogS.Error(e); }
+                }
             }
 
             return assetBundle;

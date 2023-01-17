@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 namespace UnityLib.Assets
 {
-    public class AssetPackageObject : CustomYieldInstruction, IAssetPackageObject
+    public class PackageObjectAsset : CustomYieldInstruction, IPackageObjectAsset
     {
         public AssetContext Context 
         {
@@ -45,23 +45,23 @@ namespace UnityLib.Assets
 
         public string AssetName { get; private set; }
 
-        public AssetPackage AssetPackage
+        public PackageAsset AssetPackage
             => AssetPackageRefrence.AssetPackage;
 
-        public AssetPackageRefrence AssetPackageRefrence { get; set; }
+        public PackageAssetRefrence AssetPackageRefrence { get; set; }
 
-        public AssetPackageObject(AssetContext context) : this(context, null) { }
+        public PackageObjectAsset(AssetContext context) : this(context, null) { }
 
-        public AssetPackageObject(AssetContext context, Action<AssetPackageObject> onAsync)
+        public PackageObjectAsset(AssetContext context, Action<PackageObjectAsset> onAsync)
             : this(context, string.Empty, false, onAsync) { }
 
-        public AssetPackageObject(AssetContext context, bool isMemory,  Action<AssetPackageObject> onAsync)
+        public PackageObjectAsset(AssetContext context, bool isMemory,  Action<PackageObjectAsset> onAsync)
             : this(context, string.Empty, isMemory, onAsync) { }
 
-        public AssetPackageObject(AssetContext context, string assetname, bool isMemory, Action<AssetPackageObject> onAsync)
+        public PackageObjectAsset(AssetContext context, string assetname, bool isMemory, Action<PackageObjectAsset> onAsync)
         {
             AssetName = assetname;
-            AssetPackageRefrence = AssetPackageRefrenceUtility
+            AssetPackageRefrence = PackageAssetRefrenceUtility
                 .GetAssetPackageRefrence(context, isMemory, (package) => { onAsync?.Invoke(this); });
             AssetPackageRefrence.Increment(); // 标记引用计数
 
@@ -95,7 +95,7 @@ namespace UnityLib.Assets
             if (Clone != null)
                 Object.DestroyImmediate(Clone);
             AssetPackageRefrence.Decrement();
-            AssetPackageRefrenceUtility.TryDestoryAssetBundleAsync(AssetPackageRefrence);
+            PackageAssetRefrenceUtility.TryDestoryAssetBundleAsync(AssetPackageRefrence);
         }
     }
 }

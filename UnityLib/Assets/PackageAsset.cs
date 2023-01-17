@@ -10,22 +10,22 @@ using Object = UnityEngine.Object;
 
 namespace UnityLib.Assets
 {
-    public class AssetPackage : AssetUnity<AssetBundle, AssetPackage>
+    public class PackageAsset : UnityAsset<AssetBundle, PackageAsset>
     {
         private bool IsMemory { get; set; }
 
-        public AssetPackage(AssetContext context) : base(context) { }
+        public PackageAsset(AssetContext context) : base(context) { }
 
-        public AssetPackage(AssetContext context, Action<AssetPackage> onAsync)
+        public PackageAsset(AssetContext context, Action<PackageAsset> onAsync)
             : this(context, false, onAsync) { }
 
-        public AssetPackage(AssetContext context, bool isMemory, Action<AssetPackage> onAsync)
+        public PackageAsset(AssetContext context, bool isMemory, Action<PackageAsset> onAsync)
             : base(context, onAsync) 
         { 
             IsMemory = isMemory;
         }
 
-        protected override AssetPackage StartAsync()
+        protected override PackageAsset StartAsync()
         {
             IoC.Resolve<ILoaderSer>().LoadBundle(Context, (args) =>
             {

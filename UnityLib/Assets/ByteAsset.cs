@@ -6,21 +6,21 @@ using UnityLib.Loads;
 
 namespace UnityLib.Assets
 {
-    public class AssetText : AssetUnity<string, AssetText>
+    public class ByteAsset : UnityAsset<byte[], ByteAsset>
     {
-        public AssetText(AssetContext context) : base(context, null) { }
+        public ByteAsset(AssetContext context) : base(context) { }
 
-        public AssetText(AssetContext context, Action<AssetText> onAsync)
+        public ByteAsset(AssetContext context, Action<ByteAsset> onAsync)
             : base(context, onAsync) { }
 
-        public override string GetAsset()
+        public override byte[] GetAsset()
         {
             if (Loader == null)
                 return null;
-            return Loader.GetText();
+            return Loader.GetBytes();
         }
 
-        protected override AssetText StartAsync()
+        protected override ByteAsset StartAsync()
         {
             IoC.Resolve<ILoaderSer>().Load(Context, (args) =>
             {

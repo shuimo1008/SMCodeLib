@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace UnityLib.Assets
 {
-    public class AssetUnityRefrence : IAssetUnityRefrence
+    public class UnityAssetRefrence : IUnityAssetRefrence
     {
         public int RefrenceCounting
         {

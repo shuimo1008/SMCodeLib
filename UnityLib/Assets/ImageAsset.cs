@@ -7,11 +7,11 @@ using UnityLib.Loads;
 
 namespace UnityLib.Assets
 {
-    public class AssetImage : AssetUnity<Texture2D, AssetImage>
+    public class ImageAsset : UnityAsset<Texture2D, ImageAsset>
     {
-        public AssetImage(AssetContext context) : base(context) { }
+        public ImageAsset(AssetContext context) : base(context) { }
 
-        public AssetImage(AssetContext context, Action<AssetImage> onAsync)
+        public ImageAsset(AssetContext context, Action<ImageAsset> onAsync)
             : base(context, onAsync) { }
 
         public override Texture2D GetAsset()
@@ -21,7 +21,7 @@ namespace UnityLib.Assets
             return Loader.GetTexture();
         }
 
-        protected override AssetImage StartAsync()
+        protected override ImageAsset StartAsync()
         {
             IoC.Resolve<ILoaderSer>().LoadImage(Context, (args) =>
             {

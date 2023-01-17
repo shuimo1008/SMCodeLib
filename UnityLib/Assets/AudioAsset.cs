@@ -7,25 +7,25 @@ using UnityLib.Loads;
 
 namespace UnityLib.Assets
 {
-    public class AssetAudio : AssetUnity<AudioClip, AssetAudio>
+    public class AudioAsset : UnityAsset<AudioClip, AudioAsset>
     {
         public AudioType AudioType { get; private set; } = AudioType.MPEG;
 
-        public AssetAudio(AssetContext context)
+        public AudioAsset(AssetContext context)
             : this(context, AudioType.MPEG) { }
 
-        public AssetAudio(AssetContext context, AudioType audioType) 
+        public AudioAsset(AssetContext context, AudioType audioType) 
             : this(context, audioType, null) 
         {
         }
 
-        public AssetAudio(AssetContext context, AudioType audioType, Action<AssetAudio> onAsync)
+        public AudioAsset(AssetContext context, AudioType audioType, Action<AudioAsset> onAsync)
             : this(context, onAsync)
         {
             AudioType = audioType;
         }
 
-        public AssetAudio(AssetContext context, Action<AssetAudio> onAsync)
+        public AudioAsset(AssetContext context, Action<AudioAsset> onAsync)
             : base(context, onAsync) { }
 
         public override AudioClip GetAsset()
@@ -35,7 +35,7 @@ namespace UnityLib.Assets
             return Loader.GetAudioClip();
         }
 
-        protected override AssetAudio StartAsync()
+        protected override AudioAsset StartAsync()
         {
             IoC.Resolve<ILoaderSer>().LoadAudio(Context, (args) =>
             {

@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace UnityLib.Assets
 {
-    public abstract class AssetUnity<T, U> : CustomYieldInstruction, IAssetUnity<T> where U : IAssetUnity<T>
+    public abstract class UnityAsset<T, U> : CustomYieldInstruction, IUnityAsset<T> where U : IUnityAsset<T>
     {
         public AssetContext Context 
         { 
@@ -76,17 +76,17 @@ namespace UnityLib.Assets
 
         protected Action<U> OnAsync { get; set; }
 
-        public AssetUnity(AssetContext info)
+        public UnityAsset(AssetContext info)
             : this(info, null) { }
 
-        public AssetUnity(AssetContext info, Action<U> onAsync)
+        public UnityAsset(AssetContext info, Action<U> onAsync)
         {
             if(info.Equals(default(AssetContext)))
                 throw new ArgumentNullException("AssetInfo不能为空");
             if (string.IsNullOrEmpty(info.Url))
                 throw new ArgumentNullException("AssetInfo.Url不能为空");
 
-            AssetUnityRefrenceUtility.GetRefrence(info.Url).Increment();
+            UnityAssetRefrenceUtility.GetRefrence(info.Url).Increment();
             Context = info;
             OnAsync = onAsync;
             StartAsync();
@@ -103,7 +103,7 @@ namespace UnityLib.Assets
             if (IsDisposed) return;
             IsDisposed = true;
             // 只有已经加载过才减少引用计数
-            int counting = AssetUnityRefrenceUtility.GetRefrence(Context.Url).Decrement();
+            int counting = UnityAssetRefrenceUtility.GetRefrence(Context.Url).Decrement();
             if (counting == 0) IoC.Resolve<ILoaderSer>().Unload(Context.Url);
         }
     }

@@ -6,7 +6,7 @@ using UnityLib.Loads;
 
 namespace UnityLib.Assets
 {
-    public class AssetPackageRefrence : IDisposable
+    public class PackageAssetRefrence : IDisposable
     {
         public int RefrenceCounting
         {
@@ -16,23 +16,23 @@ namespace UnityLib.Assets
 
         public AssetContext Context { get; private set; }
 
-        public AssetPackage AssetPackage { get; private set; }
+        public PackageAsset AssetPackage { get; private set; }
 
-        private Dictionary<int, Action<AssetPackage>> Listeners
+        private Dictionary<int, Action<PackageAsset>> Listeners
         {
             get
             {
                 if (_Listeners == null)
-                    _Listeners = new Dictionary<int, Action<AssetPackage>>();
+                    _Listeners = new Dictionary<int, Action<PackageAsset>>();
                 return _Listeners;
             }
         }
-        private Dictionary<int, Action<AssetPackage>> _Listeners;
+        private Dictionary<int, Action<PackageAsset>> _Listeners;
 
-        public AssetPackageRefrence(AssetContext info, bool isMemory)
+        public PackageAssetRefrence(AssetContext info, bool isMemory)
         {
             Context = info;
-            AssetPackage = new AssetPackage(info, isMemory, OnAsyncUpdate);
+            AssetPackage = new PackageAsset(info, isMemory, OnAsyncUpdate);
         }
 
         public int Increment()
@@ -47,7 +47,7 @@ namespace UnityLib.Assets
             return _RefrenceCounting;
         }
 
-        public void AddListener(Action<AssetPackage> onAsync)
+        public void AddListener(Action<PackageAsset> onAsync)
         {
             int hashId = onAsync.GetHashCode();
             if (!Listeners.TryGetValue(hashId, out var v))
@@ -63,7 +63,7 @@ namespace UnityLib.Assets
                 Listeners.Clear();
         }
 
-        private void OnAsyncUpdate(AssetPackage package)
+        private void OnAsyncUpdate(PackageAsset package)
         {
             Notify();
         }

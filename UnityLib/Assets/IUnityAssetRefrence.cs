@@ -5,7 +5,7 @@ using UnityLib.Loads;
 
 namespace UnityLib.Assets
 {
-    public interface IAssetUnityRefrence
+    public interface IUnityAssetRefrence
     {
         int RefrenceCounting { get;  }
 

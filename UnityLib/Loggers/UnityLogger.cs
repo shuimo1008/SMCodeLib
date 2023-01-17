@@ -13,9 +13,7 @@ namespace UnityLib.Loggers
             switch (channel)
             {
                 case LogChannel.Debug:
-#if WEBGL_DEBUG
                     Debug.Log(msg);
-#endif
                     break;
                 case LogChannel.Info:
                     Debug.Log(msg);

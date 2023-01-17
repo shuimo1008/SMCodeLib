@@ -160,6 +160,7 @@ namespace UnityLib.Loads
                 {
                     // 先释放资源,然后再重新加载
                     Unload(info.Url);
+
                     // 重新加载资源
                     Caches.Add(info.Url, f.Invoke(info));// Asset.New<T>(context);
                 }
@@ -168,6 +169,7 @@ namespace UnityLib.Loads
             else
             {
                 loader = f.Invoke(info);
+                //IoC.Resolve<SMCore.Logger.ILoggerS>().Debug("Regist Url: " + info.Url);
                 // 加入资源池
                 Caches.Add(info.Url, loader); 
             }

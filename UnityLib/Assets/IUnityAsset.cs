@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using UnityLib.Loads;
+using UnityEngine;
 
 namespace UnityLib.Assets
 {
-
-    public interface IAssetPackageObject : IDisposable
+    public interface IUnityAsset<T> : IDisposable
     {
         AssetContext Context { get; }
         string Error { get; }
@@ -14,9 +14,8 @@ namespace UnityLib.Assets
         bool IsSucess { get; }
         float Progress { get; }
         Priority Priority { get; }
-        string AssetName { get; }
 
-        T As<T>() where T : UnityEngine.Object;
-        T AsClone<T>() where T : UnityEngine.Object;
+        T GetAsset();
     }
+
 }
