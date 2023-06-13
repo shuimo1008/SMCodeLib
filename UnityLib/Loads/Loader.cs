@@ -88,6 +88,12 @@ namespace UnityLib.Loads
         public void Start()
         {
             Status = ProcessStatus.Start;
+
+            //_Context.IsDone = false;
+            //_Context.IsSucess = false;
+            //_Context.Progress = 0;
+            //_Context.Error = string.Empty;
+
             Callback();
             AsyncOperation = www.SendWebRequest();
         }
@@ -118,6 +124,8 @@ namespace UnityLib.Loads
             catch (Exception e) { LogS.Info(e); }
             if (_Context.IsDone) RemoveAllListener();
         }
+
+        public UnityWebRequest GetWebRequest() => www;
 
         public string[] GetAllScenePaths(bool fromMemory = false)
         {
@@ -190,7 +198,10 @@ namespace UnityLib.Loads
         {
             if (!Cache.TryGetValue(ASSETAUDIO, out var obj))
             {
-                obj = DownloadHandlerAudioClip.GetContent(www);// equal: ((DownloadHandlerAudioClip)www.downloadHandler).audioClip; 
+                //DownloadHandlerAudioClip downloadHandlerAudio = (DownloadHandlerAudioClip)www.downloadHandler;
+                //downloadHandlerAudio.compressed = true;
+                //obj = downloadHandlerAudio.audioClip;//.GetContent(www);// equal: ((DownloadHandlerAudioClip)www.downloadHandler).audioClip; 
+                obj = ((DownloadHandlerAudioClip)www.downloadHandler).audioClip;
                 Cache.Add(ASSETAUDIO, obj);
             }
             return obj as AudioClip;
@@ -265,5 +276,7 @@ namespace UnityLib.Loads
             if (assetBundle != null) { assetBundle.Unload(true); }
             Cache.Clear(); // 缓存清理
         }
+
+
     }
 }

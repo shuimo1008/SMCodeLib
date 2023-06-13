@@ -18,7 +18,7 @@ namespace SMCore.Utils
         public int solarYear;
     }
 
-    public class TimeDateUtils
+    public class DateUtils
     {
         /* 
          * |----4位闰月|-------------13位1为30天，0为29天| 

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Networking;
 using Object = UnityEngine.Object;
 
 namespace UnityLib.Loads
@@ -20,6 +21,8 @@ namespace UnityLib.Loads
         void Start();
         void Update(float deltaTime);
         void Callback();
+        UnityWebRequest GetWebRequest();
+
         /// <summary>获取AssetBundle场景的路径</summary>
         /// <param name="fromMemory">有些情况下无法从AssetBundle中获取资源,需要从内存中获取</param>
         string[] GetAllScenePaths(bool fromMemory = false);

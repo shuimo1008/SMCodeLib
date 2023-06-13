@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "zIRkDexV21awNzHfrPEMK7s0gQ+hCc4BCPEBlnzSsFxO7hbPXmtCCA5iEJo2hfyZUNL4SqINHNGSO8EURH0KhA==",
+  "dgSpecHash": "7UOd7zWzibItnS7DaM4qHDHchZEnJ47LYDrhQ2R/ZdMWRgWOKHnaMEtsztKh9F1FpjT2GiyAjLBKm+GfXtoa/A==",
   "success": true,
   "projectFilePath": "D:\\Works\\SMCodeLib\\UnityLib\\UnityLib.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\shuimo\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
-    "C:\\Users\\shuimo\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+    "C:\\Users\\ShuiMo\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\ShuiMo\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
   ],
   "logs": []
 }

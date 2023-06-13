@@ -163,14 +163,6 @@ namespace SMCore.Utils
         }
         #endregion
 
-        #region 数学操作
-        public static float Clamp(float value, float min, float max)
-        {
-            if (value < min) value = min;
-            else if (value > max) value = max;
-            return value;
-        }
-        #endregion
 
         #region 反射相关
         /// <summary>

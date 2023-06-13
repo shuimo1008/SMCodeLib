@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityLib.Loads;
 using Object = UnityEngine.Object;
 
@@ -93,6 +94,9 @@ namespace UnityLib.Assets
         }
 
         public abstract T GetAsset();
+
+        public virtual UnityWebRequest GetWebRequest()
+            => Loader.GetWebRequest();
 
         protected abstract U StartAsync();
 

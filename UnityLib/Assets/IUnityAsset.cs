@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityLib.Loads;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace UnityLib.Assets
 {
@@ -16,6 +17,8 @@ namespace UnityLib.Assets
         Priority Priority { get; }
 
         T GetAsset();
+
+        UnityWebRequest GetWebRequest();
     }
 
 }

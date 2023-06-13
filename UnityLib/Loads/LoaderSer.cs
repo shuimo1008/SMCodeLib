@@ -124,54 +124,54 @@ namespace UnityLib.Loads
             }
         }
 
-        public void Load(AssetContext info, Action<IEventArgs> onDone, Priority priority = Priority.General)
+        public void Load(AssetContext context, Action<IEventArgs> onDone, Priority priority = Priority.General)
         {
-            Load(info, (_uri) => { return Factory.New(info); }, onDone, priority);
+            Load(context, (_uri) => { return Factory.New(context); }, onDone, priority);
         }
 
-        public void LoadImage(AssetContext info, Action<IEventArgs> onDone, Priority priority = Priority.General)
+        public void LoadImage(AssetContext context, Action<IEventArgs> onDone, Priority priority = Priority.General)
         {
-            Load(info, (_uri) => { return Factory.NewImage(info); }, onDone, priority);
+            Load(context, (_uri) => { return Factory.NewImage(context); }, onDone, priority);
         }
 
-        public void LoadBundle(AssetContext info, Action<IEventArgs> onDone, Priority priority = Priority.General)
+        public void LoadBundle(AssetContext context, Action<IEventArgs> onDone, Priority priority = Priority.General)
         {
-            Load(info, (_uri) => { return Factory.NewBundle(info); }, onDone, priority);
+            Load(context, (_uri) => { return Factory.NewBundle(context); }, onDone, priority);
         }
 
-        public void LoadAudio(AssetContext info, Action<IEventArgs> onDone, Priority priority = Priority.General, AudioType audioType = AudioType.MPEG)
+        public void LoadAudio(AssetContext context, Action<IEventArgs> onDone, Priority priority = Priority.General, AudioType audioType = AudioType.MPEG)
         {
-            Load(info, (_uri) => { return Factory.NewAudio(info, audioType); }, onDone, priority);
+            Load(context, (_uri) => { return Factory.NewAudio(context, audioType); }, onDone, priority);
         }
 
-        private void Load(AssetContext info, Func<AssetContext, ILoader> f, Action<IEventArgs> onDone, Priority priority = Priority.General)
+        private void Load(AssetContext context, Func<AssetContext, ILoader> f, Action<IEventArgs> onDone, Priority priority = Priority.General)
         {
-            if(info.Equals(default(AssetContext)))
+            if(context.Equals(default(AssetContext)))
                 throw new Exception("Loader方法 AssetInfo 不能为空\n");
 
-            if (string.IsNullOrEmpty(info.Url))
+            if (string.IsNullOrEmpty(context.Url))
                 throw new Exception("Loader方法 AssetInfo.Url 不能为空\n");
 
             bool needLoad = true;
-            if (Caches.TryGetValue(info.Url, out ILoader loader))
+            if (Caches.TryGetValue(context.Url, out ILoader loader))
             {
                 // 资源池已经有该资源，但是资源没有加载成功,则对资源进行重新加载
                 if (loader.IsDone && !loader.IsSucess)
                 {
                     // 先释放资源,然后再重新加载
-                    Unload(info.Url);
+                    Unload(context.Url);
 
                     // 重新加载资源
-                    Caches.Add(info.Url, f.Invoke(info));// Asset.New<T>(context);
+                    Caches.Add(context.Url, f.Invoke(context));// Asset.New<T>(context);
                 }
                 else needLoad = false;
             }
             else
             {
-                loader = f.Invoke(info);
+                loader = f.Invoke(context);
                 //IoC.Resolve<SMCore.Logger.ILoggerS>().Debug("Regist Url: " + info.Url);
                 // 加入资源池
-                Caches.Add(info.Url, loader); 
+                Caches.Add(context.Url, loader); 
             }
 
             if (needLoad)
@@ -180,25 +180,25 @@ namespace UnityLib.Loads
                 switch (priority)
                 {
                     case Priority.High:
-                        waitLoading1Queue.Enqueue(Caches[info.Url]);
+                        waitLoading1Queue.Enqueue(Caches[context.Url]);
                         break;
                     case Priority.Middle:
-                        waitLoading2Queue.Enqueue(Caches[info.Url]);
+                        waitLoading2Queue.Enqueue(Caches[context.Url]);
                         break;
                     case Priority.General:
-                        waitLoading3Queue.Enqueue(Caches[info.Url]);
+                        waitLoading3Queue.Enqueue(Caches[context.Url]);
                         break;
                 }
 
                 // 进入待加载队列, 以便查询
-                toBeloads.TryAdd(info.Url, loader);
+                toBeloads.TryAdd(context.Url, loader);
                 Notify(loader); // 通知新的加载进入队列
             }
             // 事件监听写在这里是因为存在同一时间多个地方需要加载该资源。
             // 所以每个地方都需要在资源完成加载后进行回调，于是当资源完成回调后删除所有监听事件。
-            Caches[info.Url].AddListener(onDone);
+            Caches[context.Url].AddListener(onDone);
             // 如果资源已经完成下载,则直接返回
-            if (Caches[info.Url].IsDone) Caches[info.Url].Callback();
+            if (Caches[context.Url].IsDone) Caches[context.Url].Callback();
         }
 
         public void Unload(string uri)
