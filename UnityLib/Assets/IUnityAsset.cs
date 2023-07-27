@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 
 namespace UnityLib.Assets
 {
-    public interface IUnityAsset<T> : IDisposable
+    public interface IUnityAsset : IDisposable
     {
         AssetContext Context { get; }
         string Error { get; }
@@ -16,9 +16,12 @@ namespace UnityLib.Assets
         float Progress { get; }
         Priority Priority { get; }
 
-        T GetAsset();
-
         UnityWebRequest GetWebRequest();
+    }
+
+    public interface IUnityAsset<T> : IUnityAsset
+    {
+        T GetAsset();
     }
 
 }

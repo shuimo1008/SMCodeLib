@@ -20,7 +20,7 @@ namespace SMCore.News
         public IAlertNews OutputNews(string content, bool log = false)
         {
             Content = content;
-            if (log) IoC.Resolve<ILoggerS>().Info(content);
+            if (log) IoC.Resolve<ILoggerSer>().Info(content);
             return this;
         }
 
@@ -49,5 +49,7 @@ namespace SMCore.News
         protected override void OnUpdate(float deltaTime)
         {
         }
+
+        public static AlertNews New() => new AlertNews();
     }
 }

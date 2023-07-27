@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.XR;
 
 namespace UnityLib.Loads
 {
@@ -18,5 +19,12 @@ namespace UnityLib.Loads
 
         void Unload(string url);
         void UnloadAll();
+
+        /// <summary>
+        /// 加载队列中的操作事件
+        /// </summary>
+        void AddBeloadsOpEventListener(Action<Opload> listener);
+
+        void RemoveBeloadsOpEventListener(Action<Opload> listener);
     }
 }

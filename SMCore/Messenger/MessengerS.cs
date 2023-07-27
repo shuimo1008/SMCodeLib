@@ -27,7 +27,7 @@ namespace SMCore.Messenger
                 {
                     subscriber?.Invoke(messenger);
                 }
-                catch (Exception e) { IoC.Resolve<ILoggerS>().Error(e); }
+                catch (Exception e) { IoC.Resolve<ILoggerSer>().Error(e); }
             }
         }
 

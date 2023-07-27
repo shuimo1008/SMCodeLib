@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SMCore.Logger;
+using System;
+using System.Diagnostics;
 using System.Threading;
 
 namespace SMCore.ObjectPool
@@ -81,6 +83,7 @@ namespace SMCore.ObjectPool
             }
 
             factory.Reset(obj);
+
             for (var i = 0; i < entries.Length; i++)
             {
 //#if UNITY_WEBGL

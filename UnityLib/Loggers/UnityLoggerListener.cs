@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UnityLib.Loggers
 {
-    public class UnityLogger : ILoggerListener
+    public class UnityLoggerListener : ILoggerListener
     {
         public void Log(LogChannel channel, string msg)
         {

@@ -52,16 +52,16 @@ namespace UnityLib.Loads
         private const string ASSETBYTE = "Byte";
         private const string ASSETBUNDLE = "AssetBundle";
 
-        private ILoggerS LogS
+        private ILoggerSer LogS
         {
             get
             {
                 if (_LogS == null)
-                    _LogS = IoC.Resolve<ILoggerS>();
+                    _LogS = IoC.Resolve<ILoggerSer>();
                 return _LogS;
             }
         }
-        private ILoggerS _LogS;
+        private ILoggerSer _LogS;
 
         private Dictionary<string, object> Cache
         {
@@ -139,13 +139,12 @@ namespace UnityLib.Loads
 
         public AssetBundle GetBundle(bool fromMemory = false)
         {
+            if (assetBundle != null) return assetBundle;
+
             if (fromMemory)
             {
-                if (assetBundle == null)
-                {
-                    byte[] bytes = GetBytes();
-                    assetBundle = AssetBundle.LoadFromMemory(bytes);
-                }
+                byte[] bytes = GetBytes();
+                assetBundle = AssetBundle.LoadFromMemory(bytes);
             }
             else
             {
@@ -155,11 +154,7 @@ namespace UnityLib.Loads
                 verified = verified && string.IsNullOrEmpty(_Context.Error);
                 if (verified)
                 {
-                    try
-                    {
-                        assetBundle = DownloadHandlerAssetBundle.GetContent(www);
-                    }
-                    catch (Exception e) { LogS.Error(e); }
+                    assetBundle = DownloadHandlerAssetBundle.GetContent(www);
                 }
             }
 

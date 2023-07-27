@@ -9,6 +9,7 @@ using SMCore.Driver;
 using SMCore.Events;
 using SMCore.Objects;
 using UnityEngine;
+using UnityLib.Drivers;
 
 namespace UnityLib.Loads
 {
@@ -17,14 +18,35 @@ namespace UnityLib.Loads
         General = 0, Middle = 1, High = 2,
     }
 
+    public class Opload : IEventArgs<ILoader>, IDisposable
+    {
+        public enum Status { Add, Remove }
+
+        public Status status;
+        public ILoader Data { get; set; }
+
+        public void Dispose() { }
+    }
+
     /// <summary>
     /// 资源管理
     /// 1. 构建并行加载的数量;
     /// 2. 根据加载优先级加载资源;
     /// 3. 成功加载的资源进入缓存;
     /// </summary>
-    public class LoaderSer : ObjectEvent<ILoader>, ILoaderSer
+    public class LoaderSer : ObjectEvent<Opload>, ILoaderSer
     {
+        public static LoaderSer Instance
+        {
+            get
+            { 
+                if(instance == null)
+                    instance = new LoaderSer();
+                return instance;
+            }
+        }
+        private static LoaderSer instance;
+
         private ILoader[] loadingGroup;
         private Queue<ILoader> waitLoading1Queue; // 最高优先级
         private Queue<ILoader> waitLoading2Queue; // 中等优先级
@@ -38,7 +60,7 @@ namespace UnityLib.Loads
             get
             {
                 if (_Driver == null)
-                    _Driver = IoC.Resolve<IDriverSer>();
+                    _Driver = UnityDriver.Instance;
                 return _Driver;
             }
         }
@@ -81,7 +103,12 @@ namespace UnityLib.Loads
 
                 if (loader != null && loader.IsDisposed)
                 {
-                    if (toBeloads.TryRemove(loader.Url, out _)) { };
+                    if (toBeloads.TryRemove(loader.Url, out _)) 
+                    {
+                        Opload op = new Opload() { status = Opload.Status.Remove, Data = loader };
+                        Notify(op);
+                        op.Dispose();
+                    };
 
                     loader = null;
                     loadingGroup[i] = null;
@@ -95,7 +122,12 @@ namespace UnityLib.Loads
                             Caches.Remove(loader.Url);
                     }
                     // 加载器完成加载后从待加载队列删除该加载器
-                    if (toBeloads.TryRemove(loader.Url, out _)) { }
+                    if (toBeloads.TryRemove(loader.Url, out _)) 
+                    {
+                        Opload op = new Opload() { status = Opload.Status.Remove, Data = loader };
+                        Notify(op);
+                        op.Dispose();
+                    }
 
                     loadingGroup[i] = null;
                 }
@@ -191,8 +223,12 @@ namespace UnityLib.Loads
                 }
 
                 // 进入待加载队列, 以便查询
-                toBeloads.TryAdd(context.Url, loader);
-                Notify(loader); // 通知新的加载进入队列
+                if (toBeloads.TryAdd(context.Url, loader))
+                {
+                    Opload op = new Opload() { status = Opload.Status.Add, Data = loader };
+                    Notify(op); // 通知新的加载进入队列
+                    op.Dispose();
+                }
             }
             // 事件监听写在这里是因为存在同一时间多个地方需要加载该资源。
             // 所以每个地方都需要在资源完成加载后进行回调，于是当资源完成回调后删除所有监听事件。
@@ -217,6 +253,16 @@ namespace UnityLib.Loads
             IList<string> urls = new List<string>(Caches.Keys);
             foreach (var url in urls) Unload(url);
             urls.Clear();   
+        }
+
+        public void AddBeloadsOpEventListener(Action<Opload> listener)
+        {
+            base.AddListener(listener);
+        }
+
+        public void RemoveBeloadsOpEventListener(Action<Opload> listener)
+        { 
+            base.RemoveListener(listener);
         }
 
         protected override void DoManagedObjectDispose()

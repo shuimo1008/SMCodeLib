@@ -7,16 +7,16 @@ namespace SMCore.Events
 {
     public class Event<T> : IEvent<T> where T : IEventArgs
     {
-        private ILoggerS Logger
+        private ILoggerSer Logger
         {
             get
             {
                 if (_Logger == null)
-                    _Logger = IoC.Resolve<ILoggerS>();
+                    _Logger = IoC.Resolve<ILoggerSer>();
                 return _Logger;
             }
         }
-        private ILoggerS _Logger;
+        private ILoggerSer _Logger;
 
         protected Dictionary<string, List<Action<T>>> EventDict { get; set; }
 
@@ -155,7 +155,7 @@ namespace SMCore.Events
                 if (UseTime == DelayTime)
                 {
                     try { OnNotify?.Invoke(CallEvent, EventArgs, 0); }
-                    catch (Exception e) { IoC.Resolve<ILoggerS>().Error(e); }
+                    catch (Exception e) { IoC.Resolve<ILoggerSer>().Error(e); }
                     Driver.Unsubscribe(Update); Dispose();
                 }
             }

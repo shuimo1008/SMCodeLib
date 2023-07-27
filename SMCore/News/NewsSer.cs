@@ -6,6 +6,18 @@ namespace SMCore.News
 {
     public class NewsSer : INewsSer
     {
+        public static NewsSer Instance 
+        {
+            get
+            {
+                if(instance == null)
+                    instance = new NewsSer();
+                return instance;
+            }
+        }
+        private static NewsSer instance;
+
+
         public Dictionary<Type, object> Subscribers
         {
             get

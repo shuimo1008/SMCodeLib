@@ -73,7 +73,7 @@ namespace SMCore.Coros
             {
                 if (Storages.Count > 100)
                 {
-                    IoC.Resolve<ILoggerS>().Warning($"警告: 迭代器堆存放数据过大[{Storages.Count}]");
+                    IoC.Resolve<ILoggerSer>().Warning($"警告: 迭代器堆存放数据过大[{Storages.Count}]");
                 }
                 Storages.Push(Enumerator); // 保存现有迭代器
                 Enumerator = enumerator;
