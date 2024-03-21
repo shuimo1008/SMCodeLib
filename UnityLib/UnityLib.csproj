@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <None Remove="Assets\AssetPackageObject.cs~RF1fc2eaa.TMP" />
+    <None Remove="Loads\4ptkxiv2.skv~" />
   </ItemGroup>
 
   <ItemGroup>

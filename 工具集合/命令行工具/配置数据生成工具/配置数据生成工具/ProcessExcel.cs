@@ -31,7 +31,15 @@ namespace Tools
                 Logger.Info($"解析文件:{file}");
                 DataTable oDataTable = ExcelUtils.ExcelToDataTable(file, null, true);
                 oDataTable.TableName = fileName;
-                if (oDataTable != null) FileDatas.Add(new FileData() { file = file, fileName = fileName, dataTable = oDataTable });
+                if (oDataTable != null)
+                {
+                    FileDatas.Add(new FileData()
+                    {
+                        file = file,
+                        fileName = fileName,
+                        dataTable = oDataTable
+                    });
+                }
                 else return false;
             }
 
@@ -69,7 +77,7 @@ namespace Tools
                         }
                         else
                         {
-                            string strType = oDataRow[columnsIndex].ToString();
+                            string strType = oDataRow[columnsIndex].ToValue().value.ToString();
 
                             if (columnsIndex == 0)
                             {
@@ -114,7 +122,7 @@ namespace Tools
                         }
                         else
                         {
-                            string strType = oDataRow[columnsIndex].ToString();
+                            string strType = oDataRow[columnsIndex].ToValue().value.ToString();
                             if (oFiledNames.IndexOf(strType) != -1)
                             {
                                 Logger.Error("<{0}>表第{1}行,第{2}列与已有的字段名重复.", oFileData.dataTable.Prefix, 2, columnsIndex + 1);
@@ -139,14 +147,14 @@ namespace Tools
                         DataRow oDataRow = oFileData.dataTable.Rows[0]; // 配置表第1行为数据类型
                         for (int columnsIndex = 0; columnsIndex < columnsCount; columnsIndex++)
                         {
-                            string strType = oDataRow[columnsIndex].ToString();
+                            string strType = oDataRow[columnsIndex].ToValue().value.ToString();
                             strTypes[columnsIndex] = strType;
                         }
                     }
                     for (int rowIndex = 3; rowIndex < rowCount; rowIndex++)
                     {
                         DataRow oDataRow = oFileData.dataTable.Rows[rowIndex];
-                        object obj = oDataRow[0];
+                        object obj = oDataRow[0].ToValue().value;
                         if (obj == null)
                         {
                             Logger.Error("<{0}>表第{1}行,首列ID数据不能为null.", oFileData.dataTable.TableName, rowIndex + 1);

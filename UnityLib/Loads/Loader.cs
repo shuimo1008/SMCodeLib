@@ -8,6 +8,7 @@ using SMCore.Events;
 using Object = UnityEngine.Object;
 using SMCore.Logger;
 using SMCore.Enums;
+using System.Threading;
 
 namespace UnityLib.Loads
 {
@@ -202,14 +203,30 @@ namespace UnityLib.Loads
             return obj as AudioClip;
         }
 
-        public Texture2D GetTexture()
+        public Texture2D GetTexture(bool compress = false, bool updateMipmap = false)
         {
+            Texture2D textureDestination;
             if (!Cache.TryGetValue(ASSETIMAGE, out var obj))
             {
                 obj = DownloadHandlerTexture.GetContent(www);
-                Cache.Add(ASSETIMAGE, obj);
+                Texture2D textureSource = obj as Texture2D;
+
+                textureDestination = new Texture2D(textureSource.width, textureSource.height, textureSource.format, true);
+                textureDestination.SetPixels32(textureSource.GetPixels32(0), 0);
+                if (updateMipmap) textureDestination.Apply(true);
+                if (compress)
+                {
+                    // 满足条件才执行压缩
+                    if(textureSource.width % 4 == 0 && textureSource.height % 4 == 0)
+                        textureDestination.Compress(true);
+                }
+
+                Object.Destroy(textureSource);
+
+                Cache.Add(ASSETIMAGE, textureDestination);
             }
-            return obj as Texture2D;
+            else textureDestination = obj as Texture2D;
+            return textureDestination;
         }
 
         public string GetText()

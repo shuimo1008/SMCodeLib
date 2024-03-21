@@ -7,23 +7,23 @@ using SMCore.Logger;
 
 public class Tpl
 { 
-   public readonly static localizationMgr localizationMgr = new localizationMgr();
+   public readonly static SkillMgr SkillMgr = new SkillMgr();
    public static void Setup(byte[] bytes)
    { 
        ByteBuffer buffer = new ByteBuffer(bytes);
-       localizationMgr.SetupData(buffer);
+       SkillMgr.SetupData(buffer);
     } 
 } 
 
 public abstract class BaseTpl
 { 
-   public string Tid { get; protected set; }
+   public int Tid { get; protected set; }
    public abstract void SetupData(ByteBuffer buffer);
 } 
 
 public class TemplateMgr<T> where T : BaseTpl, new()
 { 
-   private readonly Dictionary<string, T> DataTable = new Dictionary<string, T>();
+   private readonly Dictionary<int, T> DataTable = new Dictionary<int, T>();
 
    public void SetupData(ByteBuffer buffer) 
    { 
@@ -37,7 +37,7 @@ public class TemplateMgr<T> where T : BaseTpl, new()
        } 
    } 
 
-   public T Find(string id)
+   public T Find(int id)
    { 
        if (!DataTable.TryGetValue(id, out var tpl))
        {
@@ -60,28 +60,85 @@ public class TemplateMgr<T> where T : BaseTpl, new()
 } 
 
 /// <summary> 
-/// localization 
+/// Sheet1 
 /// </summary> 
-public class localizationMgr
-   : TemplateMgr<localizationTpl>
+public class SkillMgr
+   : TemplateMgr<SkillTpl>
 { 
 } 
-public class localizationTpl : BaseTpl
+public class SkillTpl : BaseTpl
 { 
    /// <summary> 
-   /// 中文 
+   /// 名称 
    /// </summary> 
-   public string Chinese {get; private set; } 
+   public string Name {get; private set; } 
    /// <summary> 
-   /// 英文 
+   /// 描述 
    /// </summary> 
-   public string English {get; private set; } 
+   public string Desc {get; private set; } 
+   /// <summary> 
+   /// 释放模式
+   /// ShuiMo:
+   /// 释放方式
+   /// 
+   /// 1.范围类：(无位置，无方向，无目标)
+   /// 2.射击类：(无位置，有方向，无目标)
+   /// 3.投掷类：(有位置，无方向，无目标)
+   /// 4.追踪类：(无位置，无方向，有目标) 
+   /// </summary> 
+   public int CastMode {get; private set; } 
+   /// <summary> 
+   /// 最小释放距离 
+   /// </summary> 
+   public float CastDistanceMin {get; private set; } 
+   /// <summary> 
+   /// 最大释放距离 
+   /// </summary> 
+   public float CastDistanceMax {get; private set; } 
+   /// <summary> 
+   /// 影响范围 
+   /// </summary> 
+   public float AffectRange {get; private set; } 
+   /// <summary> 
+   ///  条件状态 
+   /// </summary> 
+   public int[] PreStatuses {get; private set; } 
+   /// <summary> 
+   /// 影响状态 
+   /// </summary> 
+   public int[] AffectStatuses {get; private set; } 
+   /// <summary> 
+   /// 计算操作 
+   /// </summary> 
+   public int Compute {get; private set; } 
+   /// <summary> 
+   /// 倒计时 
+   /// </summary> 
+   public float CDTime {get; private set; } 
 
    public override void SetupData(ByteBuffer buffer)
    { 
-       Tid = buffer.ReadUTF8();
-       Chinese = buffer.ReadUTF8();
-       English = buffer.ReadUTF8(); 
+       Tid = buffer.ReadInt32();
+       Name = buffer.ReadUTF8();
+       Desc = buffer.ReadUTF8();
+       CastMode = buffer.ReadInt32();
+        CastDistanceMin = buffer.ReadFloat();
+        CastDistanceMax = buffer.ReadFloat();
+        AffectRange = buffer.ReadFloat();
+       int oPreStatusesCount = buffer.ReadInt32();
+       PreStatuses = new int[oPreStatusesCount];
+       for(int i = 0; i < oPreStatusesCount; i++)
+       {
+          PreStatuses[i] = buffer.ReadInt32();
+       }
+       int oAffectStatusesCount = buffer.ReadInt32();
+       AffectStatuses = new int[oAffectStatusesCount];
+       for(int i = 0; i < oAffectStatusesCount; i++)
+       {
+          AffectStatuses[i] = buffer.ReadInt32();
+       }
+       Compute = buffer.ReadInt32();
+        CDTime = buffer.ReadFloat(); 
    } 
 } 
 

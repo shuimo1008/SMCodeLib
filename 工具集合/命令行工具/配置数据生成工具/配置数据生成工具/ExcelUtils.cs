@@ -1,9 +1,11 @@
-﻿using NPOI.HSSF.UserModel;
+﻿using Newtonsoft.Json;
+using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
 using System.Data;
 using System.IO;
+using Newtonsoft.Json;
 
 
 namespace Tools
@@ -143,19 +145,23 @@ namespace Tools
                             {
                                 ICell cell = row.GetCell(j);
 
+                                string cellComment = string.Empty;
+                                if (cell.CellComment != null)
+                                    cellComment = cell.CellComment.String.ToString();
+
                                 switch (cell.CellType)
                                 {
                                     case CellType.String:
-                                        dataRow[j] = cell.StringCellValue;
+                                        dataRow[j] = new CellValue() { value = cell.StringCellValue, comment = cellComment };
                                         break;
                                     case CellType.Numeric:
-                                        dataRow[j] = cell.NumericCellValue;
+                                        dataRow[j] = new CellValue() { value = cell.NumericCellValue, comment = cellComment };
                                         break;
                                     case CellType.Formula:
-                                        dataRow[j] = cell.NumericCellValue;
+                                        dataRow[j] = new CellValue() { value = cell.NumericCellValue, comment = cellComment };
                                         break;
                                     default:
-                                        dataRow[j] = cell.ToString();
+                                        dataRow[j] = new CellValue() { value = cell.ToString(), comment = cellComment };
                                         break;
                                 }
                             }
@@ -171,5 +177,26 @@ namespace Tools
             }
             return null;
         }
+    }
+}
+
+public class CellValue
+{
+    public object value;
+    public string comment;
+
+    public override string ToString()
+    {
+        return JsonConvert.SerializeObject(this);
+    }
+}
+
+public static class CellValueExt
+{
+    public static CellValue ToValue(this object o)
+    {
+        CellValue cellvalue = JsonConvert.DeserializeObject<CellValue>(o.ToString());
+        if (cellvalue == null) cellvalue = new CellValue();
+        return cellvalue;
     }
 }

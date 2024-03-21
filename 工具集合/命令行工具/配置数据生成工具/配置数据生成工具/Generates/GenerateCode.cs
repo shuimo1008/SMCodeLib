@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using NPOI.SS.Formula.PTG;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -68,7 +70,7 @@ namespace Tools
                     DataRow oDataRow = oFileData.dataTable.Rows[0]; // 数据类型在配置表第1行
                     for (int columnsIndex = 0; columnsIndex < sTypes.Length; columnsIndex++)
                     {
-                        string strType = oDataRow[columnsIndex].ToString();
+                        string strType = oDataRow[columnsIndex].ToValue().value.ToString();
                         sTypes[columnsIndex] = strType;
                     }
                 }
@@ -78,7 +80,7 @@ namespace Tools
                     DataRow oDataRow = oFileData.dataTable.Rows[1];
                     for (int columnsIndex = 0; columnsIndex < sFiledNames.Length; columnsIndex++)
                     {
-                        string fileName = oDataRow[columnsIndex].ToString();
+                        string fileName = oDataRow[columnsIndex].ToValue().value.ToString();
                         sFiledNames[columnsIndex] = fileName;
                     }
                 }
@@ -88,7 +90,15 @@ namespace Tools
                     DataRow oDataRow = oFileData.dataTable.Rows[2];
                     for (int columnsIndex = 0; columnsIndex < sComments.Length; columnsIndex++)
                     {
-                        string comment = oDataRow[columnsIndex].ToString();
+                        CellValue cellValue = oDataRow[columnsIndex].ToValue();
+                        string comment = cellValue.value.ToString();
+                        if (!string.IsNullOrEmpty(cellValue.comment))
+                        {
+                            string cellComment = cellValue.comment;
+                            cellComment = cellComment.Replace("\t", "");
+                            cellComment = cellComment.Replace("\n", "__Enter__");
+                            comment += "__Enter__" + cellComment;
+                        }
                         sComments[columnsIndex] = comment;
                     }
                 }
@@ -108,6 +118,7 @@ namespace Tools
                         // 跳过ID字段
                         sComment = sComment.Replace("\r\n", "");
                         sComment = sComment.Replace("\n", "");
+                        sComment = sComment.Replace("__Enter__", $"\n   /// ");
                         string combineComment = string.Format(codeTemplate.COMMENT, sComment);
                         filedSB.Append(string.Format(codeTemplate.FIELDTYPE, combineComment, sType, sFiledName));
                         //filedSB.Append("\r\n");

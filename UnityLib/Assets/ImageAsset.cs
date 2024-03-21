@@ -28,7 +28,7 @@ namespace UnityLib.Assets
             if (Loader == null)
                 return null;
 
-            return Loader.GetTexture();
+            return Loader.GetTexture(true, true);
         }
 
         protected override ImageAsset StartAsync()

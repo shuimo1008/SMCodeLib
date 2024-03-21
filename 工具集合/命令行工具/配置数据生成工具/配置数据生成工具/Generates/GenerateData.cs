@@ -56,7 +56,8 @@ namespace Tools
                     DataRow oDataRow = oFileData.dataTable.Rows[0]; // 类型数据在第1行
                     for (int columnsIndex = 0; columnsIndex < strTypes.Length; columnsIndex++)
                     {
-                        string strType = oDataRow[columnsIndex].ToString();
+                        CellValue cellValue = oDataRow[columnsIndex].ToValue();
+                        string strType = cellValue.ToString();
                         strTypes[columnsIndex] = strType;
                     }
                 }
@@ -68,7 +69,8 @@ namespace Tools
                     {
                         try
                         {
-                            object obj = oDataRow[columnIndex];
+                            CellValue cellValue = oDataRow[columnIndex].ToValue();
+                            object obj = cellValue.value;
 
                             // 数据重复检查
                             if (columnIndex == 0)

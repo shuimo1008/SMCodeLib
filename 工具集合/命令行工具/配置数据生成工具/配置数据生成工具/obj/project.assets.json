@@ -2,21 +2,29 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v2.0": {
-      "DotNetCore.NPOI/1.2.2": {
+      "DotNetCore.NPOI/1.2.3": {
         "type": "package",
         "dependencies": {
-          "DotNetCore.NPOI.Core": "1.2.2",
-          "DotNetCore.NPOI.OpenXml4Net": "1.2.2",
-          "DotNetCore.NPOI.OpenXmlFormats": "1.2.2"
+          "DotNetCore.NPOI.Core": "1.2.3",
+          "DotNetCore.NPOI.OpenXml4Net": "1.2.3",
+          "DotNetCore.NPOI.OpenXmlFormats": "1.2.3"
         },
         "compile": {
           "lib/netstandard2.0/NPOI.OOXML.dll": {}
         },
         "runtime": {
           "lib/netstandard2.0/NPOI.OOXML.dll": {}
+        },
+        "contentFiles": {
+          "contentFiles/any/netstandard2.0/NOTICE.TXT": {
+            "buildAction": "Content",
+            "codeLanguage": "any",
+            "copyToOutput": true,
+            "outputPath": "NOTICE.TXT"
+          }
         }
       },
-      "DotNetCore.NPOI.Core/1.2.2": {
+      "DotNetCore.NPOI.Core/1.2.3": {
         "type": "package",
         "dependencies": {
           "SharpZipLib": "1.2.0",
@@ -30,10 +38,10 @@
           "lib/netstandard2.0/NPOI.dll": {}
         }
       },
-      "DotNetCore.NPOI.OpenXml4Net/1.2.2": {
+      "DotNetCore.NPOI.OpenXml4Net/1.2.3": {
         "type": "package",
         "dependencies": {
-          "DotNetCore.NPOI.Core": "1.2.2"
+          "DotNetCore.NPOI.Core": "1.2.3"
         },
         "compile": {
           "lib/netstandard2.0/NPOI.OpenXml4Net.dll": {}
@@ -42,10 +50,10 @@
           "lib/netstandard2.0/NPOI.OpenXml4Net.dll": {}
         }
       },
-      "DotNetCore.NPOI.OpenXmlFormats/1.2.2": {
+      "DotNetCore.NPOI.OpenXmlFormats/1.2.3": {
         "type": "package",
         "dependencies": {
-          "DotNetCore.NPOI.OpenXml4Net": "1.2.2"
+          "DotNetCore.NPOI.OpenXml4Net": "1.2.3"
         },
         "compile": {
           "lib/netstandard2.0/NPOI.OpenXmlFormats.dll": {}
@@ -525,6 +533,19 @@
           "build/netstandard2.0/NETStandard.Library.targets": {}
         }
       },
+      "Newtonsoft.Json/13.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "SharpZipLib/1.2.0": {
         "type": "package",
         "compile": {
@@ -598,53 +619,56 @@
     }
   },
   "libraries": {
-    "DotNetCore.NPOI/1.2.2": {
-      "sha512": "DACoUvopt/8z6PhWQdMoXogVdVqI8k6Z++oEWUO5PToUwcK73hsTDOeaqh2hgHHxdRsRtzImqG7Cbw1gPPOAjA==",
+    "DotNetCore.NPOI/1.2.3": {
+      "sha512": "agXbYDkOvovMYBNqTcRAr6jrTtUXGYzVNdS9Yxy4PDZa8tBQiIeAD+54/Jdsc+3/Mln1L1Yj+SciO1TYwljcdQ==",
       "type": "package",
-      "path": "dotnetcore.npoi/1.2.2",
+      "path": "dotnetcore.npoi/1.2.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "dotnetcore.npoi.1.2.2.nupkg.sha512",
+        "content/NOTICE.TXT",
+        "contentFiles/any/net461/NOTICE.TXT",
+        "contentFiles/any/netstandard2.0/NOTICE.TXT",
+        "dotnetcore.npoi.1.2.3.nupkg.sha512",
         "dotnetcore.npoi.nuspec",
         "lib/net461/NPOI.OOXML.dll",
         "lib/netstandard2.0/NPOI.OOXML.dll"
       ]
     },
-    "DotNetCore.NPOI.Core/1.2.2": {
-      "sha512": "ohnR015XcwKUvtWR2AKIAbTH3sS8DbhjDZcPYShwToVKPgAekP5jn1LsyfWJYYFxDuPv4hha0WYfBGVx1BMMLg==",
+    "DotNetCore.NPOI.Core/1.2.3": {
+      "sha512": "2OgRNy4OpVOIwnkU8KPJs6itTE2xFpIFkFmci/iAnea/ZPTzQJrmuNPVKlfdn1csOI8ecFWES8Tk2ZmRSJjl5w==",
       "type": "package",
-      "path": "dotnetcore.npoi.core/1.2.2",
+      "path": "dotnetcore.npoi.core/1.2.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "dotnetcore.npoi.core.1.2.2.nupkg.sha512",
+        "dotnetcore.npoi.core.1.2.3.nupkg.sha512",
         "dotnetcore.npoi.core.nuspec",
         "lib/net461/NPOI.dll",
         "lib/netstandard2.0/NPOI.dll"
       ]
     },
-    "DotNetCore.NPOI.OpenXml4Net/1.2.2": {
-      "sha512": "l41xh1GMbb6c41bQe2ipm6GJwBF9A+N6Bt9aYhKeI/Ak6XKaijIU7g4V28VuuMRoZjPhEp7gL7RP5ChTWUdLzA==",
+    "DotNetCore.NPOI.OpenXml4Net/1.2.3": {
+      "sha512": "gELhZln7TuLn2he3r0mx1qnuPLjEgTW5z8RTFnEexSQ+r1smDqSSryXNEhwUvj1beBUxTjKq2RrwkrWwLgtScA==",
       "type": "package",
-      "path": "dotnetcore.npoi.openxml4net/1.2.2",
+      "path": "dotnetcore.npoi.openxml4net/1.2.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "dotnetcore.npoi.openxml4net.1.2.2.nupkg.sha512",
+        "dotnetcore.npoi.openxml4net.1.2.3.nupkg.sha512",
         "dotnetcore.npoi.openxml4net.nuspec",
         "lib/net461/NPOI.OpenXml4Net.dll",
         "lib/netstandard2.0/NPOI.OpenXml4Net.dll"
       ]
     },
-    "DotNetCore.NPOI.OpenXmlFormats/1.2.2": {
-      "sha512": "+Y5IZfiF/ls+opIMMmolRZdnYcxguErVk9eOfmz5s/wnNnPeBWR1mxGOpvBWsbqch75isU5Lk0CZWtAXVgYCPQ==",
+    "DotNetCore.NPOI.OpenXmlFormats/1.2.3": {
+      "sha512": "3v0cJA+4rclcoW+hVuU4oYu1wNYv/jEIqQghLDMHqlviyOVxnuruAUDvsgENjiZM0iWFhkK0N/ZsXvH+qGvObw==",
       "type": "package",
-      "path": "dotnetcore.npoi.openxmlformats/1.2.2",
+      "path": "dotnetcore.npoi.openxmlformats/1.2.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "dotnetcore.npoi.openxmlformats.1.2.2.nupkg.sha512",
+        "dotnetcore.npoi.openxmlformats.1.2.3.nupkg.sha512",
         "dotnetcore.npoi.openxmlformats.nuspec",
         "lib/net461/NPOI.OpenXmlFormats.dll",
         "lib/netstandard2.0/NPOI.OpenXmlFormats.dll"
@@ -1139,6 +1163,36 @@
         "netstandard.library.nuspec"
       ]
     },
+    "Newtonsoft.Json/13.0.3": {
+      "sha512": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
+      "type": "package",
+      "path": "newtonsoft.json/13.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.md",
+        "README.md",
+        "lib/net20/Newtonsoft.Json.dll",
+        "lib/net20/Newtonsoft.Json.xml",
+        "lib/net35/Newtonsoft.Json.dll",
+        "lib/net35/Newtonsoft.Json.xml",
+        "lib/net40/Newtonsoft.Json.dll",
+        "lib/net40/Newtonsoft.Json.xml",
+        "lib/net45/Newtonsoft.Json.dll",
+        "lib/net45/Newtonsoft.Json.xml",
+        "lib/net6.0/Newtonsoft.Json.dll",
+        "lib/net6.0/Newtonsoft.Json.xml",
+        "lib/netstandard1.0/Newtonsoft.Json.dll",
+        "lib/netstandard1.0/Newtonsoft.Json.xml",
+        "lib/netstandard1.3/Newtonsoft.Json.dll",
+        "lib/netstandard1.3/Newtonsoft.Json.xml",
+        "lib/netstandard2.0/Newtonsoft.Json.dll",
+        "lib/netstandard2.0/Newtonsoft.Json.xml",
+        "newtonsoft.json.13.0.3.nupkg.sha512",
+        "newtonsoft.json.nuspec",
+        "packageIcon.png"
+      ]
+    },
     "SharpZipLib/1.2.0": {
       "sha512": "zvWa/L02JHNatdtjya6Swpudb2YEHaOLHL1eRrqpjm71iGRNUNONO5adUF/9CHbSJbzhELW1UoH4NGy7n7+3bQ==",
       "type": "package",
@@ -1267,8 +1321,9 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
-      "DotNetCore.NPOI >= 1.2.2",
-      "Microsoft.NETCore.App >= 2.0.0"
+      "DotNetCore.NPOI >= 1.2.3",
+      "Microsoft.NETCore.App >= 2.0.0",
+      "Newtonsoft.Json >= 13.0.3"
     ]
   },
   "packageFolders": {
@@ -1318,13 +1373,17 @@
         "dependencies": {
           "DotNetCore.NPOI": {
             "target": "Package",
-            "version": "[1.2.2, )"
+            "version": "[1.2.3, )"
           },
           "Microsoft.NETCore.App": {
             "suppressParent": "All",
             "target": "Package",
             "version": "[2.0.0, )",
             "autoReferenced": true
+          },
+          "Newtonsoft.Json": {
+            "target": "Package",
+            "version": "[13.0.3, )"
           }
         },
         "imports": [

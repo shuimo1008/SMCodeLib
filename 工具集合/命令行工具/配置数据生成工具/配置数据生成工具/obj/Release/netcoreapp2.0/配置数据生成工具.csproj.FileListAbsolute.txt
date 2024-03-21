@@ -11,3 +11,4 @@ D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置�
 D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Release\netcoreapp2.0\配置数据生成工具.pdb
 D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Release\netcoreapp2.0\配置数据生成工具.genruntimeconfig.cache
 D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\obj\Release\netcoreapp2.0\配置数据生成工具.csproj.AssemblyReference.cache
+D:\Works\SMCodeLib\工具集合\命令行工具\配置数据生成工具\配置数据生成工具\bin\Release\netcoreapp2.0\NOTICE.TXT

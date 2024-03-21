@@ -34,7 +34,7 @@ namespace UnityLib.Loads
         Object GetAsset(string name, bool fromMemory = false);
         AssetBundle GetBundle(bool fromMemory = false);
         AudioClip GetAudioClip();
-        Texture2D GetTexture();
+        Texture2D GetTexture(bool compress = false, bool updateMipmap = false);
         string GetText();
         byte[] GetBytes();
     }
