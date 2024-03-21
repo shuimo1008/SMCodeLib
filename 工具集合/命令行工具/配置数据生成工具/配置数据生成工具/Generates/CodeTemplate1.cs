@@ -11,7 +11,7 @@ namespace Tools
             "using System.Collections.Generic;\r\n" +
             "using System.Linq;\r\n" +
             "using SMCore;\r\n" +
-            "using SMCore.Cores;\r\n" +
+            "using SMCore.Buffer;\r\n" +
             "using SMCore.Logger;\r\n";
 
         public override string TMP_BASETPL =>
@@ -34,7 +34,7 @@ namespace Tools
             "           T t = new T();\r\n" +
             "           t.SetupData(buffer);\r\n" +
             "           if (!DataTable.ContainsKey(t.Tid)) DataTable.Add(t.Tid, t);\r\n" +
-            "           else IoC.Resolve<ILoggerS>().Error($\"模板__LK__typeof(T).Name__RK__Mgr已经包含Tid=__LK__t.Tid__RK__的对象!\");\r\n" +
+            "           else UnityEngine.Debug.LogError($\"模板__LK__typeof(T).Name__RK__Mgr已经包含Tid=__LK__t.Tid__RK__的对象!\");\r\n" +
             "       __RK__ \r\n" +
             "   __RK__ \r\n" +
             "\r\n" +
@@ -42,7 +42,7 @@ namespace Tools
             "   __LK__ \r\n" +
             "       if (!DataTable.TryGetValue(id, out var tpl))\r\n" +
             "       __LK__\r\n" +
-            "           IoC.Resolve<ILoggerS>().Error($\"模板__LK__typeof(T).Name__RK__Mgr没有包含Tid=__LK__id__RK__的对象!\");\r\n" +
+            "           UnityEngine.Debug.LogError($\"模板__LK__typeof(T).Name__RK__Mgr没有包含Tid=__LK__id__RK__的对象!\");\r\n" +
             "       __RK__\r\n" +
             "       return tpl;\r\n" +
             "   __RK__ \r\n" +
