@@ -57,7 +57,7 @@ namespace Tools
                     for (int columnsIndex = 0; columnsIndex < strTypes.Length; columnsIndex++)
                     {
                         CellValue cellValue = oDataRow[columnsIndex].ToValue();
-                        string strType = cellValue.ToString();
+                        string strType = cellValue.value.ToString();
                         strTypes[columnsIndex] = strType;
                     }
                 }
